@@ -15,6 +15,7 @@ qval_t qadd(qval_t a, qval_t b);
 qval_t qsub(qval_t a, qval_t b);
 qval_t qmul(qval_t a, qval_t b);
 qval_t qdiv(qval_t a, qval_t b);
+qval_t qsqrt(qval_t v);
 qval_t qsin(qval_t v);
 qval_t qcos(qval_t v);
 qval_t qtan(qval_t v);

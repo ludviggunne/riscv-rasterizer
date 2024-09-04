@@ -2,27 +2,33 @@
 #include <stdio.h>
 #include "qmath.h"
 
-void qprint(qval_t v)
+float q_to_float(qval_t v)
 {
-	printf("%g", v / (float) (1 << QFBITS));
-
+	return v / (float) (1 << QFBITS);
 }
 
 int main()
 {
+	float vbad = NAN;
 	float emax = 0;
-	for (qval_t i = -QVAL(M_PI / 4); i < QVAL(M_PI / 4); i++)
+
+	for (qval_t i = QVAL(32760); i < QVAL(32767); i++)
 	{
-		qval_t qt = qtan(i);
-		float ft = tan(i / (float) (1 << QFBITS));
-		float e = (qt / (float) (1 << QFBITS)) - ft;
+		qval_t q = qsqrt(i);
+		float f = sqrtf(q_to_float(i));
+		float e = q_to_float(q) - f;
+
 		if (fabsf(e) > fabsf(emax))
+		{
+			vbad = q_to_float(i);
 			emax = e;
-		printf("tan(");
-		qprint(i);
-		printf(") = ");
-		qprint(qt);
-		printf("(%+g)\n", e);
+		}
+
+#if 0
+		printf("sqrt(%g) = %g (%+g)\n",
+			q_to_float(i), q_to_float(q), e);
+#endif
 	}
-	printf("largest error: %g\n", emax);
+
+	printf("largest error: %+g (for input %g)\n", emax, vbad);
 }

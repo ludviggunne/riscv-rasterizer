@@ -60,6 +60,59 @@ qval_t qdiv(qval_t a, qval_t b)
 	}
 }
 
+qval_t qsqrt(qval_t v)
+{
+	qval_t r;
+
+	if (v < QVAL(1))
+	{
+		quval_t b = 1 << (QFBITS - 1);
+
+		r = (1 << QFBITS) - 1;
+
+		while (b != 0)
+		{
+			qval_t p = r ^ b;
+
+			if (qmul(p, p) >= v)
+			{
+				r = p;
+			}
+
+			b = b >> 1;
+		}
+	}
+	else if (v > QVAL(1))
+	{
+		quval_t b = 1 << ((QIBITS >> 1) + QFBITS);
+
+		r = 0;
+
+		while (b > v)
+		{
+			b = b >> 1;
+		}
+
+		while (b != 0)
+		{
+			qval_t p = r ^ b;
+
+			if (qmul(p, p) <= v)
+			{
+				r = p;
+			}
+
+			b = b >> 1;
+		}
+	}
+	else
+	{
+		r = QVAL(1);
+	}
+
+	return r;
+}
+
 #include "qsintbl.c"
 
 static qval_t qsin_s(int v)
