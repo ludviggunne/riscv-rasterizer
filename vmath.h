@@ -19,4 +19,4 @@ vec_t  vscl(vec_t u, qval_t s);
 qval_t vdot(vec_t u, vec_t v);
 vec_t  vcrs(vec_t u, vec_t v);
 
-#define				/* VMATH_H */
+#endif /* VMATH_H */
