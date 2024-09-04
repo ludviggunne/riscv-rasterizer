@@ -84,7 +84,7 @@ qval_t qsqrt(qval_t v)
 	}
 	else if (v > QVAL(1))
 	{
-		quval_t b = 1 << ((QIBITS >> 1) + QFBITS);
+		quval_t b = 1 << ((QIBITS >> 1) + QFBITS - 1);
 
 		r = 0;
 
@@ -96,8 +96,9 @@ qval_t qsqrt(qval_t v)
 		while (b != 0)
 		{
 			qval_t p = r ^ b;
+			qval_t q = qmul(p, p);
 
-			if (qmul(p, p) <= v)
+			if (0 <= q && q <= v)
 			{
 				r = p;
 			}

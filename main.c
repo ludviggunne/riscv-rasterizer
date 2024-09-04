@@ -12,7 +12,7 @@ int main()
 	float vbad = NAN;
 	float emax = 0;
 
-	for (qval_t i = QVAL(32760); i < QVAL(32767); i++)
+	for (qval_t i = QVAL(0); i < QVAL(256); i++)
 	{
 		qval_t q = qsqrt(i);
 		float f = sqrtf(q_to_float(i));
@@ -23,11 +23,6 @@ int main()
 			vbad = q_to_float(i);
 			emax = e;
 		}
-
-#if 0
-		printf("sqrt(%g) = %g (%+g)\n",
-			q_to_float(i), q_to_float(q), e);
-#endif
 	}
 
 	printf("largest error: %+g (for input %g)\n", emax, vbad);
