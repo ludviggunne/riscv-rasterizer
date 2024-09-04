@@ -18,5 +18,6 @@ vec_t  vsub(vec_t u, vec_t v);
 vec_t  vscl(vec_t u, qval_t s);
 qval_t vdot(vec_t u, vec_t v);
 vec_t  vcrs(vec_t u, vec_t v);
+qval_t vlen(vec_t u);
 
 #endif /* VMATH_H */

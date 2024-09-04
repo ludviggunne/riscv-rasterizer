@@ -18,5 +18,5 @@ run: all
 clean:
 	rm -f qmath_host
 
-qmath_host: qmath.c main.c
+qmath_host: qmath.c main.c vmath.c
 	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) -lm

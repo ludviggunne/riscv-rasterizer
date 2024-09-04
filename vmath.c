@@ -44,3 +44,12 @@ vec_t vcrs(vec_t u, vec_t v)
 	w.z = qsub(qmul(u.x, v.y), qmul(u.y, v.x));
 	return w;
 }
+
+qval_t vlen(vec_t u)
+{
+	qval_t a = QVAL(0);
+	a = qadd(a, qmul(u.x, u.x));
+	a = qadd(a, qmul(u.y, u.y));
+	a = qadd(a, qmul(u.z, u.z));
+	return qsqrt(a);
+}
