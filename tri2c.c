@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 
 	outfile = stdout;
 
-	fprintf(outfile, "#include \"qmath.h\"\n\n");
+	fprintf(outfile, "#include \"vmath.h\"\n\n");
 
 	if (getline(&line, &size, file) < 0)
 	{
@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 
 	int count;
 	sscanf(line, "%d", &count);
-	fprintf(outfile, "const qval_t %s[%d] = {\n", name, count * 3);
+	fprintf(outfile, "const vec_t %s[%d] = {\n", name, count);
 
 	while (getline(&line, &size, file) >= 0 && count-- > 0)
 	{
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 		float x, y, z;
 		sscanf(line, "%f%f%f", &x, &y, &z);
 
-		fprintf(outfile, "%12d, %12d, %12d,\n", QVAL(x), QVAL(y), QVAL(z));
+		fprintf(outfile, "\tVEC(%d, %d, %d),\n", QVAL(x), QVAL(y), QVAL(z));
 	}
 
 	fprintf(outfile, "};\n");
