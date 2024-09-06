@@ -8,7 +8,7 @@ CFLAGS		= $(MACHFLAGS) -Og -g -Wall
 LDSCRIPT	=
 LDFLAGS		=
 
-.PHONY: all clean run
+.PHONY: all clean
 
 all: rast_host tri2c
 

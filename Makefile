@@ -9,18 +9,25 @@ LDSCRIPT	= link.ld
 LDFLAGS		= -T $(LDSCRIPT) -nostdlib -Wl,-no-pie,--build-id=none
 LDLIBS		=
 
-.PHONY: all clean run
+.PHONY: all clean all-host clean-host
 
-all: rast.bin
+all: rast.bin all-host
 
-clean:
+clean: clean-host
 	rm -f rast.elf rast.bin
+	$(MAKE) -f Makefile.host $(@)
 
 rast.elf: display.c main.c mvec.S qmath.c reset.S stack.S start.S stop.S trap.S
 	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)
 
 rast.bin: rast.elf
 	$(OBJCOPY) -S -O binary $(<) $(@)
+
+all-host:
+	$(MAKE) -f Makefile.host all
+
+clean-host:
+	$(MAKE) -f Makefile.host clean
 
 rast_host tri2c:
 	$(MAKE) -f Makefile.host $(@)
