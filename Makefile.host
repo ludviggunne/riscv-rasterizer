@@ -1,0 +1,23 @@
+PROGRAM_PREFIX	=
+CC 		= $(PROGRAM_PREFIX)gcc
+OBJDUMP		= $(PROGRAM_PREFIX)objdump
+OBJCOPY		= $(PROGRAM_PREFIX)objcopy
+MACHFLAGS	=
+ASFLAGS		= $(MACHFLAGS)
+CFLAGS		= $(MACHFLAGS) -Og -g -Wall
+LDSCRIPT	=
+LDFLAGS		=
+
+.PHONY: all clean run
+
+all: rast_host tri2c
+
+clean:
+	rm -f rast_host tri2c
+
+rast_host: LDLIBS += -lm
+rast_host: qmath.c host_main.c
+	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)
+
+tri2c: tri2c.c
+	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)

@@ -17,9 +17,14 @@ qval_t qmul(qval_t a, qval_t b)
 	unsigned lo;
 	__asm__
 	(
-		"mulh %0, %2, %3;"
-		"mul  %1, %2, %3;" :
-		"=r"(hi), "=r"(lo) :
+		"mulh %0, %1, %2;" :
+		"=r"(hi) :
+		"r"(a), "r"(b)
+	);
+	__asm__
+	(
+		"mul %0, %1, %2;" :
+		"=r"(lo) :
 		"r"(a), "r"(b)
 	);
 	return (hi << 16) | (lo >> 16);
@@ -168,4 +173,76 @@ qval_t qcos(qval_t v)
 qval_t qtan(qval_t v)
 {
 	return qdiv(qsin(v), qcos(v));
+}
+
+int qsnprint(qval_t v, char *buf, int len)
+{
+	int n = 0;
+
+	if (v < 0)
+	{
+		v = -v;
+
+		if (n < len)
+		{
+			buf[n++] = '-';
+		}
+	}
+
+	{
+		int i = v >> QFBITS;
+		char c[8];
+		int m = 0;
+
+		if (i == 0)
+		{
+			c[m++] = '0';
+		}
+		else
+		{
+
+			while (i != 0)
+			{
+				c[m++] = '0' + (i % 10);
+				i = i / 10;
+			}
+		}
+
+		while (m != 0 && n < len)
+		{
+			buf[n++] = c[--m];
+		}
+	}
+
+	{
+		int f = v & QFMASK;
+		char c;
+
+		if (f != 0)
+		{
+			if (n < len)
+			{
+				buf[n++] = '.';
+			}
+
+			while (f != 0)
+			{
+				f = f * 10;
+				c = '0' +  (f >> QFBITS);
+				f = (f & QFMASK);
+
+				if (n < len)
+				{
+					buf[n++] = c;
+				}
+			}
+		}
+	}
+
+	if (n < len)
+	{
+		buf[n++] = '\0';
+	}
+
+	return n;
 }

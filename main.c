@@ -1,29 +1,44 @@
-#include <math.h>
-#include <stdio.h>
+#include "display.h"
 #include "qmath.h"
 
-float q_to_float(qval_t v)
+static void display_qval(qval_t v)
 {
-	return v / (float) (1 << QFBITS);
+	char s[6];
+	int p = 0;
+
+	qsnprint(v, s, sizeof(s));
+
+	for (int i = 0; i < 6; i++)
+	{
+		if (s[p] == '\0')
+		{
+			display_char(i, ' ');
+		}
+		else if (s[p + 1] == '.')
+		{
+			display_char(i, s[p] | 0x80);
+			p = p + 2;
+		}
+		else
+		{
+			display_char(i, s[p]);
+			p = p + 1;
+		}
+	}
 }
 
 int main()
 {
-	float vbad = NAN;
-	float emax = 0;
+#if 1
+	/* enable button interrupt */
+	*(volatile int *)0x040000d8 = -1;
+	/* enable button edge trigger */
+	*(volatile int *)0x040000dc = -1;
+#endif
 
-	for (qval_t i = QVAL(0); i < QVAL(256); i++)
 	{
-		qval_t q = qsqrt(i);
-		float f = sqrtf(q_to_float(i));
-		float e = q_to_float(q) - f;
+		qval_t v = qsqrt(QVAL(2));
 
-		if (fabsf(e) > fabsf(emax))
-		{
-			vbad = q_to_float(i);
-			emax = e;
-		}
+		display_qval(v);
 	}
-
-	printf("largest error: %+g (for input %g)\n", emax, vbad);
 }

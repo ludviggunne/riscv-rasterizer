@@ -19,5 +19,6 @@ qval_t qsqrt(qval_t v);
 qval_t qsin(qval_t v);
 qval_t qcos(qval_t v);
 qval_t qtan(qval_t v);
+int qsnprint(qval_t v, char *buf, int len);
 
 #endif
