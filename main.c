@@ -3,7 +3,7 @@
 
 static void display_qval(qval_t v)
 {
-	char s[6];
+	char s[8];
 	int p = 0;
 
 	qsnprint(v, s, sizeof(s));
@@ -37,7 +37,14 @@ int main()
 #endif
 
 	{
-		qval_t v = qsqrt(QVAL(2));
+		qval_t f = QVAL(1);
+		qval_t v = QVAL(0);
+
+		for (int i = 1; i <= 10; i++)
+		{
+			v = qadd(v, qdiv(QVAL(1), f));
+			f = qmul(f, QINT(i));
+		}
 
 		display_qval(v);
 	}

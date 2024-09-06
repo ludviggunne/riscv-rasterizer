@@ -2,9 +2,24 @@
 #include <stdio.h>
 #include "qmath.h"
 
-float q_to_float(qval_t v)
+int qprint(qval_t v)
 {
-	return v / (float) (1 << QFBITS);
+	char s[32];
+	int n;
+
+	n = qsnprint(v, s, sizeof(s));
+	fputs(s, stdout);
+
+	return n;
+}
+
+int qprintln(qval_t v)
+{
+	int n = qprint(v);
+
+	fputc('\n', stdout);
+
+	return n + 1;
 }
 
 int main()
@@ -15,12 +30,12 @@ int main()
 	for (qval_t i = QVAL(0); i < QVAL(256); i++)
 	{
 		qval_t q = qsqrt(i);
-		float f = sqrtf(q_to_float(i));
-		float e = q_to_float(q) - f;
+		float f = sqrtf(QTOF(i));
+		float e = QTOF(q) - f;
 
 		if (fabsf(e) > fabsf(emax))
 		{
-			vbad = q_to_float(i);
+			vbad = QTOF(i);
 			emax = e;
 		}
 	}
@@ -28,14 +43,15 @@ int main()
 	printf("largest error: %+g (for input %g)\n", emax, vbad);
 
 	{
-		char s[16];
+		qval_t f = QVAL(1);
+		qval_t v = QVAL(0);
 
-		qval_t a = QVAL(1.2);
-		qval_t b = QVAL(3.4);
-		qval_t c = qmul(a, b);
+		for (int i = 1; i <= 10; i++)
+		{
+			v = qadd(v, qdiv(QVAL(1), f));
+			f = qmul(f, QINT(i));
+		}
 
-		qsnprint(c, s, sizeof(s));
-
-		printf("%s\n", s);
+		qprintln(v);
 	}
 }
