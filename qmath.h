@@ -9,7 +9,10 @@ typedef unsigned int	quval_t;
 #define QFMASK	(((quval_t) 1 << QFBITS) - 1)
 #define QIBITS	16
 #define QIMASK	((((quval_t) 1 << QIBITS) - 1) << QFBITS)
-#define QVAL(v)	((qval_t)((v) * (1 << QFBITS) + 0.5))
+#define QVAL(v)	((qval_t) ((v) * (1 << QFBITS) + 0.5))
+#define QINT(v)	((qval_t) ((v) << QFBITS))
+#define QTOI(v) ((int) (v) >> QFBITS)
+#define QTOF(v) ((float) (v) / (1 << QFBITS))
 
 qval_t qadd(qval_t a, qval_t b);
 qval_t qsub(qval_t a, qval_t b);
