@@ -17,7 +17,8 @@ clean:
 
 rast_host: LDLIBS += -lm
 rast_host: qmath.c host_main.c
-	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)
 
 tri2c: tri2c.c
+
+rast_host tri2c:
 	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)
