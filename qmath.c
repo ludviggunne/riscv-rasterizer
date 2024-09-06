@@ -183,9 +183,9 @@ int qsnprint(qval_t v, char *buf, int len)
 	{
 		v = -v;
 
-		if (n < len)
+		if (n++ < len)
 		{
-			buf[n++] = '-';
+			*buf++ = '-';
 		}
 	}
 
@@ -208,9 +208,14 @@ int qsnprint(qval_t v, char *buf, int len)
 			}
 		}
 
-		while (m != 0 && n < len)
+		while (m != 0)
 		{
-			buf[n++] = c[--m];
+			m--;
+
+			if (n++ < len)
+			{
+				*buf++ = c[m];
+			}
 		}
 	}
 
@@ -220,9 +225,9 @@ int qsnprint(qval_t v, char *buf, int len)
 
 		if (f != 0)
 		{
-			if (n < len)
+			if (n++ < len)
 			{
-				buf[n++] = '.';
+				*buf++ = '.';
 			}
 
 			while (f != 0)
@@ -231,9 +236,9 @@ int qsnprint(qval_t v, char *buf, int len)
 				c = '0' +  (f >> QFBITS);
 				f = (f & QFMASK);
 
-				if (n < len)
+				if (n++ < len)
 				{
-					buf[n++] = c;
+					*buf++ = c;
 				}
 			}
 		}
@@ -241,7 +246,7 @@ int qsnprint(qval_t v, char *buf, int len)
 
 	if (n < len)
 	{
-		buf[n++] = '\0';
+		*buf++ = '\0';
 	}
 
 	return n;
