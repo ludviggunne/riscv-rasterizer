@@ -29,7 +29,7 @@ vec_t vscl(vec_t u, qval_t s)
 
 qval_t vdot(vec_t u, vec_t v)
 {
-	qval_t d = QVAL(0);
+	qval_t d = QZERO;
 	d = qadd(d, qmul(u.x, v.x));
 	d = qadd(d, qmul(u.y, v.y));
 	d = qadd(d, qmul(u.z, v.z));
@@ -47,7 +47,7 @@ vec_t vcrs(vec_t u, vec_t v)
 
 qval_t vlen(vec_t u)
 {
-	qval_t a = QVAL(0);
+	qval_t a = QZERO;
 	a = qadd(a, qmul(u.x, u.x));
 	a = qadd(a, qmul(u.y, u.y));
 	a = qadd(a, qmul(u.z, u.z));

@@ -16,8 +16,8 @@ all: rast_host tri2c
 clean:
 	rm -f rast_host tri2c
 
-rast_host: LDLIBS += -lm
-rast_host: qmath.c host_main.c
+rast_host: LDLIBS += -lglut -lGL -lGLEW -lm
+rast_host: host_main.c qmath.c vmath.c
 
 tri2c: tri2c.c
 

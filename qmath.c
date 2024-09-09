@@ -69,7 +69,7 @@ qval_t qsqrt(qval_t v)
 {
 	qval_t r;
 
-	if (v < QVAL(1))
+	if (v < QONE)
 	{
 		quval_t b = 1 << (QFBITS - 1);
 
@@ -87,7 +87,7 @@ qval_t qsqrt(qval_t v)
 			b = b >> 1;
 		}
 	}
-	else if (v > QVAL(1))
+	else if (v > QONE)
 	{
 		quval_t b = 1 << ((QIBITS >> 1) + QFBITS - 1);
 
@@ -113,7 +113,7 @@ qval_t qsqrt(qval_t v)
 	}
 	else
 	{
-		r = QVAL(1);
+		r = QONE;
 	}
 
 	return r;
@@ -141,7 +141,7 @@ static qval_t qsin_s(int v)
 
 	if (v >= 0x0FF5E)
 	{
-		r = QVAL(1);
+		r = QONE;
 	}
 	else
 	{
