@@ -45,6 +45,7 @@ typedef struct
 static qval_t mdl_r;
 static qval_t mdl_p;
 static qval_t mdl_y;
+static qval_t mdl_s = QVAL(5);
 static vec_t mdl_xlat = { QVAL(0), QVAL(0), QVAL(25), };
 
 static void xfm_vtx(vec_t *v)
@@ -80,9 +81,9 @@ static void xfm_vtx(vec_t *v)
 	}
 
 
-	v->x = qadd(v->x, mdl_xlat.x);
-	v->y = qadd(v->y, mdl_xlat.y);
-	v->z = qadd(v->z, mdl_xlat.z);
+	v->x = qadd(qmul(v->x, mdl_s), mdl_xlat.x);
+	v->y = qadd(qmul(v->y, mdl_s), mdl_xlat.y);
+	v->z = qadd(qmul(v->z, mdl_s), mdl_xlat.z);
 }
 
 static void xfm_tri(tri_t *t)
@@ -176,13 +177,32 @@ static void draw_tri(tri_t *t)
 	vec_t v2 = t->b;
 	vec_t v3 = t->c;
 
-	vec_t n;
+	vec_t n = { 0, 0, QVAL(-1) };
 	{
 		vec_t u = vsub(v2, v1);
 		vec_t v = vsub(v3, v1);
-		qval_t l = vlen(u) > vlen(v) ? vlen(u) : vlen(v);
-		u = vscl(u, qdiv(QONE, l));
-		v = vscl(v, qdiv(QONE, l));
+
+		{
+			qval_t l = vlen(u);
+
+			if (l == 0)
+			{
+				return;
+			}
+
+			u = vscl(u, qdiv(QONE, l));
+		}
+		{
+			qval_t l = vlen(v);
+
+			if (l == 0)
+			{
+				return;
+			}
+
+			v = vscl(v, qdiv(QONE, l));
+		}
+
 		n = vcrs(u, v);
 		n = vscl(n, qdiv(QONE, vlen(n)));
 	}
@@ -315,6 +335,7 @@ static void draw_tri(tri_t *t)
 	}
 }
 
+#include "teapot.c"
 static void display_func(void)
 {
 	for (int i = 0; i < sizeof(cb) / sizeof*(cb); i++)
@@ -327,6 +348,7 @@ static void display_func(void)
 		zb[i] = QMAX;
 	}
 
+#if 0
 	tri_t tris[] =
 	{
 		/* Front */
@@ -403,6 +425,19 @@ static void display_func(void)
 		xfm_tri(t);
 		draw_tri(t);
 	}
+#else
+	for (int i = 0; i < sizeof(teapot) / sizeof*(teapot); i += 3)
+	{
+		tri_t t =
+		{
+			teapot[i + 0],
+			teapot[i + 1],
+			teapot[i + 2],
+		};
+		xfm_tri(&t);
+		draw_tri(&t);
+	}
+#endif
 
 	if (keys[GLUT_KEY_LEFT])
 	{
