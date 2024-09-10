@@ -50,19 +50,26 @@ int main(int argc, char **argv)
 
 	int count;
 	sscanf(line, "%d", &count);
+	count *= 3;
 	fprintf(outfile, "const vec_t %s[%d] = {\n", name, count);
 
-	while (getline(&line, &size, file) >= 0 && count-- > 0)
+	while (getline(&line, &size, file) >= 0 && count > 0)
 	{
-		if (strlen(line) == 0)
+		float x, y, z;
+
+		if (strlen(line) <= 1)
 		{
 			continue;
 		}
 
-		float x, y, z;
-		sscanf(line, "%f%f%f", &x, &y, &z);
+		if (sscanf(line, "%f%f%f", &x, &y, &z) != 3)
+		{
+			continue;
+		}
 
 		fprintf(outfile, "\tVEC(%d, %d, %d),\n", QVAL(x), QVAL(y), QVAL(z));
+
+		count--;
 	}
 
 	fprintf(outfile, "};\n");
