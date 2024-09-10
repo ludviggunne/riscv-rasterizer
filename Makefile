@@ -29,5 +29,7 @@ all-host:
 clean-host:
 	$(MAKE) -f Makefile.host clean
 
+.PHONY: rast_host tri2c
+
 rast_host tri2c:
 	$(MAKE) -f Makefile.host $(@)
