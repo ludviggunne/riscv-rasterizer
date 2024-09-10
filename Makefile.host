@@ -16,7 +16,11 @@ all: rast_host tri2c
 clean:
 	rm -f rast_host tri2c
 
+ifeq ($(shell uname -s | grep -o _NT-),_NT-)
+rast_host: LDLIBS += -lfreeglut -lopengl32 -lglew32
+else
 rast_host: LDLIBS += -lglut -lGL -lGLEW -lm
+endif
 rast_host: host_main.c qmath.c vmath.c
 
 tri2c: tri2c.c
