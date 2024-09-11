@@ -6,7 +6,7 @@ MACHFLAGS	= -mabi=ilp32 -march=rv32imzicsr
 ASFLAGS		= $(MACHFLAGS)
 CFLAGS		= $(MACHFLAGS) -fno-pic -Os -g -Wall
 LDSCRIPT	= link.ld
-LDFLAGS		= -T $(LDSCRIPT) -nostdlib -Wl,-no-pie,--build-id=none
+LDFLAGS		= -T $(LDSCRIPT) -nostdlib -Wl,-no-pie,--build-id=none,--no-warn-rwx-segments
 LDLIBS		=
 
 .PHONY: all clean all-host clean-host

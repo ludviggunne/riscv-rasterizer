@@ -7,21 +7,21 @@ SECTIONS
 {
 	. = 0;
 
-	.mvec			: { KEEP (*(.mvec .mvec.*)) }
+	.mvec		: { KEEP (*(.mvec .mvec.*)) }
 
-	.text			: { *(.text .text.* .gnu.linkonce.t.*) }
+	.text		: { *(.text .text.* .gnu.linkonce.t.*) }
 
-	.rodata			: { *(.rodata .rodata.* .gnu.linkonce.r.*) }
+	.rodata		: { *(.rodata .rodata.* .gnu.linkonce.r.*) }
 
-	.data	(READONLY)	: { *(.data .data.* .gnu.linkonce.d.*) }
+	.data		: { *(.data .data.* .gnu.linkonce.d.*) }
 
 	HIDDEN (_gp = ALIGN (16) + 0x7F0) ;
-	.sdata	(READONLY)	: { *(.sdata .sdata.* .gnu.linkonce.s.*) }
+	.sdata		: { *(.sdata .sdata.* .gnu.linkonce.s.*) }
 
 	. = ALIGN (4) ;
 	__bss_start = . ;
-	.sbss	(READONLY)	: { *(.sbss .sbss.* .gnu.linkonce.sb.*) *(.scommon) }
-	.bss	(READONLY)	: { *(.bss .bss.* .gnu.linkonce.b.*) *(COMMON) }
+	.sbss		: { *(.sbss .sbss.* .gnu.linkonce.sb.*) *(.scommon) }
+	.bss		: { *(.bss .bss.* .gnu.linkonce.b.*) *(COMMON) }
 	. = ALIGN (4) ;
 	__bss_end = . ;
 
