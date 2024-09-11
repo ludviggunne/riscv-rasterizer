@@ -42,11 +42,11 @@ typedef struct
 	vec_t	c;
 } tri_t;
 
-static qval_t mdl_r;
-static qval_t mdl_p;
-static qval_t mdl_y;
+static qval_t mdl_r = QZERO;
+static qval_t mdl_p = QZERO;
+static qval_t mdl_y = QZERO;
 static qval_t mdl_s = QVAL(5);
-static vec_t mdl_xlat = { QVAL(0), QVAL(0), QVAL(25), };
+static vec_t mdl_xlat = { QVAL(0), QVAL(0), QVAL(25) };
 
 static void xfm_vtx(vec_t *v)
 {
@@ -134,7 +134,7 @@ static void draw_span(span_t *s, int c)
 	{
 		iy = QTOI(y);
 
-		x = lx;
+		x = lx & ~0xFFFF;
 		z = lz;
 
 		if (lx != rx)
@@ -177,7 +177,7 @@ static void draw_tri(tri_t *t)
 	vec_t v2 = t->b;
 	vec_t v3 = t->c;
 
-	vec_t n = { 0, 0, QVAL(-1) };
+	vec_t n;
 	{
 		vec_t u = vsub(v2, v1);
 		vec_t v = vsub(v3, v1);
@@ -357,6 +357,7 @@ static void display_func(void)
 			VEC(QVAL( 10), QVAL( 10), QVAL(-10)),
 			VEC(QVAL( 10), QVAL(-10), QVAL(-10)),
 		},
+#if 1
 		{
 			VEC(QVAL(-10), QVAL( 10), QVAL(-10)),
 			VEC(QVAL( 10), QVAL(-10), QVAL(-10)),
@@ -417,6 +418,7 @@ static void display_func(void)
 			VEC(QVAL( 10), QVAL(-10), QVAL( 10)),
 			VEC(QVAL(-10), QVAL(-10), QVAL( 10)),
 		},
+#endif
 	};
 
 	for (int i = 0; i < sizeof(tris) / sizeof*(tris); i++)
