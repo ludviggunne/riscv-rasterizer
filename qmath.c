@@ -200,7 +200,6 @@ int qsnprint(qval_t v, char *buf, int len)
 		}
 		else
 		{
-
 			while (i != 0)
 			{
 				c[m++] = '0' + (i % 10);
