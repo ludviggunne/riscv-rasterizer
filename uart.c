@@ -34,7 +34,7 @@ void uart_putc(char c)
 	// wait for FIFO to be available
 	while (!(*UART_CONTROL & 0xffff0000));
 	// write
-	*UART_DATA = (*UART_DATA & ~0xf) | c;
+	*UART_DATA = (*UART_DATA & ~0xff) | c;
 #else
 	fputc(c, stdout);
 #endif
