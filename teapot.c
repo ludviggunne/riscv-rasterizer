@@ -1,3 +1,8 @@
+/*
+ * Generated with tri2c.c from teapot_bezier0.tris on 2024-09-17
+ * Additional comment: triangle data is from https://users.cs.utah.edu/~dejohnso/models/teapot.html
+ */
+
 #include "vmath.h"
 
 const vec_t teapot[10464] = {

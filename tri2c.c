@@ -1,6 +1,12 @@
+/*
+ * By: Ludvig Gunne Lindström
+ * Last modified: 2024-09-17
+ */
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "qmath.h"
 
@@ -16,20 +22,24 @@
 
 void usage(FILE *f, const char *name)
 {
-	fprintf(f, "usage: %s <file> <name>\n", name);
+	fprintf(f, "usage: %s <file> <name> [<comment>]\n", name);
 }
 
 int main(int argc, char **argv)
 {
 	FILE *file;
 	FILE *outfile;
-	char *path, *name, *line = NULL;
+	char *path, *name, *comment = NULL, *line = NULL;
 	size_t size;
 
 	ASSERT_USAGE(argc > 2);
 
 	path = argv[1];
 	name = argv[2];
+	if (argc > 3)
+	{
+		comment = argv[3];
+	}
 
 	file = fopen(path, "r");
 	if (!file)
@@ -40,6 +50,21 @@ int main(int argc, char **argv)
 
 	outfile = stdout;
 
+	time_t t = time(NULL);
+	struct tm tm = *localtime(&t);
+	fprintf(outfile, "/*\n");
+	fprintf(outfile,
+	        " * Generated with %s from %s on %d-%02d-%02d\n",
+	        __FILE__,
+	        path,
+		tm.tm_year + 1900,
+		tm.tm_mon + 1,
+		tm.tm_mday);
+	if (comment)
+	{
+		fprintf(outfile, " * Additional comment: %s\n", comment);
+	}
+	fprintf(outfile, " */\n\n");
 	fprintf(outfile, "#include \"vmath.h\"\n\n");
 
 	if (getline(&line, &size, file) < 0)
