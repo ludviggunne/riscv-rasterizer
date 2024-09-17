@@ -15,7 +15,7 @@
 #define UART_CONTROL ((volatile int *) 0x04000044)
 
 static int is_init = 0;
-static const char hex[] = "012345678abcdef";
+static const char hex[] = "0123456789abcdef";
 
 void uart_init(void)
 {
