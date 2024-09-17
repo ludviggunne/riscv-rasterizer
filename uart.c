@@ -29,6 +29,7 @@ void uart_init(void)
 
 void uart_putc(char c)
 {
+	c &= 127;
 #ifdef __riscv
 	// wait for FIFO to be available
 	while (!(*UART_CONTROL & 0xffff0000));
@@ -54,28 +55,31 @@ void uart_printf(const char *fmt, ...)
 		char c = *fmt;
 		switch (c)
 		{
-		case '\\':
-			fmt++;
-			switch (c)
-			{
-			case 0:
-				uart_putc('\\');
-				return;
-			case 'n':
-				uart_putc('\n');
-				break;
-			case 't':
-				uart_putc('\t');
-				break;
-			case 'r':
-				uart_putc('\r');
-				break;
-			default:
-				uart_putc('\\');
-				uart_putc(c);
-				break;
-			}
-			break;
+		// case '\\':
+		// 	fmt++;
+		// 	switch (c)
+		// 	{
+		// 	case 0:
+		// 		uart_putc('\\');
+		// 		return;
+		// 	case '\\':
+		// 		uart_putc('\\');
+		// 		break;
+		// 	case 'n':
+		// 		uart_putc('\n');
+		// 		break;
+		// 	case 't':
+		// 		uart_putc('\t');
+		// 		break;
+		// 	case 'r':
+		// 		uart_putc('\r');
+		// 		break;
+		// 	default:
+		// 		uart_putc('\\');
+		// 		uart_putc(c);
+		// 		break;
+		// 	}
+		// 	break;
 		case '%':
 			fmt++;
 			c = *fmt;
@@ -145,6 +149,9 @@ void uart_printf(const char *fmt, ...)
 				}
 				break;
 			}
+			case '%':
+				uart_putc('%');
+				break;
 			default:
 				uart_putc(c);
 				break;

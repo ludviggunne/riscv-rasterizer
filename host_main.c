@@ -546,6 +546,7 @@ int main(int argc, char *argv[])
 	uart_printf("hello, the number forty-three is %d!\n", 43);
 	uart_printf("main is at %p, in case you were wondering.\nargc is %d.\n", main, argc);
 	uart_printf("QPI is %q, and thats %s.\n", QPI, "pretty good");
+	uart_printf("this is a backslash: \\, and this is a precent sign: %%.\n");
 
 	for (qval_t i = QVAL(0); i < QVAL(256); i++)
 	{
