@@ -15,7 +15,7 @@ SECTIONS
 
 	.data		: { *(.data .data.* .gnu.linkonce.d.*) }
 
-	HIDDEN (_gp = ALIGN (16) + 0x7F0) ;
+	__global_pointer$ = ALIGN (16) + 0x7F0 ;
 	.sdata		: { *(.sdata .sdata.* .gnu.linkonce.s.*) }
 
 	. = ALIGN (4) ;

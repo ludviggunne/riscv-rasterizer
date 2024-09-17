@@ -21,10 +21,10 @@ _reset:
 	la	sp, _stack_top
 
 	/* initialize global pointer */
-	la	gp, _gp
+	la	gp, __global_pointer$
 
-	/* jump to main */
+	/* jump to program entry */
 	jal	_start
 
 	/* stop */
-	j	_stop
+	jal	_stop
