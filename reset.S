@@ -1,6 +1,12 @@
 	.text
 	.globl	_reset
 _reset:
+	/* initialize global pointer */
+	.option	push
+	.option	norelax
+	la	gp, __global_pointer$
+	.option	pop
+
 	/* enable interrupts */
 	li	t1, -1
 	csrw	mie, t1
@@ -19,9 +25,6 @@ _reset:
 
 	/* initialize stack */
 	la	sp, _stack_top
-
-	/* initialize global pointer */
-	la	gp, __global_pointer$
 
 	/* jump to program entry */
 	jal	_start
