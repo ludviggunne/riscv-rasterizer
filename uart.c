@@ -124,10 +124,12 @@ void uart_printf(const char *fmt, ...)
 				}
 				uart_putc('0');
 				uart_putc('x');;
-				for (size_t i = 0; i < sizeof(void*); i++)
-				{
-					uart_putc(hex[(((size_t)p >> (sizeof(void*) - i - 1)) & 15)]);
-				}
+				size_t i = sizeof(void*) * 8;
+				do {
+					i -= 4;
+					size_t v = ((size_t) p >> i) & 15;
+					uart_putc(hex[v]);
+				} while (i);
 				break;
 			}
 			case 'q':
