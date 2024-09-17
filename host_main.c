@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "qmath.h"
 #include "vmath.h"
+#include "uart.h"
 
 int qprint(qval_t v)
 {
@@ -541,6 +542,10 @@ int main(int argc, char *argv[])
 {
 	float vbad = NAN;
 	float emax = 0;
+
+	uart_printf("hello, the number forty-three is %d!\n", 43);
+	uart_printf("main is at %p, in case you were wondering. argc is %d.\n", main, argc);
+	uart_printf("QPI is %q, and thats %s.\n", QPI, "pretty good");
 
 	for (qval_t i = QVAL(0); i < QVAL(256); i++)
 	{

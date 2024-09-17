@@ -21,7 +21,7 @@ rast_host: LDLIBS += -lfreeglut -lopengl32 -lglew32
 else
 rast_host: LDLIBS += -lglut -lGL -lGLEW -lm
 endif
-rast_host: host_main.c qmath.c vmath.c
+rast_host: host_main.c qmath.c vmath.c uart.c
 
 tri2c: tri2c.c
 

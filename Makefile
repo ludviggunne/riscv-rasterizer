@@ -17,7 +17,7 @@ clean: clean-host
 	rm -f rast.elf rast.bin
 	$(MAKE) -f Makefile.host $(@)
 
-rast.elf: display.c main.c mvec.S qmath.c reset.S stack.S start.S stop.S trap.S
+rast.elf: uart.c display.c main.c mvec.S qmath.c reset.S stack.S start.S stop.S trap.S
 	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)
 
 rast.bin: rast.elf
