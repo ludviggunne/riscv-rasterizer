@@ -75,6 +75,7 @@ void uart_printf(const char *fmt, ...)
 				uart_putc(c);
 				break;
 			}
+			break;
 		case '%':
 			fmt++;
 			c = *fmt;
