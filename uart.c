@@ -15,7 +15,7 @@
 #define UART_CONTROL ((volatile int *) 0x04000044)
 
 static int is_init = 0;
-static const char hex[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', };
+static const char hex[] = "012345678abcdef";
 
 void uart_init(void)
 {
@@ -54,6 +54,27 @@ void uart_printf(const char *fmt, ...)
 		char c = *fmt;
 		switch (c)
 		{
+		case '\\':
+			fmt++;
+			switch (c)
+			{
+			case 0:
+				uart_putc('\\');
+				return;
+			case 'n':
+				uart_putc('\n');
+				break;
+			case 't':
+				uart_putc('\t');
+				break;
+			case 'r':
+				uart_putc('\r');
+				break;
+			default:
+				uart_putc('\\');
+				uart_putc(c);
+				break;
+			}
 		case '%':
 			fmt++;
 			c = *fmt;
