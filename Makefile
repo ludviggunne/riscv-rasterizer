@@ -1,4 +1,5 @@
-PROGRAM_PREFIX	:= $(shell for i in riscv32-unknown-elf- riscv64-linux-gnu-; do if which $${i}gcc >/dev/null 2>&1; then echo $${i}; break; fi done)
+TARGET_TOOLS	= riscv32-unknown-elf- riscv64-unknown-elf- riscv64-linux-gnu-
+PROGRAM_PREFIX	:= $(shell for i in $(TARGET_TOOLS); do if which $${i}gcc >/dev/null 2>&1; then echo $${i}; break; fi done)
 CC 		= $(PROGRAM_PREFIX)gcc
 OBJDUMP		= $(PROGRAM_PREFIX)objdump
 OBJCOPY		= $(PROGRAM_PREFIX)objcopy
