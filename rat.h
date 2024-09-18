@@ -2,15 +2,14 @@
  * Generated with obj2c.c from rat.obj on 2024-09-18
  */
 
-#ifndef rat_H_INCLUDED
-#define rat_H_INCLUDED
+#ifndef RAT_H_INCLUDED
+#define RAT_H_INCLUDED
 
 #include "model.h"
 
-
 extern model_t rat_model;
 
-#ifdef rat_IMPL
+#ifdef RAT_IMPL
 
 static const vec_t verts[435] = {
 	VEC(460, 123, 1226),

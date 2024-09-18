@@ -64,6 +64,11 @@ int main(int argc, char **argv)
 
 	const char *fname = argv[1];
 	const char *mname = argv[2];
+	char *ucname = strdup(mname);
+	for (char *ptr = ucname; *ptr; ptr++)
+	{
+		*ptr = toupper(*ptr);
+	}
 
 	FILE *infile = fopen(fname, "r");
 	if (!infile)
@@ -138,7 +143,7 @@ int main(int argc, char **argv)
 			ny /= l;
 			nz /= l;
 
-			list_push(&faces, (value_t) { .i = norms.size });
+			list_push(&faces, (value_t) { .i = norms.size  / 3});
 			list_push(&norms, (value_t) { .f = nx });
 			list_push(&norms, (value_t) { .f = ny });
 			list_push(&norms, (value_t) { .f = nz });
@@ -155,14 +160,14 @@ int main(int argc, char **argv)
 	       __FILE__, fname,  tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
 	printf(" */\n");
 	printf("\n");
-	printf("#ifndef %s_H_INCLUDED\n", mname);
-	printf("#define %s_H_INCLUDED\n", mname);
+	printf("#ifndef %s_H_INCLUDED\n", ucname);
+	printf("#define %s_H_INCLUDED\n", ucname);
 	printf("\n");
-	printf("#include \"model.h\"\n\n");
+	printf("#include \"model.h\"\n");
 	printf("\n");
 	printf("extern model_t %s_model;\n", mname);
 	printf("\n");
-	printf("#ifdef %s_IMPL\n", mname);
+	printf("#ifdef %s_IMPL\n", ucname);
 	printf("\n");
 	printf("static const vec_t verts[%zu] = {\n", verts.size / 3);
 	for (size_t i = 0; i < verts.size; i += 3)
