@@ -29,7 +29,7 @@ static void display_qval(qval_t v)
 	}
 }
 
-#define MODEL			2
+#define MODEL			5
 #define WIDTH			320
 #define HEIGHT			240
 
@@ -57,8 +57,12 @@ static qval_t mdl_y = QZERO;
 static qval_t mdl_s = QVAL(1);
 #elif MODEL == 1
 static qval_t mdl_s = QVAL(8);
-#elif MODEL == 2
-static qval_t mdl_s = QVAL(2);
+#elif MODEL == 2 || MODEL == 3
+static qval_t mdl_s = QVAL(1);
+#elif MODEL == 4
+static qval_t mdl_s = QVAL(0.01);
+#elif MODEL == 5
+static qval_t mdl_s = QVAL(0.05);
 #endif
 static vec_t mdl_xlat = { QVAL(0), QVAL(0), QVAL(25) };
 
@@ -355,10 +359,23 @@ static void draw_tri(tri_t *t)
 }
 
 #if MODEL == 1
-#include "teapot.c"
+# include "teapot.c"
 #elif MODEL == 2
-#define RAT_IMPL
-#include "rat.h"
+# define RAT_IMPL
+# include "rat.h"
+static const model_t *mdl = &rat_model;
+#elif MODEL == 3
+# define RAT_LOFI_IMPL
+# include "rat_lofi.h"
+static const model_t *mdl = &rat_lofi_model;
+#elif MODEL == 4
+# define MODERN_IMPL
+# include "modern.h"
+static const model_t *mdl = &modern_model;
+#elif MODEL == 5
+# define TORUS_IMPL
+# include "torus.h"
+static const model_t *mdl = &torus_model;
 #endif
 
 static void display_func(void)
@@ -462,14 +479,14 @@ static void display_func(void)
 		xfm_tri(&t);
 		draw_tri(&t);
 	}
-#elif MODEL == 2
-	for (int i = 0; i < rat_model.nfaces; i++)
+#elif MODEL >= 2
+	for (int i = 0; i < mdl->nfaces; i++)
 	{
 		tri_t t =
 		{
-			rat_model.verts[rat_model.faces[i].v0],
-			rat_model.verts[rat_model.faces[i].v1],
-			rat_model.verts[rat_model.faces[i].v2],
+			mdl->verts[mdl->faces[i].v0],
+			mdl->verts[mdl->faces[i].v1],
+			mdl->verts[mdl->faces[i].v2],
 		};
 		xfm_tri(&t);
 		draw_tri(&t);
