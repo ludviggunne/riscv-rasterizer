@@ -192,7 +192,7 @@ int main(int argc, char **argv)
 	printf("static const face_t faces[%zu] = {\n", faces.size / 4);
 	for (size_t i = 0; i < faces.size; i += 4)
 	{
-		printf("\t(face_t) { .v1 = %zu, .v2 = %zu, .v3 = %zu, .n = %zu },\n",
+		printf("\t(face_t) { .v0 = %zu, .v1 = %zu, .v2 = %zu, .n = %zu },\n",
 		       faces.data[i + 0].i,
 		       faces.data[i + 1].i,
 		       faces.data[i + 2].i,
