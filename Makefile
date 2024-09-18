@@ -32,5 +32,5 @@ clean-host:
 
 .PHONY: rast_host tri2c
 
-rast_host tri2c:
+rast_host tri2c obj2c:
 	$(MAKE) -f Makefile.host $(@)
