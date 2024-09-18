@@ -106,9 +106,9 @@ int main(int argc, char **argv)
 			strcpy(buf2, strtok(NULL, " "));
 			strcpy(buf3, strtok(NULL, " "));
 
-			size_t v1 = atoll(strtok(buf1, "/"));
-			size_t v2 = atoll(strtok(buf2, "/"));
-			size_t v3 = atoll(strtok(buf3, "/"));
+			size_t v1 = atoll(strtok(buf1, "/")) - 1;
+			size_t v2 = atoll(strtok(buf2, "/")) - 1;
+			size_t v3 = atoll(strtok(buf3, "/")) - 1;
 
 			list_push(&faces, (value_t) { .i = v1 });
 			list_push(&faces, (value_t) { .i = v2 });
