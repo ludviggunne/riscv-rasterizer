@@ -26,9 +26,10 @@ int qprintln(qval_t v)
 	return n + 1;
 }
 
-#define WIDTH	320
-#define HEIGHT	240
-#define SCALE	4
+#define MODEL		2
+#define WIDTH		320
+#define HEIGHT		240
+#define SCALE		4
 
 static GLuint		fbo;
 static GLuint		tex;
@@ -46,7 +47,13 @@ typedef struct
 static qval_t mdl_r = QZERO;
 static qval_t mdl_p = QZERO;
 static qval_t mdl_y = QZERO;
-static qval_t mdl_s = QVAL(5);
+#if MODEL == 0
+static qval_t mdl_s = QVAL(1);
+#elif MODEL == 1
+static qval_t mdl_s = QVAL(8);
+#elif MODEL == 2
+static qval_t mdl_s = QVAL(1);
+#endif
 static vec_t mdl_xlat = { QVAL(0), QVAL(0), QVAL(25) };
 
 static void xfm_vtx(vec_t *v)
@@ -336,7 +343,13 @@ static void draw_tri(tri_t *t)
 	}
 }
 
+#if MODEL == 1
 #include "teapot.c"
+#elif MODEL == 2
+#define RAT_IMPL
+#include "rat.h"
+#endif
+
 static void display_func(void)
 {
 	for (int i = 0; i < sizeof(cb) / sizeof*(cb); i++)
@@ -349,7 +362,7 @@ static void display_func(void)
 		zb[i] = QMAX;
 	}
 
-#if 0
+#if MODEL == 0
 	tri_t tris[] =
 	{
 		/* Front */
@@ -358,7 +371,6 @@ static void display_func(void)
 			VEC(QVAL( 10), QVAL( 10), QVAL(-10)),
 			VEC(QVAL( 10), QVAL(-10), QVAL(-10)),
 		},
-#if 1
 		{
 			VEC(QVAL(-10), QVAL( 10), QVAL(-10)),
 			VEC(QVAL( 10), QVAL(-10), QVAL(-10)),
@@ -419,7 +431,6 @@ static void display_func(void)
 			VEC(QVAL( 10), QVAL(-10), QVAL( 10)),
 			VEC(QVAL(-10), QVAL(-10), QVAL( 10)),
 		},
-#endif
 	};
 
 	for (int i = 0; i < sizeof(tris) / sizeof*(tris); i++)
@@ -428,7 +439,7 @@ static void display_func(void)
 		xfm_tri(t);
 		draw_tri(t);
 	}
-#else
+#elif MODEL == 1
 	for (int i = 0; i < sizeof(teapot) / sizeof*(teapot); i += 3)
 	{
 		tri_t t =
@@ -436,6 +447,18 @@ static void display_func(void)
 			teapot[i + 0],
 			teapot[i + 1],
 			teapot[i + 2],
+		};
+		xfm_tri(&t);
+		draw_tri(&t);
+	}
+#elif MODEL == 2
+	for (int i = 0; i < rat_model.nfaces; i++)
+	{
+		tri_t t =
+		{
+			rat_model.verts[rat_model.faces[i].v0],
+			rat_model.verts[rat_model.faces[i].v1],
+			rat_model.verts[rat_model.faces[i].v2],
 		};
 		xfm_tri(&t);
 		draw_tri(&t);

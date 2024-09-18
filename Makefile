@@ -5,10 +5,10 @@ OBJDUMP		= $(PROGRAM_PREFIX)objdump
 OBJCOPY		= $(PROGRAM_PREFIX)objcopy
 MACHFLAGS	= -mabi=ilp32 -march=rv32imzicsr
 ASFLAGS		= $(MACHFLAGS)
-CFLAGS		= $(MACHFLAGS) -fno-pic -Os -g -Wall
+CFLAGS		= $(MACHFLAGS) -fno-pic -g -Wall -O3 -flto -fuse-linker-plugin
 LDSCRIPT	= link.ld
-LDFLAGS		= -T $(LDSCRIPT) -nostdlib -Wl,-no-pie,--build-id=none,--no-warn-rwx-segments
-LDLIBS		=
+LDFLAGS		= -T $(LDSCRIPT) -L. -nostdlib -Wl,-no-pie,--build-id=none,--no-warn-rwx-segments
+LDLIBS		= -ldtekv
 
 .PHONY: all clean all-host clean-host
 
@@ -18,7 +18,7 @@ clean: clean-host
 	rm -f rast.elf rast.bin
 	$(MAKE) -f Makefile.host $(@)
 
-rast.elf: display.c main.c mvec.S qmath.c reset.S stack.S start.S stop.S trap.S uart.c
+rast.elf: display.c main.c mvec.S qmath.c reset.S stack.S start.S stop.S trap.S uart.c vmath.c
 	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)
 
 rast.bin: rast.elf
