@@ -15,13 +15,13 @@ typedef struct {
 
 typedef struct {
 	// Vertices
-	vec_t *verts;
+	const vec_t *verts;
 	size_t nverts;
 	// Normals
-	vec_t *norms;
+	const vec_t *norms;
 	size_t nnorms;
 	// Faces
-	face_t *faces;
+	const face_t *faces;
 	size_t nfaces;
 } model_t;
 
