@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <time.h>
 
+#include "getline.c"
+
 #include "qmath.h"
 
 #ifdef __riscv

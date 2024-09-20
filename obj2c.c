@@ -10,6 +10,8 @@
 #include <time.h>
 #include <string.h>
 
+#include "getline.c"
+
 #include "model.h"
 
 const char *argv0 = NULL;

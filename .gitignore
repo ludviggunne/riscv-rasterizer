@@ -1,6 +1,8 @@
 rast.elf
 rast.bin
 rast_host
+rast_host.exe
 tri2c
-qmath_host
+tri2c.exe
 obj2c
+obj2c.exe
