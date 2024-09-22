@@ -26,4 +26,3 @@ _trap:
 	.bss
 _trap_ctxt:
 	.fill	0x80
-

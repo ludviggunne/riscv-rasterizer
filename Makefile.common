@@ -1,0 +1,53 @@
+HOST_BUILDDIR	= build/host/
+TRI2C		= $(HOST_BUILDDIR)tri2c
+OBJ2C		= $(HOST_BUILDDIR)obj2c
+BUILDDIR	= build/
+ALL		= $(BUILDDIR)modern.h \
+			$(BUILDDIR)rat.h \
+			$(BUILDDIR)rat_lofi.h \
+			$(BUILDDIR)teapot.c  \
+			$(BUILDDIR)torus.h
+
+.PHONY: all clean $(TRI2C) $(OBJ2C)
+
+all: $(ALL)
+
+clean:
+	rm -f $(ALL)
+
+$(TRI2C) $(OBJ2C):
+	$(MAKE) -f Makefile.host $(@)
+
+$(BUILDDIR):
+	mkdir -p $(@)
+
+$(BUILDDIR)modern.h: res/modern.obj
+$(BUILDDIR)modern.h: MODEL_NAME = modern
+
+$(BUILDDIR)rat.h: res/rat.obj
+$(BUILDDIR)rat.h: MODEL_NAME = rat
+
+$(BUILDDIR)rat_lofi.h: res/rat_lofi.obj
+$(BUILDDIR)rat_lofi.h: MODEL_NAME = rat_lofi
+
+$(BUILDDIR)torus.h: res/torus.obj
+$(BUILDDIR)torus.h: MODEL_NAME = torus
+
+$(BUILDDIR)modern.h \
+$(BUILDDIR)rat.h \
+$(BUILDDIR)rat_lofi.h \
+$(BUILDDIR)torus.h: $(OBJ2C)
+
+$(BUILDDIR)modern.h \
+$(BUILDDIR)rat.h \
+$(BUILDDIR)rat_lofi.h \
+$(BUILDDIR)torus.h:
+	$(OBJ2C) $(<) $(MODEL_NAME) >$(@)
+
+$(BUILDDIR)teapot.c: res/teapot_bezier0.tris
+$(BUILDDIR)teapot.c: MODEL_NAME = teapot
+
+$(BUILDDIR)teapot.c: $(TRI2C)
+
+$(BUILDDIR)teapot.c:
+	$(TRI2C) $(<) $(MODEL_NAME) >$(@)

@@ -7,10 +7,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
+#include <qmath.h>
 
 #include "getline.c"
-
-#include "qmath.h"
 
 #ifdef __riscv
 #error what r u doin
@@ -67,7 +66,7 @@ int main(int argc, char **argv)
 		fprintf(outfile, " * Additional comment: %s\n", comment);
 	}
 	fprintf(outfile, " */\n\n");
-	fprintf(outfile, "#include \"vmath.h\"\n\n");
+	fprintf(outfile, "#include <vmath.h>\n\n");
 
 	if (getline(&line, &size, file) < 0)
 	{

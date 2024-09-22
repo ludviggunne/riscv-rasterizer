@@ -9,10 +9,9 @@
 #include <math.h>
 #include <time.h>
 #include <string.h>
+#include <model.h>
 
 #include "getline.c"
-
-#include "model.h"
 
 const char *argv0 = NULL;
 
@@ -165,7 +164,7 @@ int main(int argc, char **argv)
 	printf("#ifndef %s_H_INCLUDED\n", ucname);
 	printf("#define %s_H_INCLUDED\n", ucname);
 	printf("\n");
-	printf("#include \"model.h\"\n");
+	printf("#include <model.h>\n");
 	printf("\n");
 	printf("extern model_t %s_model;\n", mname);
 	printf("\n");

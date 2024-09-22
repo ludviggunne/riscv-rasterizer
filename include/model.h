@@ -1,8 +1,8 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include "vmath.h"
 #include <stddef.h>
+#include <vmath.h>
 
 typedef struct {
 	// Verticex indices

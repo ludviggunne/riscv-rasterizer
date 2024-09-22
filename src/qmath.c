@@ -1,4 +1,5 @@
-#include "qmath.h"
+#include <stddef.h>
+#include <qmath.h>
 
 qval_t qadd(qval_t a, qval_t b)
 {
@@ -121,58 +122,103 @@ qval_t qsqrt(qval_t v)
 
 #include "qsintbl.c"
 
-static qval_t qsin_s(int v)
+void qsincos_s(int v, qval_t *sptr, qval_t *cptr)
 {
-	qval_t r;
-	int s = 0;
+	int	s_sgn = 0;
+	int	c_sgn = 0;
+	qval_t	r;
 
 	v = v & 0x3FFFF;
 
 	if (v >= 0x20000)
 	{
 		v = v - 0x20000;
-		s = !s;
+		s_sgn = !s_sgn;
+		c_sgn = !c_sgn;
 	}
 
 	if (v >= 0x10000)
 	{
 		v = 0x20000 - v;
+		c_sgn = !c_sgn;
 	}
 
-	if (v >= 0x0FF5E)
+	if (sptr != NULL)
 	{
-		r = QONE;
-	}
-	else
-	{
-		r = qsintbl[v];
+		if (v >= sizeof(qsintbl) / sizeof*(qsintbl))
+		{
+			r = QONE;
+		}
+		else
+		{
+			r = qsintbl[v];
+		}
+
+		if (s_sgn)
+		{
+			*sptr = -r;
+		}
+		else
+		{
+			*sptr = r;
+		}
 	}
 
-	if (s)
+	if (cptr != NULL)
 	{
-		return -r;
-	}
-	else
-	{
-		return r;
+		v = 0x10000 - v;
+
+		if (v >= sizeof(qsintbl) / sizeof*(qsintbl))
+		{
+			r = QONE;
+		}
+		else
+		{
+			r = qsintbl[v];
+		}
+
+		if (c_sgn)
+		{
+			*cptr = -r;
+		}
+		else
+		{
+			*cptr = r;
+		}
 	}
 }
 
-#define RAD_MUL 0.636619772367
+void qsincos(qval_t v, qval_t *sptr, qval_t *cptr)
+{
+	return qsincos_s(qmul(v, QVAL(0.636619772367)), sptr, cptr);
+}
 
 qval_t qsin(qval_t v)
 {
-	return qsin_s(qmul(v, QVAL(RAD_MUL)));
+	qval_t s;
+
+	qsincos(v, &s, NULL);
+
+	return s;
 }
 
 qval_t qcos(qval_t v)
 {
-	return qsin_s(qmul(v, QVAL(RAD_MUL)) + 0x10000);
+	qval_t c;
+
+	qsincos(v, NULL, &c);
+
+	return c;
 }
 
 qval_t qtan(qval_t v)
 {
-	return qdiv(qsin(v), qcos(v));
+	qval_t s;
+	qval_t c;
+
+	qsincos_s(v, &s, &c);
+
+	return qdiv(s, c);
 }
 
 int qsnprint(qval_t v, char *buf, int len)

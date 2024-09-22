@@ -21,14 +21,16 @@ typedef unsigned int	quval_t;
 #define QPI	QVAL(3.14159265358979323846)
 #define QMAX	0x7FFFFFFF;
 
-qval_t qadd(qval_t a, qval_t b);
-qval_t qsub(qval_t a, qval_t b);
-qval_t qmul(qval_t a, qval_t b);
-qval_t qdiv(qval_t a, qval_t b);
-qval_t qsqrt(qval_t v);
-qval_t qsin(qval_t v);
-qval_t qcos(qval_t v);
-qval_t qtan(qval_t v);
+qval_t  qadd(qval_t a, qval_t b);
+qval_t  qsub(qval_t a, qval_t b);
+qval_t  qmul(qval_t a, qval_t b);
+qval_t  qdiv(qval_t a, qval_t b);
+qval_t  qsqrt(qval_t v);
+void    qsincos_s(int v, qval_t *sptr, qval_t *cptr);
+void    qsincos(qval_t v, qval_t *sptr, qval_t *cptr);
+qval_t  qsin(qval_t v);
+qval_t  qcos(qval_t v);
+qval_t  qtan(qval_t v);
 int qsnprint(qval_t v, char *buf, int len);
 
 #endif

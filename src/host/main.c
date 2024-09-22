@@ -1,47 +1,41 @@
-#include "display.h"
-#include "qmath.h"
-#include "uart.h"
-#include "vmath.h"
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+#include <math.h>
+#include <stdio.h>
+#include <qmath.h>
+#include <uart.h>
+#include <vmath.h>
 
-static void display_qval(qval_t v)
+int qprint(qval_t v)
 {
-	char s[8];
-	int p = 0;
+	char s[32];
+	int n;
 
-	qsnprint(v, s, sizeof(s));
+	n = qsnprint(v, s, sizeof(s));
+	fputs(s, stdout);
 
-	for (int i = 0; i < 6; i++)
-	{
-		if (s[p] == '\0')
-		{
-			display_char(i, ' ');
-		}
-		else if (s[p + 1] == '.')
-		{
-			display_char(i, s[p] | 0x80);
-			p = p + 2;
-		}
-		else
-		{
-			display_char(i, s[p]);
-			p = p + 1;
-		}
-	}
+	return n;
 }
 
-#define MODEL			5
-#define WIDTH			320
-#define HEIGHT			240
+int qprintln(qval_t v)
+{
+	int n = qprint(v);
 
-extern void *volatile		VGA_FRONT;
-extern void *volatile		VGA_BACK;
-extern volatile unsigned	VGA_RES;
-extern volatile unsigned	VGA_STATUS;
-extern unsigned char		VGA_MEM[2][WIDTH * HEIGHT];
+	fputc('\n', stdout);
 
-static int			frame_count;
-static unsigned char		(*cb)[WIDTH * HEIGHT];
-static qval_t			zb[WIDTH * HEIGHT];
+	return n + 1;
+}
+
+#define MODEL		1
+#define WIDTH		320
+#define HEIGHT		240
+#define SCALE		4
+
+static GLuint		fbo;
+static GLuint		tex;
+static unsigned char	cb[WIDTH * HEIGHT * 4];
+static qval_t		zb[WIDTH * HEIGHT];
+static char		keys[256];
 
 typedef struct
 {
@@ -56,7 +50,7 @@ static qval_t mdl_y = QZERO;
 #if MODEL == 0
 static qval_t mdl_s = QVAL(1);
 #elif MODEL == 1
-static qval_t mdl_s = QVAL(8);
+static qval_t mdl_s = QVAL(4);
 #elif MODEL == 2 || MODEL == 3
 static qval_t mdl_s = QVAL(1);
 #elif MODEL == 4
@@ -97,6 +91,7 @@ static void xfm_vtx(vec_t *v)
 		v->y = y;
 		v->z = qadd(qmul( qsin(mdl_y), x), qmul( qcos(mdl_y), z));
 	}
+
 
 	v->x = qadd(qmul(v->x, mdl_s), mdl_xlat.x);
 	v->y = qadd(qmul(v->y, mdl_s), mdl_xlat.y);
@@ -139,8 +134,6 @@ static void draw_span(span_t *s, int c)
 	qval_t rx;
 	qval_t dzdx;
 
-	c = ((c & 0xE0) >> 0) | ((c & 0xE0) >> 3) | ((c & 0xC0) >> 6);
-
 	y = s->y1;
 
 	lx = s->lx;
@@ -153,37 +146,33 @@ static void draw_span(span_t *s, int c)
 	{
 		iy = QTOI(y);
 
-		if (iy >= 0 && iy < HEIGHT)
+		x = lx & ~0xFFFF;
+		z = lz;
+
+		if (lx != rx)
 		{
-			x = lx & ~0xFFFF;
-			z = lz;
+			dzdx = qdiv(qsub(rz, lz), qsub(rx, lx));
+		}
+		else
+		{
+			dzdx = 0;
+		}
 
-			if (lx != rx)
+		while (x <= rx)
+		{
+			ix = QTOI(x);
+
+			if (z < zb[iy * WIDTH + ix])
 			{
-				dzdx = qdiv(qsub(rz, lz), qsub(rx, lx));
+				zb[iy * WIDTH + ix] = z;
+
+				cb[(iy * WIDTH + ix) * 4 + 0] = c;
+				cb[(iy * WIDTH + ix) * 4 + 1] = c;
+				cb[(iy * WIDTH + ix) * 4 + 2] = c;
 			}
-			else
-			{
-				dzdx = 0;
-			}
 
-			while (x <= rx)
-			{
-				ix = QTOI(x);
-
-				if (ix >= 0 && ix < WIDTH)
-				{
-					if (z < zb[iy * WIDTH + ix])
-					{
-						zb[iy * WIDTH + ix] = z;
-
-						(*cb)[iy * WIDTH + ix] = c;
-					}
-				}
-
-				x = qadd(x, QONE);
-				z = qadd(z, dzdx);
-			}
+			x = qadd(x, QONE);
+			z = qadd(z, dzdx);
 		}
 
 		y = qadd(y, QONE);
@@ -359,30 +348,30 @@ static void draw_tri(tri_t *t)
 }
 
 #if MODEL == 1
-# include "teapot.c"
+# include <teapot.c>
 #elif MODEL == 2
 # define RAT_IMPL
-# include "rat.h"
+# include <rat.h>
 static const model_t *mdl = &rat_model;
 #elif MODEL == 3
 # define RAT_LOFI_IMPL
-# include "rat_lofi.h"
+# include <rat_lofi.h>
 static const model_t *mdl = &rat_lofi_model;
 #elif MODEL == 4
 # define MODERN_IMPL
-# include "modern.h"
+# include <modern.h>
 static const model_t *mdl = &modern_model;
 #elif MODEL == 5
 # define TORUS_IMPL
-# include "torus.h"
+# include <torus.h>
 static const model_t *mdl = &torus_model;
 #endif
 
 static void display_func(void)
 {
-	for (int i = 0; i < sizeof(*cb) / sizeof*(*cb); i++)
+	for (int i = 0; i < sizeof(cb) / sizeof*(cb); i++)
 	{
-		__asm__ ("sb zero, %0;" : "=m"((*cb)[i]));
+		cb[i] = 0;
 	}
 
 	for (int i = 0; i < sizeof(zb) / sizeof*(zb); i++)
@@ -493,46 +482,126 @@ static void display_func(void)
 	}
 #endif
 
-	mdl_y = qadd(mdl_y, QVAL( 0.02));
-	mdl_p = qadd(mdl_p, QVAL( 0.02));
+	if (keys[GLUT_KEY_LEFT])
+	{
+		mdl_y = qadd(mdl_y, QVAL(-0.02));
+	}
+	if (keys[GLUT_KEY_RIGHT])
+	{
+		mdl_y = qadd(mdl_y, QVAL( 0.02));
+	}
+	if (keys[GLUT_KEY_UP])
+	{
+		mdl_p = qadd(mdl_p, QVAL( 0.02));
+	}
+	if (keys[GLUT_KEY_DOWN])
+	{
+		mdl_p = qadd(mdl_p, QVAL(-0.02));
+	}
 
 	{
-		while (VGA_STATUS & 1)
-		{
-		}
+		glBindTexture(GL_TEXTURE_2D, tex);
+		glTexImage2D(	GL_TEXTURE_2D, 0, GL_RGB,
+				WIDTH, HEIGHT, 0, GL_BGRA, GL_UNSIGNED_BYTE,
+				cb);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+		glFramebufferTexture2D(	GL_READ_FRAMEBUFFER,
+					GL_COLOR_ATTACHMENT0,
+					GL_TEXTURE_2D, tex, 0);
+		glBlitFramebuffer(	0, 0, WIDTH, HEIGHT,
+					0, 0, WIDTH * SCALE, HEIGHT * SCALE,
+					GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 
-		VGA_BACK = cb;
-		VGA_FRONT = cb;
-
-		cb = &VGA_MEM[frame_count++ & 1];
+		glutSwapBuffers();
+		glutPostRedisplay();
 	}
+}
+
+static void keyboard_func(unsigned char key, int x, int y)
+{
+	if (key >= 'a' && key <= 'z')
+	{
+		key = key + ('A' - 'a');
+	}
+
+	keys[key] = 1;
+
+	if (key == 27)
+	{
+		glutLeaveMainLoop();
+	}
+}
+
+static void keyboard_up_func(unsigned char key, int x, int y)
+{
+	if (key >= 'a' && key <= 'z')
+	{
+		key = key + ('A' - 'a');
+	}
+
+	keys[key] = 0;
+}
+
+static void special_func(int key, int x, int y)
+{
+	keys[key] = 1;
+}
+
+static void special_up_func(int key, int x, int y)
+{
+	keys[key] = 0;
 }
 
 static void rast_main(int argc, char *argv[])
 {
-	cb = &VGA_MEM[1];
+	glutInit(&argc, argv);
 
-	for (;;)
-	{
-		display_func();
-	}
+	glutSetOption(	GLUT_ACTION_ON_WINDOW_CLOSE,
+			GLUT_ACTION_CONTINUE_EXECUTION);
+
+	glutInitWindowSize(WIDTH * SCALE, HEIGHT * SCALE);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+	glutCreateWindow("");
+
+	glewInit();
+
+	glGenTextures(1, &tex);
+	glGenFramebuffers(1, &fbo);
+
+	glutDisplayFunc(display_func);
+	glutKeyboardFunc(keyboard_func);
+	glutKeyboardUpFunc(keyboard_up_func);
+	glutSpecialFunc(special_func);
+	glutSpecialUpFunc(special_up_func);
+
+	glutMainLoop();
 }
-
 
 int main(int argc, char *argv[])
 {
-#if 1
-	/* enable button interrupt */
-	*(volatile int *)0x040000d8 = -1;
-	/* enable button edge trigger */
-	*(volatile int *)0x040000dc = -1;
-#endif
+	float vbad = NAN;
+	float emax = 0;
 
-	uart_init();
 	uart_printf("hello, the number forty-three is %d!\n", 43);
 	uart_printf("main is at %p, in case you were wondering.\nargc is %d.\n", main, argc);
 	uart_printf("QPI is %q, and thats %s.\n", QPI, "pretty good");
 	uart_printf("this is a backslash: \\, and this is a precent sign: %%.\n");
+
+	for (qval_t i = QVAL(0); i < QVAL(256); i++)
+	{
+		qval_t q = qsqrt(i);
+		float f = sqrtf(QTOF(i));
+		float e = QTOF(q) - f;
+
+		if (fabsf(e) > fabsf(emax))
+		{
+			vbad = QTOF(i);
+			emax = e;
+		}
+	}
+
+	printf("largest error: %+g (for input %g)\n", emax, vbad);
 
 	{
 		qval_t f = QVAL(1);
@@ -544,7 +613,7 @@ int main(int argc, char *argv[])
 			f = qmul(f, QINT(i));
 		}
 
-		display_qval(v);
+		qprintln(v);
 	}
 
 	rast_main(argc, argv);

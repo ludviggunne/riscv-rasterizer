@@ -3,29 +3,37 @@ CC 		= $(PROGRAM_PREFIX)gcc
 OBJDUMP		= $(PROGRAM_PREFIX)objdump
 OBJCOPY		= $(PROGRAM_PREFIX)objcopy
 MACHFLAGS	=
+CPPFLAGS	= -Iinclude -Iinclude/host -Ibuild
 ASFLAGS		= $(MACHFLAGS)
 CFLAGS		= $(MACHFLAGS) -Og -g -Wall
 LDSCRIPT	=
-LDFLAGS		= -lm
+LDFLAGS		= -Llib -Llib/host
 LDLIBS		=
+BUILDDIR	= build/host/
+RAST		= $(BUILDDIR)rast
+TRI2C		= $(BUILDDIR)tri2c
+OBJ2C		= $(BUILDDIR)obj2c
 
 .PHONY: all clean
 
-all: rast_host tri2c obj2c
+all: $(RAST) $(TRI2C) $(OBJ2C)
 
 clean:
-	rm -f rast_host tri2c obj2c
+	rm -rf $(BUILDDIR)
+
+$(BUILDDIR):
+	mkdir -p $(@)
+
+$(RAST): src/host/main.c src/qmath.c src/vmath.c src/uart.c
+$(TRI2C): src/host/tri2c.c
+$(OBJ2C): src/host/obj2c.c
 
 ifeq ($(shell uname -s | grep -o _NT-),_NT-)
-rast_host: LDLIBS += -lfreeglut -lopengl32 -lglew32
+$(RAST): LDLIBS += -lfreeglut -lopengl32 -lglew32
 else
-rast_host: LDLIBS += -lglut -lGL -lGLEW -lm
+$(RAST): LDLIBS += -lglut -lGL -lGLEW -lm
+$(OBJ2C): LDLIBS += -lm
 endif
-rast_host: host_main.c qmath.c vmath.c uart.c
 
-tri2c: tri2c.c
-
-obj2c: obj2c.c
-
-rast_host tri2c obj2c:
+$(RAST) $(TRI2C) $(OBJ2C): | $(BUILDDIR)
 	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)

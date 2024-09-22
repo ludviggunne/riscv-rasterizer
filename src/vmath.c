@@ -1,4 +1,4 @@
-#include "vmath.h"
+#include <vmath.h>
 
 vec_t vadd(vec_t u, vec_t v)
 {

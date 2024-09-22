@@ -3,13 +3,13 @@
  * Last modified: 2024-09-17
  */
 
-#include "uart.h"
-#include "qmath.h"
 #include <stdarg.h>
 #include <stddef.h>
 #ifndef __riscv
 #include <stdio.h>
 #endif
+#include <qmath.h>
+#include <uart.h>
 
 #define UART_DATA    ((volatile int *) 0x04000040)
 #define UART_CONTROL ((volatile int *) 0x04000044)

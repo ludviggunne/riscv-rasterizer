@@ -1,7 +1,7 @@
 #ifndef VMATH_H
 #define VMATH_H
 
-#include "qmath.h"
+#include <qmath.h>
 
 #define VEC(_x, _y, _z) ((vec_t){.x = (_x), .y = (_y), .z = (_z)})
 
