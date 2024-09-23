@@ -19,7 +19,7 @@ OBJ2C		= $(BUILDDIR)obj2c
 all: $(RAST) $(TRI2C) $(OBJ2C)
 
 clean:
-	rm -rf $(BUILDDIR)
+	rm -f $(RAST) $(TRI2C) $(OBJ2C)
 
 $(BUILDDIR):
 	mkdir -p $(@)
