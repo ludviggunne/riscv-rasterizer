@@ -13,24 +13,24 @@ typedef unsigned int	quval_t;
 #define QVAL(v)	((qval_t) ((v) * (1 << QFBITS) + 0.5))
 #define QINT(v)	((qval_t) ((v) << QFBITS))
 
-#define QTOI(v) ((int) (v) >> QFBITS)
-#define QTOF(v) ((float) (v) / (1 << QFBITS))
+#define QTOI(v)	((int) (v) >> QFBITS)
+#define QTOF(v)	((float) (v) / (1 << QFBITS))
 
 #define QZERO	QINT(0)
 #define QONE	QINT(1)
 #define QPI	QVAL(3.14159265358979323846)
 #define QMAX	0x7FFFFFFF;
 
-qval_t  qadd(qval_t a, qval_t b);
-qval_t  qsub(qval_t a, qval_t b);
-qval_t  qmul(qval_t a, qval_t b);
-qval_t  qdiv(qval_t a, qval_t b);
-qval_t  qsqrt(qval_t v);
-void    qsincos_s(int v, qval_t *sptr, qval_t *cptr);
-void    qsincos(qval_t v, qval_t *sptr, qval_t *cptr);
-qval_t  qsin(qval_t v);
-qval_t  qcos(qval_t v);
-qval_t  qtan(qval_t v);
-int qsnprint(qval_t v, char *buf, int len);
+qval_t	qadd(qval_t a, qval_t b);
+qval_t	qsub(qval_t a, qval_t b);
+qval_t	qmul(qval_t a, qval_t b);
+qval_t	qdiv(qval_t a, qval_t b);
+qval_t	qsqrt(qval_t v);
+void	qsincos_s(int v, qval_t *sptr, qval_t *cptr);
+void	qsincos(qval_t v, qval_t *sptr, qval_t *cptr);
+qval_t	qsin(qval_t v);
+qval_t	qcos(qval_t v);
+qval_t	qtan(qval_t v);
+int	qsnprint(qval_t v, char *buf, int len);
 
 #endif

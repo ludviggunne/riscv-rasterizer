@@ -16,18 +16,8 @@ qval_t qmul(qval_t a, qval_t b)
 #ifdef __riscv
 	unsigned hi;
 	unsigned lo;
-	__asm__
-	(
-		"mulh %0, %1, %2;" :
-		"=r"(hi) :
-		"r"(a), "r"(b)
-	);
-	__asm__
-	(
-		"mul %0, %1, %2;" :
-		"=r"(lo) :
-		"r"(a), "r"(b)
-	);
+	__asm__ ("mulh %0, %1, %2;" : "=r"(hi) : "r"(a), "r"(b));
+	__asm__ ("mul  %0, %1, %2;" : "=r"(lo) : "r"(a), "r"(b));
 	return (hi << 16) | (lo >> 16);
 #else
 	qval_t hi = ((qlong_t) a * (qlong_t) b) >> QFBITS;
@@ -236,7 +226,7 @@ int qsnprint(qval_t v, char *buf, int len)
 	}
 
 	{
-		int i = v >> QFBITS;
+		qval_t i = v >> QFBITS;
 		char c[8];
 		int m = 0;
 
@@ -265,7 +255,7 @@ int qsnprint(qval_t v, char *buf, int len)
 	}
 
 	{
-		int f = v & QFMASK;
+		qval_t f = v & QFMASK;
 		char c;
 
 		if (f != 0)
