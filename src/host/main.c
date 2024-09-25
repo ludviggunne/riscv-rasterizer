@@ -1,31 +1,11 @@
-#include <GL/glew.h>
-#include <GL/freeglut.h>
 #include <math.h>
 #include <stdio.h>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 #include <model.h>
 #include <qmath.h>
 #include <rast.h>
 #include <uart.h>
-
-int qprint(qval_t v)
-{
-	char s[32];
-	int n;
-
-	n = qsnprint(v, s, sizeof(s));
-	fputs(s, stdout);
-
-	return n;
-}
-
-int qprintln(qval_t v)
-{
-	int n = qprint(v);
-
-	fputc('\n', stdout);
-
-	return n + 1;
-}
 
 #define SCALE		4
 
@@ -166,10 +146,13 @@ int main(int argc, char *argv[])
 	float vbad = NAN;
 	float emax = 0;
 
+	uart_init();
 	uart_printf("hello, the number forty-three is %d!\n", 43);
-	uart_printf("main is at %p, in case you were wondering.\nargc is %d.\n", main, argc);
+	uart_printf("main is at %p, in case you were wondering.\n"
+			"argc is %d.\n", main, argc);
 	uart_printf("QPI is %q, and thats %s.\n", QPI, "pretty good");
-	uart_printf("this is a backslash: \\, and this is a precent sign: %%.\n");
+	uart_printf("this is a backslash: \\, "
+			"and this is a precent sign: %%.\n");
 
 	for (qval_t i = QVAL(0); i < QVAL(256); i++)
 	{
@@ -196,7 +179,7 @@ int main(int argc, char *argv[])
 			f = qmul(f, QINT(i));
 		}
 
-		qprintln(v);
+		uart_printf("%q\n", v);
 	}
 
 	rast_main(argc, argv);
