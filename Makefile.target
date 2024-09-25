@@ -24,10 +24,10 @@ clean:
 $(BUILDDIR):
 	mkdir -p $(@)
 
-$(RAST_ELF): src/target/display.c src/target/main.c src/target/mvec.S \
-	src/qmath.c src/target/reset.S src/target/stack.S \
-	src/target/start.S src/target/stop.S src/target/trap.S \
-	src/uart.c src/vmath.c | $(BUILDDIR)
+$(RAST_ELF): src/target/display.c src/target/main.c src/model.c \
+	src/target/mvec.S src/qmath.c src/rast.c src/target/reset.S \
+	src/target/stack.S src/target/start.S src/target/stop.S \
+	src/target/trap.S src/uart.c src/vmath.c | $(BUILDDIR)
 	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)
 
 $(RAST_BIN): $(RAST_ELF) | $(BUILDDIR)

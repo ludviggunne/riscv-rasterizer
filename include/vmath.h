@@ -10,8 +10,7 @@ typedef struct
 	qval_t x;
 	qval_t y;
 	qval_t z;
-}
-vec_t;
+} vec_t;
 
 vec_t  vadd(vec_t u, vec_t v);
 vec_t  vsub(vec_t u, vec_t v);

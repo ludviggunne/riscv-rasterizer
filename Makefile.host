@@ -24,7 +24,7 @@ clean:
 $(BUILDDIR):
 	mkdir -p $(@)
 
-$(RAST): src/host/main.c src/qmath.c src/vmath.c src/uart.c
+$(RAST): src/host/main.c src/model.c src/rast.c src/qmath.c src/vmath.c src/uart.c
 $(TRI2C): src/host/tri2c.c
 $(OBJ2C): src/host/obj2c.c
 
