@@ -3,6 +3,29 @@
 #include <rast.h>
 #include <vmath.h>
 
+typedef struct
+{
+	vec_t	a;
+	vec_t	b;
+	vec_t	c;
+} tri_t;
+
+typedef struct
+{
+	qval_t	y1;
+	qval_t	y2;
+
+	qval_t	lx;
+	qval_t	ldxdy;
+	qval_t	lz;
+	qval_t	ldzdy;
+
+	qval_t	rx;
+	qval_t	rdxdy;
+	qval_t	rz;
+	qval_t	rdzdy;
+} span_t;
+
 static void xfm_vtx(vec_t *v, xfm_t *xfm)
 {
 	{
@@ -46,22 +69,6 @@ static void xfm_tri(tri_t *t, xfm_t *xfm)
 	xfm_vtx(&t->b, xfm);
 	xfm_vtx(&t->c, xfm);
 }
-
-typedef struct
-{
-	qval_t	y1;
-	qval_t	y2;
-
-	qval_t	lx;
-	qval_t	ldxdy;
-	qval_t	lz;
-	qval_t	ldzdy;
-
-	qval_t	rx;
-	qval_t	rdxdy;
-	qval_t	rz;
-	qval_t	rdzdy;
-} span_t;
 
 static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c)
 {

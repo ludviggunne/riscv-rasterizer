@@ -2,7 +2,7 @@
 #include <qmath.h>
 #include <vmath.h>
 
-#define MODEL	3
+#define MODEL 3
 
 #if MODEL == 0
 # define CUBE_IMPL
