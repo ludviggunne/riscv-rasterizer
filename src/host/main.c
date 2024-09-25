@@ -65,6 +65,14 @@ static void display_func(void)
 	{
 		g_model_xfm.p = qadd(g_model_xfm.p, QVAL(-0.02));
 	}
+	if (keys[','])
+	{
+		g_model_xfm.r = qadd(g_model_xfm.r, QVAL( 0.02));
+	}
+	if (keys['.'])
+	{
+		g_model_xfm.r = qadd(g_model_xfm.r, QVAL(-0.02));
+	}
 	if (keys['+'])
 	{
 		g_model_xfm.s = qadd(g_model_xfm.s, QVAL( 0.1));
