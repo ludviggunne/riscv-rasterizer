@@ -65,6 +65,14 @@ static void display_func(void)
 	{
 		g_model_xfm.p = qadd(g_model_xfm.p, QVAL(-0.02));
 	}
+	if (keys['+'])
+	{
+		g_model_xfm.s = qadd(g_model_xfm.s, QVAL( 0.1));
+	}
+	if (keys['-'])
+	{
+		g_model_xfm.s = qadd(g_model_xfm.s, QVAL(-0.1));
+	}
 
 	{
 		glBindTexture(GL_TEXTURE_2D, tex);
