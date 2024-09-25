@@ -1,7 +1,7 @@
 	.text
 	.globl	_trap
 _trap:
-	csrrw	s0, mscratch, s0
+	csrw	mscratch, s0
 	la	s0, _trap_ctxt
 
 	sw	t0, 0(s0)
@@ -19,8 +19,8 @@ _trap:
 	lw	t0, 0(s0)
 	lw	t1, 4(s0)
 
-	csrrw	s0, mscratch, s0
-	
+	csrr	s0, mscratch
+
 	mret
 
 	.bss
