@@ -3,7 +3,6 @@
 #include <qmath.h>
 #include <rast.h>
 #include <uart.h>
-#include <vmath.h>
 
 static void display_qval(qval_t v)
 {

@@ -6,7 +6,6 @@
 #include <qmath.h>
 #include <rast.h>
 #include <uart.h>
-#include <vmath.h>
 
 int qprint(qval_t v)
 {
