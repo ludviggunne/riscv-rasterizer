@@ -35,6 +35,9 @@ _trap:
 	sw	x30, 112(s0)
 	sw	x31, 116(s0)
 
+	/* initialize stack */
+	la	sp, _trap_stack_top
+
 	/* check cause */
 	csrr	a0, mcause
 	bltz	a0, _interrupt
@@ -91,3 +94,7 @@ _trap_exit:
 	.bss
 _trap_ctxt:
 	.fill	0x80
+
+_trap_stack:
+	.fill	0x1000
+_trap_stack_top:
