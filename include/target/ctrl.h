@@ -3,6 +3,7 @@
 
 #define CLKPIN  0
 #define DATAPIN 1
+#define TRANSFORM_SPEED QVAL(0.01f)
 
 /*
  * Sets up GPIO pins for receiving controller data from Arduino.

@@ -13,7 +13,7 @@ void ctrl_init(void)
 
 void ctrl_recv(void)
 {
-	uint32_t data;
+	unsigned int data;
 
 	data = 0;
 	for (int i = 0; i < 32; i++)
@@ -24,13 +24,16 @@ void ctrl_recv(void)
 		data <<= 1;
 	}
 
-	uint8_t ux = (data >> 8) & 0xff;
-	uint8_t uy = data & 0xff;
-	int8_t x = *(int8_t*)&ux;
-	int8_t y = *(int8_t*)&uy;
+	unsigned char ux = (data >> 8) & 0xff;
+	unsigned char uy = data & 0xff;
+	char x = *(char*)&ux;
+	char y = *(char*)&uy;
 
-	(void)x;
-	(void)y;
+	qval_t qx = QINT(x);
+	qval_t qy = QINT(y);
+
+	g_model_xfm.y += TRANSFORM_SPEED * qx;
+	g_model_xfm.p += TRANSFORM_SPEED * qy;
 }
 
 
