@@ -116,13 +116,6 @@ static void rast_main(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-#if 1
-	/* enable button interrupt */
-	*(volatile int *)0x040000d8 = -1;
-	/* enable button edge trigger */
-	*(volatile int *)0x040000dc = -1;
-#endif
-
 	uart_init();
 	uart_printf("hello, the number forty-three is %d!\n", 43);
 	uart_printf("main is at %p, in case you were wondering.\n"
