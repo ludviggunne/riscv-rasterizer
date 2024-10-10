@@ -95,7 +95,11 @@ static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c)
 
 	while (y <= s->y2)
 	{
+#ifdef __riscv
+		iy = HEIGHT - 1 - QTOI(y);
+#else
 		iy = QTOI(y);
+#endif
 
 		if (iy >= 0 && iy < HEIGHT)
 		{
@@ -120,7 +124,16 @@ static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c)
 					if (z < zb[iy * WIDTH + ix])
 					{
 						zb[iy * WIDTH + ix] = z;
-						cb[iy * WIDTH + ix] = c;
+						if (	((ix + iy) & 1) &&
+							(c & 0x20) &&
+							(c < 0xC0))
+						{
+							cb[iy * WIDTH + ix] = c + 1;
+						}
+						else
+						{
+							cb[iy * WIDTH + ix] = c;
+						}
 					}
 				}
 

@@ -54,8 +54,42 @@ static void display_func(void)
 
 	draw_model(g_model, &g_model_xfm, *cb, zb);
 
-	g_model_xfm.y = qadd(g_model_xfm.y, QVAL( 0.02));
-	g_model_xfm.p = qadd(g_model_xfm.p, QVAL( 0.02));
+	{
+		int sw = *(volatile int *) 0x04000010;
+
+		if (sw & (1 << 0))
+		{
+			g_model_xfm.y = qadd(g_model_xfm.y, QVAL(-0.02));
+		}
+		if (sw & (1 << 1))
+		{
+			g_model_xfm.y = qadd(g_model_xfm.y, QVAL( 0.02));
+		}
+		if (sw & (1 << 2))
+		{
+			g_model_xfm.p = qadd(g_model_xfm.p, QVAL( 0.02));
+		}
+		if (sw & (1 << 3))
+		{
+			g_model_xfm.p = qadd(g_model_xfm.p, QVAL(-0.02));
+		}
+		if (sw & (1 << 4))
+		{
+			g_model_xfm.r = qadd(g_model_xfm.r, QVAL( 0.02));
+		}
+		if (sw & (1 << 5))
+		{
+			g_model_xfm.r = qadd(g_model_xfm.r, QVAL(-0.02));
+		}
+		if (sw & (1 << 6))
+		{
+			g_model_xfm.s = qadd(g_model_xfm.s, QVAL( 0.01));
+		}
+		if (sw & (1 << 7))
+		{
+			g_model_xfm.s = qadd(g_model_xfm.s, QVAL(-0.01));
+		}
+	}
 
 	{
 		while (VGA_STATUS & 1)
