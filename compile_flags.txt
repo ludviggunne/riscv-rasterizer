@@ -1,4 +1,4 @@
 -Iinclude
--Iinclude/target
+-Iinclude/dtekv
 -Iinclude/avr
 -Ibuild

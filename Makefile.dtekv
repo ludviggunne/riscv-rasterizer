@@ -4,13 +4,13 @@ CC 		= $(PROGRAM_PREFIX)gcc
 OBJDUMP		= $(PROGRAM_PREFIX)objdump
 OBJCOPY		= $(PROGRAM_PREFIX)objcopy
 MACHFLAGS	= -mabi=ilp32 -march=rv32imzicsr
-CPPFLAGS	= -Iinclude -Iinclude/target -Ibuild
+CPPFLAGS	= -Iinclude -Iinclude/dtekv -Ibuild
 ASFLAGS		= $(MACHFLAGS)
 CFLAGS		= $(MACHFLAGS) -fno-pic -g -Wall -O3 -flto -fuse-linker-plugin
 LDSCRIPT	= link.ld
-LDFLAGS		= -T $(LDSCRIPT) -Llib -Llib/target -nostdlib -Wl,-no-pie,--build-id=none,--no-warn-rwx-segments
+LDFLAGS		= -T $(LDSCRIPT) -Llib -Llib/dtekv -nostdlib -Wl,-no-pie,--build-id=none,--no-warn-rwx-segments
 LDLIBS		= -ldtekv
-BUILDDIR	= build/target/
+BUILDDIR	= build/dtekv/
 RAST_ELF	= $(BUILDDIR)rast.elf
 RAST_BIN	= $(BUILDDIR)rast.bin
 
@@ -24,10 +24,10 @@ clean:
 $(BUILDDIR):
 	mkdir -p $(@)
 
-$(RAST_ELF): src/target/display.c src/target/main.c src/model.c \
-	src/target/mvec.S src/qmath.c src/rast.c src/target/reset.S \
-	src/target/stack.S src/target/start.S src/target/stop.S \
-	src/target/trap.S src/target/irq.c src/target/ctrl.c \
+$(RAST_ELF): src/dtekv/display.c src/dtekv/main.c src/model.c \
+	src/dtekv/mvec.S src/qmath.c src/rast.c src/dtekv/reset.S \
+	src/dtekv/stack.S src/dtekv/start.S src/dtekv/stop.S \
+	src/dtekv/trap.S src/dtekv/irq.c src/dtekv/ctrl.c \
 	src/uart.c src/vmath.c | $(BUILDDIR)
 	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)
 

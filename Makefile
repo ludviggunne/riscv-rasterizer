@@ -2,12 +2,12 @@ BUILDDIR	= build/
 
 .PHONY: all clean
 
-all: all-common all-host all-target all-avr
+all: all-common all-host all-dtekv all-avr
 
 clean:
 	rm -rf $(BUILDDIR)
 
-.PHONY: all-common clean-common all-host clean-host all-target clean-target
+.PHONY: all-common clean-common all-host clean-host all-dtekv clean-dtekv all-avr clean-avr flash-avr
 
 all-common:
 	$(MAKE) -f Makefile.common all
@@ -21,11 +21,11 @@ all-host: all-common
 clean-host:
 	$(MAKE) -f Makefile.host clean
 
-all-target: all-common
-	$(MAKE) -f Makefile.target all
+all-dtekv: all-common
+	$(MAKE) -f Makefile.dtekv all
 
-clean-target:
-	$(MAKE) -f Makefile.target clean
+clean-dtekv:
+	$(MAKE) -f Makefile.dtekv clean
 
 all-avr: all-common
 	$(MAKE) -f Makefile.avr all
