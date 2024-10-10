@@ -2,7 +2,7 @@ BUILDDIR	= build/
 
 .PHONY: all clean
 
-all: all-common all-host all-target
+all: all-common all-host all-target all-avr
 
 clean:
 	rm -rf $(BUILDDIR)
@@ -26,3 +26,12 @@ all-target: all-common
 
 clean-target:
 	$(MAKE) -f Makefile.target clean
+
+all-avr: all-common
+	$(MAKE) -f Makefile.avr all
+
+clean-avr:
+	$(MAKE) -f Makefile.avr clean
+
+flash-avr:
+	$(MAKE) -f Makefile.avr flash

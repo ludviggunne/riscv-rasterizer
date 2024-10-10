@@ -1,0 +1,28 @@
+PROGRAM_PREFIX=avr-
+CC 			= $(PROGRAM_PREFIX)gcc
+OBJCOPY		= $(PROGRAM_PREFIX)objcopy
+MACHFLAGS	= -mmcu=attiny85
+CFLAGS		= $(MACHFLAGS) -DF_CPU=8000000
+BUILDDIR	= build/avr/
+CTRL_ELF	= $(BUILDDIR)controller.elf
+CTRL_BIN	= $(BUILDDIR)controller.bin
+PORT		?= /dev/ttyUSB0
+
+.PHONY: all clean flash
+
+all: $(CTRL_BIN)
+
+clean:
+	rm -rf $(CTRL_ELF) $(CTRL_BIN)
+
+$(BUILDDIR):
+	mkdir -p $@
+
+$(CTRL_ELF): src/avr/ctrl.c | $(BUILDDIR)
+	$(CC) -o $@ $(CFLAGS) $^
+
+$(CTRL_BIN): $(CTRL_ELF) | $(BUILDDIR)
+	$(OBJCOPY) -SObinary $< $@
+
+flash: $(CTRL_BIN)
+	avrdude -c arduino -p attiny85 -P $(PORT) -U flash:w:$(CTRL_BIN)
