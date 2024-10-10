@@ -7,6 +7,7 @@
 #define CTRL_PIN  2
 #define DTEK_CLK  3
 #define DTEK_DATA 4
+#define LED 5
 
 #define RESET 0xff
 #define POLL 0x01
@@ -59,10 +60,23 @@ void send(uint8_t *data)
 	}
 }
 
-int main(int argc, char **argv)
+void blink(void)
 {
-	(void)argc;
-	(void)argv;
+	PORTB &= ~_BV(LED);
+	DDRB |= _BV(LED);
+
+	for (;;)
+	{
+		PORTB |= _BV(LED);
+		_delay_ms(500);
+		PORTB &= ~_BV(LED);
+		_delay_ms(500);
+	}
+}
+
+int main(void)
+{
+	blink();
 
 	uint8_t recvbuf[4];
 	uint8_t recvbuf_prev[4] = { 0 };
