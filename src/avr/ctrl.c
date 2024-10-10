@@ -22,10 +22,10 @@ void send(uint8_t *data)
 		}
 
 		PORTB |= _BV(DTEK_CLK);
-		_delay_ms(1);
+		_delay_us(10);
 
 		PORTB &= ~_BV(DTEK_CLK);
-		_delay_ms(1);
+		_delay_us(10);
 
 		v >>= 1;
 	}

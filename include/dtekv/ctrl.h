@@ -11,8 +11,8 @@
 void ctrl_init(void);
 
 /*
- * Receives a message from the Arduino board.
- * Should be called on interrupt recei
+ * Receives a message from the Arduino board
+ * and updates model transform.
  */
 void ctrl_recv(void);
 
