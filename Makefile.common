@@ -1,5 +1,4 @@
 HOST_BUILDDIR	= build/host/
-TRI2C		= $(HOST_BUILDDIR)tri2c
 OBJ2C		= $(HOST_BUILDDIR)obj2c
 BUILDDIR	= build/
 ALL		= $(BUILDDIR)cube.h \
@@ -9,14 +8,14 @@ ALL		= $(BUILDDIR)cube.h \
 			$(BUILDDIR)teapot.h  \
 			$(BUILDDIR)torus.h
 
-.PHONY: all clean $(TRI2C) $(OBJ2C)
+.PHONY: all clean $(OBJ2C)
 
 all: $(ALL)
 
 clean:
 	rm -f $(ALL)
 
-$(TRI2C) $(OBJ2C):
+$(OBJ2C):
 	$(MAKE) -f Makefile.host $(@)
 
 $(BUILDDIR):
@@ -54,6 +53,3 @@ $(BUILDDIR)rat_lofi.h \
 $(BUILDDIR)teapot.h \
 $(BUILDDIR)torus.h:
 	$(OBJ2C) $(<) $(MODEL_NAME) >$(@)
-
-:
-	$(TRI2C) $(<) $(MODEL_NAME) >$(@)
