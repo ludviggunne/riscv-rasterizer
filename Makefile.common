@@ -8,14 +8,14 @@ ALL		= $(BUILDDIR)cube.h \
 			$(BUILDDIR)teapot.h  \
 			$(BUILDDIR)torus.h
 
-.PHONY: all clean $(OBJ2C)
+.PHONY: all clean
 
 all: $(ALL)
 
 clean:
 	rm -f $(ALL)
 
-$(OBJ2C):
+$(OBJ2C): src/host/obj2c.c
 	$(MAKE) -f Makefile.host $(@)
 
 $(BUILDDIR):
