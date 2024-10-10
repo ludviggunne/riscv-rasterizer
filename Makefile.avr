@@ -1,13 +1,15 @@
-PROGRAM_PREFIX	= avr-
-CC 		= $(PROGRAM_PREFIX)gcc
+MODEL		?= ATmega328P
+FREQ		?= 16000000
+PORT		?= /dev/ttyUSB0
+PROGRAM_PREFIX=avr-
+CC 			= $(PROGRAM_PREFIX)gcc
 OBJCOPY		= $(PROGRAM_PREFIX)objcopy
 MACHFLAGS	= -mmcu=attiny85
-CFLAGS		= $(MACHFLAGS) -DF_CPU=8000000 -O3
+CFLAGS		= $(MACHFLAGS) -DF_CPU=$(FREQ) -O3
 CPPFLAGS	= -Iinclude/avr
 BUILDDIR	= build/avr/
 CTRL_ELF	= $(BUILDDIR)controller.elf
 CTRL_BIN	= $(BUILDDIR)controller.bin
-PORT		?= /dev/ttyUSB0
 
 .PHONY: all clean flash
 
@@ -26,4 +28,4 @@ $(CTRL_BIN): $(CTRL_ELF) | $(BUILDDIR)
 	$(OBJCOPY) -SObinary $< $@
 
 flash: $(CTRL_BIN)
-	avrdude -c arduino -p attiny85 -P $(PORT) -U flash:w:$(CTRL_BIN)
+	avrdude -c arduino -p $(MODEL) -P $(PORT) -U flash:w:$(CTRL_BIN)
