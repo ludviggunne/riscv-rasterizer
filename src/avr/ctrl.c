@@ -1,5 +1,7 @@
 #include <stdint.h>
+#include <stdio.h>
 #include <avr/io.h>
+#include <util/setbaud.h>
 #include <util/delay.h>
 #include <string.h>
 #include "pif.h"
@@ -60,23 +62,37 @@ void send(uint8_t *data)
 	}
 }
 
-void blink(void)
+int usart_putc(char c, FILE *f)
 {
-	PORTB &= ~_BV(LED);
-	DDRB |= _BV(LED);
+	(void)f;
+	while (!(UCSR0A & _BV(UDRE0)))
+		;
 
-	for (;;)
-	{
-		PORTB |= _BV(LED);
-		_delay_ms(500);
-		PORTB &= ~_BV(LED);
-		_delay_ms(500);
-	}
+	UDR0 = c;
+	return 0;
+}
+
+void usart_init(void)
+{
+	UBRR0L = UBRRL_VALUE;
+	UBRR0H = UBRRH_VALUE;
+	// enable transmission
+	UCSR0B = _BV(TXEN0);
+	// 8 data bits, 1 stop bit
+	UCSR0C = _BV(UCSZ01) | _BV(UCSZ00);
+	// setup stream
+	stdout = fdevopen(usart_putc, NULL);
 }
 
 int main(void)
 {
-	blink();
+	usart_init();
+
+	for (int i = 0; ; i++)
+	{
+		printf("Counter: %d\n", i);
+		_delay_ms(1000);
+	}
 
 	uint8_t recvbuf[4];
 	uint8_t recvbuf_prev[4] = { 0 };
