@@ -18,15 +18,19 @@ void ctrl_recv(void)
 	data = 0;
 	for (int i = 0; i < 32; i++)
 	{
-		while (!(*GPIO_BASE & BIT(CLKPIN));
+		while (!(*GPIO_BASE & BIT(CLKPIN)));
 		data |= !!(*GPIO_BASE & BIT(DATAPIN));
-		while ((*GPIO_BASE & BIT(CLKPIN));
+		while ((*GPIO_BASE & BIT(CLKPIN)));
 		data <<= 1;
 	}
 
 	uint8_t ux = (data >> 8) & 0xff;
 	uint8_t uy = data & 0xff;
-	int8_t x = *(int8_t)&ux;
-	int8_t y = *(int8_t)&uy;
+	int8_t x = *(int8_t*)&ux;
+	int8_t y = *(int8_t*)&uy;
+
+	(void)x;
+	(void)y;
 }
+
 
