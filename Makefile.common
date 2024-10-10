@@ -21,35 +21,6 @@ $(OBJ2C):
 $(BUILDDIR):
 	mkdir -p $(@)
 
-$(BUILDDIR)cube.h: res/cube.obj
-$(BUILDDIR)cube.h: MODEL_NAME = cube
-
-$(BUILDDIR)modern.h: res/modern.obj
-$(BUILDDIR)modern.h: MODEL_NAME = modern
-
-$(BUILDDIR)rat.h: res/rat.obj
-$(BUILDDIR)rat.h: MODEL_NAME = rat
-
-$(BUILDDIR)rat_lofi.h: res/rat_lofi.obj
-$(BUILDDIR)rat_lofi.h: MODEL_NAME = rat_lofi
-
-$(BUILDDIR)teapot.h: res/teapot.obj
-$(BUILDDIR)teapot.h: MODEL_NAME = teapot
-
-$(BUILDDIR)torus.h: res/torus.obj
-$(BUILDDIR)torus.h: MODEL_NAME = torus
-
-$(BUILDDIR)cube.h \
-$(BUILDDIR)modern.h \
-$(BUILDDIR)rat.h \
-$(BUILDDIR)rat_lofi.h \
-$(BUILDDIR)teapot.h \
-$(BUILDDIR)torus.h: $(OBJ2C)
-
-$(BUILDDIR)cube.h \
-$(BUILDDIR)modern.h \
-$(BUILDDIR)rat.h \
-$(BUILDDIR)rat_lofi.h \
-$(BUILDDIR)teapot.h \
-$(BUILDDIR)torus.h:
+$(BUILDDIR)%.h: MODEL_NAME = $(@:$(BUILDDIR)%.h=%)
+$(BUILDDIR)%.h: res/%.obj $(OBJ2C) | $(BUILDDIR)
 	$(OBJ2C) $(<) $(MODEL_NAME) >$(@)
