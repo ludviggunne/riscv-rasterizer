@@ -1,6 +1,5 @@
 #include <ctrl.h>
 #include <model.h>
-#include <stdint.h>
 
 #define BIT(x) (1 << x)
 #define GPIO_BASE ((volatile int*)0x040000e0)
