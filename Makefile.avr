@@ -2,7 +2,8 @@ PROGRAM_PREFIX=avr-
 CC 			= $(PROGRAM_PREFIX)gcc
 OBJCOPY		= $(PROGRAM_PREFIX)objcopy
 MACHFLAGS	= -mmcu=attiny85
-CFLAGS		= $(MACHFLAGS) -DF_CPU=8000000
+CFLAGS		= $(MACHFLAGS) -DF_CPU=8000000 -O3
+CPPFLAGS	= -Iinclude/avr
 BUILDDIR	= build/avr/
 CTRL_ELF	= $(BUILDDIR)controller.elf
 CTRL_BIN	= $(BUILDDIR)controller.bin
@@ -18,8 +19,8 @@ clean:
 $(BUILDDIR):
 	mkdir -p $@
 
-$(CTRL_ELF): src/avr/ctrl.c | $(BUILDDIR)
-	$(CC) -o $@ $(CFLAGS) $^
+$(CTRL_ELF): src/avr/ctrl.c src/avr/pif.S | $(BUILDDIR)
+	$(CC) -o $@ $(CPPFLAGS) $(CFLAGS) $^
 
 $(CTRL_BIN): $(CTRL_ELF) | $(BUILDDIR)
 	$(OBJCOPY) -SObinary $< $@
