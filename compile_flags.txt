@@ -1,3 +1,4 @@
 -Iinclude
 -Iinclude/target
+-Iinclude/avr
 -Ibuild
