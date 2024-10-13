@@ -4,6 +4,8 @@
 #include <rast.h>
 #include <uart.h>
 #include <ctrl.h>
+#include <perf.h>
+#include <timer.h>
 
 static void display_qval(qval_t v)
 {
@@ -125,6 +127,8 @@ int main(int argc, char *argv[])
 	uart_printf("this is a backslash: \\, "
 			"and this is a precent sign: %%.\n");
 	ctrl_init();
+	timer_init();
+	clear_counters();
 
 	{
 		qval_t f = QVAL(1);

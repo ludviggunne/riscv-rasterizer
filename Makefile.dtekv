@@ -28,7 +28,7 @@ $(RAST_ELF): src/dtekv/display.c src/dtekv/main.c src/model.c \
 	src/dtekv/mvec.S src/qmath.c src/rast.c src/dtekv/reset.S \
 	src/dtekv/stack.S src/dtekv/start.S src/dtekv/stop.S \
 	src/dtekv/trap.S src/dtekv/irq.c src/dtekv/ctrl.c \
-	src/uart.c src/vmath.c | $(BUILDDIR)
+	src/uart.c src/vmath.c src/dtekv/perf.c src/dtekv/timer.c | $(BUILDDIR)
 	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)
 
 $(RAST_BIN): $(RAST_ELF) | $(BUILDDIR)

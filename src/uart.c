@@ -5,6 +5,7 @@
 
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdint.h>
 #ifndef __riscv
 #include <stdio.h>
 #endif
@@ -99,6 +100,32 @@ void uart_printf(const char *fmt, ...)
 				{
 					uart_putc('-');
 					x = -x;
+				}
+				while (x)
+				{
+					buf[buflen++] = '0' + x % 10;
+					x /= 10;
+				}
+				for (int i = buflen - 1; i >= 0; i--)
+				{
+					uart_putc(buf[i]);
+				}
+				break;
+			}
+			case 'u':
+			{
+				fmt++;
+				if (*fmt != 'l')
+					continue;
+				fmt++;
+				if (*fmt != 'l')
+					continue;
+
+				uint64_t x = va_arg(args, uint64_t);
+				if (x == 0)
+				{
+					uart_putc('0');
+					continue;
 				}
 				while (x)
 				{
