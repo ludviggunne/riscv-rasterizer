@@ -11,7 +11,7 @@ void uart_putc(char c);
 
 // Supported format specifiers:
 // %d   - int
-// %ull - uint64_t
+// %u   - unsigned int
 // %p   - address
 // %q   - qval_t
 void uart_printf(const char *fmt, ...);

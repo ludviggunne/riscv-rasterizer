@@ -114,14 +114,7 @@ void uart_printf(const char *fmt, ...)
 			}
 			case 'u':
 			{
-				fmt++;
-				if (*fmt != 'l')
-					continue;
-				fmt++;
-				if (*fmt != 'l')
-					continue;
-
-				uint64_t x = va_arg(args, uint64_t);
+				unsigned int x = va_arg(args, unsigned int);
 				if (x == 0)
 				{
 					uart_putc('0');
