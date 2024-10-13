@@ -143,5 +143,6 @@ int main(int argc, char *argv[])
 		display_qval(v);
 	}
 
+	timer_start(1000);
 	rast_main(argc, argv);
 }
