@@ -1,18 +1,23 @@
 #include <ctrl.h>
 #include <model.h>
+#include <uart.h>
 
 #define BIT(x) (1 << x)
 #define GPIO_BASE ((volatile int*)0x040000e0)
 
 void ctrl_init(void)
 {
-	*(GPIO_BASE + 1) &= ~(BIT(CLKPIN) | BIT(DATAPIN)); // set pins as inputs
-	*(GPIO_BASE + 2) |= BIT(CLKPIN); // enable interrupts for clock pin
+	// *(GPIO_BASE + 1) &= ~(BIT(CLKPIN) | BIT(DATAPIN)); // set pins as inputs
+	// *(GPIO_BASE + 2) |= BIT(CLKPIN); // enable interrupts for clock pin
+	*(GPIO_BASE + 1) = 0;
+	*(GPIO_BASE + 2) = 0xffffffff;
 }
 
 void ctrl_recv(void)
 {
 	unsigned int data;
+
+	uart_printf("receiving controller data...\n");
 
 	data = 0;
 	for (int i = 0; i < 32; i++)
@@ -33,6 +38,11 @@ void ctrl_recv(void)
 
 	g_model_xfm.y += TRANSFORM_SPEED * qx;
 	g_model_xfm.p += TRANSFORM_SPEED * qy;
+
+	uart_printf("joystick: [ %q, %q ]\n", qx, qy);
+
+	// clear interrupt
+	*(GPIO_BASE + 3) = 0;
 }
 
 

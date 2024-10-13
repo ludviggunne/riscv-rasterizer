@@ -6,9 +6,9 @@
 #include <string.h>
 #include "pif.h"
 
-#define CTRL_PIN  2
-#define DTEK_CLK  3
-#define DTEK_DATA 4
+#define CTRL_PIN  2 // pin 2 on arduino
+#define DTEK_CLK  3 // pin 11 on arduino
+#define DTEK_DATA 4 // pin 12 on arduino
 #define LED 5
 
 #define RESET 0xff
@@ -18,6 +18,7 @@
 
 #define ABS(x) ((x) < 0 ? -(x) : (x))
 
+// determine if the controller inputs has changed
 int changed(uint8_t *now, uint8_t *then)
 {
 	if (now[0] != then[0])
@@ -38,6 +39,7 @@ int changed(uint8_t *now, uint8_t *then)
 	return 0;
 }
 
+// send controller data to dtekv board
 void send(uint8_t *data)
 {
 	for (int i = 0; i < 4; i++)
@@ -87,12 +89,7 @@ void usart_init(void)
 int main(void)
 {
 	usart_init();
-
-	for (int i = 0; ; i++)
-	{
-		printf("Counter: %d\n", i);
-		_delay_ms(1000);
-	}
+	printf("USART initialized\n");
 
 	uint8_t recvbuf[4];
 	uint8_t recvbuf_prev[4] = { 0 };
@@ -106,13 +103,16 @@ int main(void)
 	// reset controller
 	uint8_t request = RESET;
 	pif_host_transmit(CTRL_PIN, &request, 1, recvbuf, 3);
+	printf("reset done\n");
 
 	for (;;)
 	{
 		request = POLL;
 		pif_host_transmit(CTRL_PIN, &request, 1, recvbuf, 4);
-		if (changed(recvbuf, recvbuf_prev))
+		if (changed(recvbuf, recvbuf_prev)) {
+			printf("joystick: [ %d, %d ]\n", *(int8_t*)&recvbuf[2], *(int8_t*)&recvbuf[3]);
 			send(recvbuf);
+		}
 		_delay_ms(33);
 		memcpy(recvbuf_prev, recvbuf, sizeof(*recvbuf));
 	}

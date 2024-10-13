@@ -3,6 +3,7 @@
 #include <qmath.h>
 #include <rast.h>
 #include <uart.h>
+#include <ctrl.h>
 
 static void display_qval(qval_t v)
 {
@@ -123,6 +124,7 @@ int main(int argc, char *argv[])
 	uart_printf("QPI is %q, and thats %s.\n", QPI, "pretty good");
 	uart_printf("this is a backslash: \\, "
 			"and this is a precent sign: %%.\n");
+	ctrl_init();
 
 	{
 		qval_t f = QVAL(1);
