@@ -4,8 +4,9 @@
 #include <stdint.h>
 
 struct counters {
-	uint64_t mcycle;
-	uint64_t minstret;
+#define REGISTER(x) uint64_t x;
+#include <hwc.h>
+#undef REGISTER
 };
 
 void clear_counters(void);

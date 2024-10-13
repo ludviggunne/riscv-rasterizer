@@ -17,18 +17,16 @@
 
 void clear_counters(void)
 {
-	clear("mcycle");
-	clear("mcycleh");
-	clear("minstret");
-	clear("minstreth");
+#define REGISTER(x) clear(#x); clear(#x "h");
+#include <hwc.h>
+#undef REGISTER
 }
 
 void get_counters(struct counters *counters)
 {
-	counters->mcycle = (uint64_t)reg("mcycle") &
-	                   ((uint64_t)reg("mcycleh") << 32);
-	counters->minstret = (uint64_t)reg("minstret") &
-	                   ((uint64_t)reg("minstreth") << 32);
+#define REGISTER(x) counters->x = (uint64_t)reg(#x) | ((uint64_t)reg(#x "h") << 32);
+#include <hwc.h>
+#undef REGISTER
 }
 
 void dump_perf_info(void)
@@ -36,8 +34,6 @@ void dump_perf_info(void)
 	struct counters counters;
 	get_counters(&counters);
 	uart_printf("Retired instructions: %ull\n"
-	            "Cycles:               %ull\n"
-	    	    "IPC:                  %ull\n\n",
-	    	    counters.minstret, counters.mcycle,
-	    	    counters.minstret / counters.mcycle);
+	            "Cycles:               %ull\n",
+	            counters.minstret, counters.mcycle);
 }
