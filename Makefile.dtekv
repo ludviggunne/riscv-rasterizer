@@ -1,4 +1,4 @@
-TARGET_TOOLS	= riscv32-unknown-elf- riscv64-unknown-elf- riscv64-linux-gnu-
+TARGET_TOOLS	= riscv32-unknown-elf- riscv64-unknown-elf- riscv64-linux-gnu- riscv64-none-elf-
 PROGRAM_PREFIX	:= $(shell for i in $(TARGET_TOOLS); do if which $${i}gcc >/dev/null 2>&1; then echo $${i}; break; fi done)
 CC 		= $(PROGRAM_PREFIX)gcc
 OBJDUMP		= $(PROGRAM_PREFIX)objdump
