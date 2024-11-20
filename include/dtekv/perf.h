@@ -13,9 +13,29 @@ struct counters {
 	unsigned int mhpmcounter9;
 };
 
+struct profile_window {
+	struct counters average;
+	struct counters offset;
+	unsigned int times;
+	const char *name;
+};
+
 void clear_counters(void);
 void get_counters(struct counters *counters);
 void dump_perf_info(void);
-struct counters counter_diff(struct counters *new, struct counters *old);
+
+struct profile_window *create_new_profile_window(const char *name);
+void profile_window_start(struct profile_window *win);
+void profile_window_end(struct profile_window *win);
+
+#define PROFILE_WINDOW_START(name)\
+	static struct profile_window *__pwin_##name = 0;\
+	if (!__pwin_##name) {\
+		__pwin_##name = create_new_profile_window(#name);\
+	}\
+	profile_window_start(__pwin_##name);
+
+#define PROFILE_WINDOW_END(name)\
+	profile_window_end(__pwin_##name);
 
 #endif
