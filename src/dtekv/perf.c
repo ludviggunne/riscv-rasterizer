@@ -136,3 +136,20 @@ void profile_window_end(struct profile_window *win)
 	win->average.mhpmcounter8 = mhpmcounter8;
 	win->average.mhpmcounter9 = mhpmcounter9;
 }
+
+static void print_profile_window_info(struct profile_window *win)
+{
+	uart_print("%s:\n", win->name);
+	uart_print("    Cycles: %d\n", win->average.mcycle);
+	uart_print("    Instructions: %d\n", win->average.minstret);
+	uart_print("    IPC: %d\n", win->average.minstret / win->average.mcycle);
+	uart_print("\n");
+}
+
+void print_all_profile_window_info(void)
+{
+	for (int i = 0; i < s_window_count; i++)
+	{
+		print_profile_window_info(&s_windows[i]);
+	}
+}

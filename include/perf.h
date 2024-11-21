@@ -27,12 +27,11 @@ void dump_perf_info(void);
 struct profile_window *create_new_profile_window(const char *name);
 void profile_window_start(struct profile_window *win);
 void profile_window_end(struct profile_window *win);
+void print_all_profile_window_info(void);
 
 #define PROFILE_WINDOW_START(name)\
-	static struct profile_window *__pwin_##name = 0;\
-	if (!__pwin_##name) {\
+	static struct profile_window *__pwin_##name = \
 		__pwin_##name = create_new_profile_window(#name);\
-	}\
 	profile_window_start(__pwin_##name);
 
 #define PROFILE_WINDOW_END(name)\
