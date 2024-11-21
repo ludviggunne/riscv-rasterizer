@@ -14,8 +14,6 @@ void interrupt(int mcause)
 		break;
 	case MCAUSE_TIMER:
 		timer_clear_interrupt();
-		dump_perf_info();
-		clear_counters();
 		break;
 	default:
 		break;

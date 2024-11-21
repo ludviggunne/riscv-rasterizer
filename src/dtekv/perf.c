@@ -43,17 +43,6 @@ void get_counters(struct counters *counters)
 	counters->mhpmcounter9	= csrr(mhpmcounter9);
 }
 
-void dump_perf_info(void)
-{
-	struct counters counters;
-	get_counters(&counters);
-	uart_printf(	"Retired instructions: %u\n"
-			"Cycles:               %u\n"
-			"IPC:                  %u\n",
-			counters.minstret, counters.mcycle,
-			counters.minstret / counters.mcycle);
-}
-
 struct profile_window *create_new_profile_window(const char *name)
 {
 	if (s_window_count == MAX_PROFILE_WINDOWS)
