@@ -19,6 +19,15 @@ void clear_counters(void)
 	csrw(mhpmcounter7, 0);
 	csrw(mhpmcounter8, 0);
 	csrw(mhpmcounter9, 0);
+	csrw(mcycleh, 0);
+	csrw(minstreth, 0);
+	csrw(mhpmcounter3h, 0);
+	csrw(mhpmcounter4h, 0);
+	csrw(mhpmcounter5h, 0);
+	csrw(mhpmcounter6h, 0);
+	csrw(mhpmcounter7h, 0);
+	csrw(mhpmcounter8h, 0);
+	csrw(mhpmcounter9h, 0);
 }
 
 void get_counters(struct counters *counters)
@@ -80,15 +89,15 @@ void profile_window_end(struct profile_window *win)
 	current.mhpmcounter8 -= win->offset.mhpmcounter8;
 	current.mhpmcounter9 -= win->offset.mhpmcounter9;
 
-	long long mcycle = win->average.mcycle * win->times;
-	long long minstret = win->average.minstret * win->times;
-	long long mhpmcounter3 = win->average.mhpmcounter3 * win->times;
-	long long mhpmcounter4 = win->average.mhpmcounter4 * win->times;
-	long long mhpmcounter5 = win->average.mhpmcounter5 * win->times;
-	long long mhpmcounter6 = win->average.mhpmcounter6 * win->times;
-	long long mhpmcounter7 = win->average.mhpmcounter7 * win->times;
-	long long mhpmcounter8 = win->average.mhpmcounter8 * win->times;
-	long long mhpmcounter9 = win->average.mhpmcounter9 * win->times;
+	counter_t mcycle = win->average.mcycle * win->times;
+	counter_t minstret = win->average.minstret * win->times;
+	counter_t mhpmcounter3 = win->average.mhpmcounter3 * win->times;
+	counter_t mhpmcounter4 = win->average.mhpmcounter4 * win->times;
+	counter_t mhpmcounter5 = win->average.mhpmcounter5 * win->times;
+	counter_t mhpmcounter6 = win->average.mhpmcounter6 * win->times;
+	counter_t mhpmcounter7 = win->average.mhpmcounter7 * win->times;
+	counter_t mhpmcounter8 = win->average.mhpmcounter8 * win->times;
+	counter_t mhpmcounter9 = win->average.mhpmcounter9 * win->times;
 
 	mcycle += current.mcycle;
 	minstret += current.minstret;
