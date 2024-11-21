@@ -89,15 +89,15 @@ void profile_window_end(struct profile_window *win)
 	current.mhpmcounter8 -= win->offset.mhpmcounter8;
 	current.mhpmcounter9 -= win->offset.mhpmcounter9;
 
-	counter_t mcycle = win->average.mcycle * win->times;
-	counter_t minstret = win->average.minstret * win->times;
-	counter_t mhpmcounter3 = win->average.mhpmcounter3 * win->times;
-	counter_t mhpmcounter4 = win->average.mhpmcounter4 * win->times;
-	counter_t mhpmcounter5 = win->average.mhpmcounter5 * win->times;
-	counter_t mhpmcounter6 = win->average.mhpmcounter6 * win->times;
-	counter_t mhpmcounter7 = win->average.mhpmcounter7 * win->times;
-	counter_t mhpmcounter8 = win->average.mhpmcounter8 * win->times;
-	counter_t mhpmcounter9 = win->average.mhpmcounter9 * win->times;
+	long long mcycle = win->average.mcycle * win->times;
+	long long minstret = win->average.minstret * win->times;
+	long long mhpmcounter3 = win->average.mhpmcounter3 * win->times;
+	long long mhpmcounter4 = win->average.mhpmcounter4 * win->times;
+	long long mhpmcounter5 = win->average.mhpmcounter5 * win->times;
+	long long mhpmcounter6 = win->average.mhpmcounter6 * win->times;
+	long long mhpmcounter7 = win->average.mhpmcounter7 * win->times;
+	long long mhpmcounter8 = win->average.mhpmcounter8 * win->times;
+	long long mhpmcounter9 = win->average.mhpmcounter9 * win->times;
 
 	mcycle += current.mcycle;
 	minstret += current.minstret;
