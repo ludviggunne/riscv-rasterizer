@@ -5,8 +5,29 @@
 
 #define MAX_PROFILE_WINDOWS 32
 
+/*
+ * Convenience macros to clear/read from system registers.
+ */
+#define reg(name)\
+	({\
+	unsigned int v;\
+	asm volatile (\
+	"csrr %0, " name "\n"\
+	: "=r" (v));\
+	v;\
+	})
+
+#define clear(reg)\
+	asm volatile (\
+	"csrw " reg ", zero\n"\
+	)
+
 static struct profile_window s_windows[MAX_PROFILE_WINDOWS] = { 0 };
 static unsigned int s_window_count;
+
+// Defined in stop.S
+__attribute__((noreturn))
+void _stop(void);
 
 void clear_counters(void)
 {
@@ -68,6 +89,7 @@ void profile_window_end(struct profile_window *win)
 	struct counters current;
 	get_counters(&current);
 
+	// Obtain the values accumulated in the window
 	current.mcycle -= win->offset.mcycle;
 	current.minstret -= win->offset.minstret;
 	current.mhpmcounter3 -= win->offset.mhpmcounter3;
@@ -78,15 +100,16 @@ void profile_window_end(struct profile_window *win)
 	current.mhpmcounter8 -= win->offset.mhpmcounter8;
 	current.mhpmcounter9 -= win->offset.mhpmcounter9;
 
-	long long mcycle = win->average.mcycle * win->times;
-	long long minstret = win->average.minstret * win->times;
-	long long mhpmcounter3 = win->average.mhpmcounter3 * win->times;
-	long long mhpmcounter4 = win->average.mhpmcounter4 * win->times;
-	long long mhpmcounter5 = win->average.mhpmcounter5 * win->times;
-	long long mhpmcounter6 = win->average.mhpmcounter6 * win->times;
-	long long mhpmcounter7 = win->average.mhpmcounter7 * win->times;
-	long long mhpmcounter8 = win->average.mhpmcounter8 * win->times;
-	long long mhpmcounter9 = win->average.mhpmcounter9 * win->times;
+	// Update average values
+	unsigned long long mcycle = win->average.mcycle * win->times;
+	unsigned long long minstret = win->average.minstret * win->times;
+	unsigned long long mhpmcounter3 = win->average.mhpmcounter3 * win->times;
+	unsigned long long mhpmcounter4 = win->average.mhpmcounter4 * win->times;
+	unsigned long long mhpmcounter5 = win->average.mhpmcounter5 * win->times;
+	unsigned long long mhpmcounter6 = win->average.mhpmcounter6 * win->times;
+	unsigned long long mhpmcounter7 = win->average.mhpmcounter7 * win->times;
+	unsigned long long mhpmcounter8 = win->average.mhpmcounter8 * win->times;
+	unsigned long long mhpmcounter9 = win->average.mhpmcounter9 * win->times;
 
 	mcycle += current.mcycle;
 	minstret += current.minstret;

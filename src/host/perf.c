@@ -1,6 +1,10 @@
 #include <stddef.h>
 #include <perf.h>
 
+/*
+ * Dummy implementations for profiling on host system.
+ */
+
 void clear_counters(void)
 {
 }

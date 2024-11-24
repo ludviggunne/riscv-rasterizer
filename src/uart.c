@@ -49,37 +49,13 @@ void uart_printf(const char *fmt, ...)
 	va_list args;
 	va_start(args, fmt);
 
+	// Process format string
 	for (; *fmt; fmt++)
 	{
 		buflen = 0;
 		char c = *fmt;
 		switch (c)
 		{
-		// case '\\':
-		// 	fmt++;
-		// 	switch (c)
-		// 	{
-		// 	case 0:
-		// 		uart_putc('\\');
-		// 		return;
-		// 	case '\\':
-		// 		uart_putc('\\');
-		// 		break;
-		// 	case 'n':
-		// 		uart_putc('\n');
-		// 		break;
-		// 	case 't':
-		// 		uart_putc('\t');
-		// 		break;
-		// 	case 'r':
-		// 		uart_putc('\r');
-		// 		break;
-		// 	default:
-		// 		uart_putc('\\');
-		// 		uart_putc(c);
-		// 		break;
-		// 	}
-		// 	break;
 		case '%':
 			fmt++;
 			c = *fmt;

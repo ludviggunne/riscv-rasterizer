@@ -13,6 +13,7 @@ void timer_init(void)
 
 void timer_start(unsigned int ms)
 {
+	// TODO: describe what's going on here
 	unsigned int counter = ms * FREQ / 1000;
 	*(TIMER_BASE+2) = counter & 0xffff;
 	*(TIMER_BASE+3) = counter >> 16;
