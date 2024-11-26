@@ -1,72 +1,58 @@
+#include <stdlib.h>
+#include <io.h>
 #include <perf.h>
 #include <uart.h>
 
 #define MAX_PROFILE_WINDOWS 32
 
-#define reg(name)\
-	({\
-	unsigned int v;\
-	asm volatile (\
-	"csrr %0, " name "\n"\
-	: "=r" (v));\
-	v;\
-	})
-
-#define clear(reg)\
-	asm volatile (\
-	"csrw " reg ", zero\n"\
-	)
-
 static struct profile_window s_windows[MAX_PROFILE_WINDOWS] = { 0 };
 static unsigned int s_window_count;
 
-__attribute__((noreturn))
-void _stop(void);
-
 void clear_counters(void)
 {
-	clear("mcycle");
-	clear("minstret");
-	clear("mhpmcounter3");
-	clear("mhpmcounter4");
-	clear("mhpmcounter5");
-	clear("mhpmcounter6");
-	clear("mhpmcounter7");
-	clear("mhpmcounter8");
-	clear("mhpmcounter9");
+	csrw(mcycle, 0);
+	csrw(minstret, 0);
+	csrw(mhpmcounter3, 0);
+	csrw(mhpmcounter4, 0);
+	csrw(mhpmcounter5, 0);
+	csrw(mhpmcounter6, 0);
+	csrw(mhpmcounter7, 0);
+	csrw(mhpmcounter8, 0);
+	csrw(mhpmcounter9, 0);
 }
 
 void get_counters(struct counters *counters)
 {
-	counters->mcycle       = reg("mcycle");
-	counters->minstret     = reg("minstret");
-	counters->mhpmcounter3 = reg("mhpmcounter3");
-	counters->mhpmcounter4 = reg("mhpmcounter4");
-	counters->mhpmcounter5 = reg("mhpmcounter5");
-	counters->mhpmcounter6 = reg("mhpmcounter6");
-	counters->mhpmcounter7 = reg("mhpmcounter7");
-	counters->mhpmcounter8 = reg("mhpmcounter8");
-	counters->mhpmcounter9 = reg("mhpmcounter9");
+	counters->mcycle	= csrr(mcycle);
+	counters->minstret	= csrr(minstret);
+	counters->mhpmcounter3	= csrr(mhpmcounter3);
+	counters->mhpmcounter4	= csrr(mhpmcounter4);
+	counters->mhpmcounter5	= csrr(mhpmcounter5);
+	counters->mhpmcounter6	= csrr(mhpmcounter6);
+	counters->mhpmcounter7	= csrr(mhpmcounter7);
+	counters->mhpmcounter8	= csrr(mhpmcounter8);
+	counters->mhpmcounter9	= csrr(mhpmcounter9);
 }
 
 void dump_perf_info(void)
 {
 	struct counters counters;
 	get_counters(&counters);
-	uart_printf("Retired instructions: %u\n"
-	            "Cycles:               %u\n"
-	            "IPC:                  %u\n",
-	            counters.minstret, counters.mcycle,
-	            counters.minstret / counters.mcycle);
+	uart_printf(	"Retired instructions: %u\n"
+			"Cycles:               %u\n"
+			"IPC:                  %u\n",
+			counters.minstret, counters.mcycle,
+			counters.minstret / counters.mcycle);
 }
 
 struct profile_window *create_new_profile_window(const char *name)
 {
 	if (s_window_count == MAX_PROFILE_WINDOWS)
 	{
-		uart_printf("error: could not create profile window '%s', reached max window count %d\n",
-		           name, MAX_PROFILE_WINDOWS);
-		_stop();
+		uart_printf(	"error: could not create profile window '%s', "
+				"reached max window count %d\n",
+				name, MAX_PROFILE_WINDOWS);
+		abort();
 	}
 
 	struct profile_window *win = &s_windows[s_window_count++];
@@ -139,11 +125,11 @@ void profile_window_end(struct profile_window *win)
 
 static void print_profile_window_info(struct profile_window *win)
 {
-	uart_print("%s:\n", win->name);
-	uart_print("    Cycles: %d\n", win->average.mcycle);
-	uart_print("    Instructions: %d\n", win->average.minstret);
-	uart_print("    IPC: %d\n", win->average.minstret / win->average.mcycle);
-	uart_print("\n");
+	uart_printf("%s:\n", win->name);
+	uart_printf("    Cycles: %d\n", win->average.mcycle);
+	uart_printf("    Instructions: %d\n", win->average.minstret);
+	uart_printf("    IPC: %d\n", win->average.minstret / win->average.mcycle);
+	uart_printf("\n");
 }
 
 void print_all_profile_window_info(void)
