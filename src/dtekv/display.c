@@ -1,3 +1,5 @@
+#include <qmath.h>
+
 static unsigned char display_chrtbl[256] =
 {
 	[' '] = 0b11111111,
@@ -84,4 +86,30 @@ void display_char(int pos, int c)
 	}
 
 	display_regs[(5 - pos) * 4] = c;
+}
+
+void display_qval(qval_t v)
+{
+	char s[8];
+	int p = 0;
+
+	qsnprint(v, s, sizeof(s));
+
+	for (int i = 0; i < 6; i++)
+	{
+		if (s[p] == '\0')
+		{
+			display_char(i, ' ');
+		}
+		else if (s[p + 1] == '.')
+		{
+			display_char(i, s[p] | 0x80);
+			p = p + 2;
+		}
+		else
+		{
+			display_char(i, s[p]);
+			p = p + 1;
+		}
+	}
 }

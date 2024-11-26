@@ -143,44 +143,7 @@ static void rast_main(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-	float vbad = NAN;
-	float emax = 0;
-
 	uart_init();
-	uart_printf("hello, the number forty-three is %d!\n", 43);
-	uart_printf("main is at %p, in case you were wondering.\n"
-			"argc is %d.\n", main, argc);
-	uart_printf("QPI is %q, and thats %s.\n", QPI, "pretty good");
-	uart_printf("this is a backslash: \\, "
-			"and this is a precent sign: %%.\n");
-
-	for (qval_t i = QVAL(0); i < QVAL(256); i++)
-	{
-		qval_t q = qsqrt(i);
-		float f = sqrtf(QTOF(i));
-		float e = QTOF(q) - f;
-
-		if (fabsf(e) > fabsf(emax))
-		{
-			vbad = QTOF(i);
-			emax = e;
-		}
-	}
-
-	printf("largest error: %+g (for input %g)\n", emax, vbad);
-
-	{
-		qval_t f = QVAL(1);
-		qval_t v = QVAL(0);
-
-		for (int i = 1; i <= 10; i++)
-		{
-			v = qadd(v, qdiv(QVAL(1), f));
-			f = qmul(f, QINT(i));
-		}
-
-		uart_printf("%q\n", v);
-	}
 
 	rast_main(argc, argv);
 }
