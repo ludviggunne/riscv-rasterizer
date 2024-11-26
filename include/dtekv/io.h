@@ -19,7 +19,7 @@
 			"csrw " #csr ", %0;" \
 			:: "r" (v) \
 		); \
-		(void ) 0; \
+		(void) 0; \
 	})
 
 #endif
