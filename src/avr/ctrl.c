@@ -6,9 +6,9 @@
 #include <string.h>
 #include <joybus.h>
 
-#define CTRL_PIN  2 // pin 2 on arduino
-#define DTEK_CLK  3 // pin 11 on arduino
-#define DTEK_DATA 4 // pin 12 on arduino
+#define CTRL_PIN  2 /* pin 2 on arduino */
+#define DTEK_CLK  3 /* pin 11 on arduino */
+#define DTEK_DATA 4 /* pin 12 on arduino */
 #define LED 5
 
 #define RESET 0xff
@@ -18,7 +18,7 @@
 
 #define ABS(x) ((x) < 0 ? -(x) : (x))
 
-// determine if the controller inputs has changed
+/* determine if the controller inputs has changed */
 int changed(uint8_t *now, uint8_t *then)
 {
 	if (now[0] != then[0])
@@ -39,7 +39,7 @@ int changed(uint8_t *now, uint8_t *then)
 	return 0;
 }
 
-// send controller data to dtekv board
+/* send controller data to dtekv board */
 void send(uint8_t *data)
 {
 	for (int i = 0; i < 4; i++)
@@ -78,11 +78,11 @@ void usart_init(void)
 {
 	UBRR0L = UBRRL_VALUE;
 	UBRR0H = UBRRH_VALUE;
-	// enable transmission
+	/* enable transmission */
 	UCSR0B = _BV(TXEN0);
-	// 8 data bits, 1 stop bit
+	/* 8 data bits, 1 stop bit */
 	UCSR0C = _BV(UCSZ01) | _BV(UCSZ00);
-	// setup stream
+	/* setup stream */
 	stdout = fdevopen(usart_putc, NULL);
 }
 
@@ -94,13 +94,13 @@ int main(void)
 	uint8_t recvbuf[4];
 	uint8_t recvbuf_prev[4] = { 0 };
 
-	// configure pins
+	/* configure pins */
 	DDRB |= _BV(DTEK_CLK);
 	DDRB |= _BV(DTEK_DATA);
 	PORTB &= ~_BV(DTEK_CLK);
 	PORTB &= ~_BV(DTEK_DATA);
 
-	// reset controller
+	/* reset controller */
 	uint8_t request = RESET;
 	joybus_host_transceive(CTRL_PIN, &request, 1, recvbuf, 3);
 	printf("reset done\n");

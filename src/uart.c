@@ -19,10 +19,6 @@ static const char hex[] = "0123456789abcdef";
 void uart_init(void)
 {
 	if (is_init) return;
-#ifdef __riscv
-	/* disable interrupts */
-	// UART_CONTROL &= ~3;
-#endif
 	is_init = 1;
 }
 

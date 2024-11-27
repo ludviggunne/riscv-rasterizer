@@ -7,10 +7,8 @@
 
 void ctrl_init(void)
 {
-	// GPIO1_DIRECTION &= ~(BIT(CLKPIN) | BIT(DATAPIN)); // set pins as inputs
-	// GPIO1_INTERRUPTMASK |= BIT(CLKPIN); // enable interrupts for clock pin
-	GPIO1_DIRECTION = 0;
-	GPIO1_INTERRUPTMASK = 0xffffffff;
+	GPIO1_DIRECTION &= ~(BIT(CLKPIN) | BIT(DATAPIN)); /* set pins as inputs */
+	GPIO1_INTERRUPTMASK |= BIT(CLKPIN); /* enable interrupts for clock pin */
 }
 
 void ctrl_recv(void)
