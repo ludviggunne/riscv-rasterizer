@@ -1,4 +1,5 @@
 #include <model.h>
+#include <perf.h>
 #include <qmath.h>
 #include <rast.h>
 #include <vmath.h>
@@ -72,6 +73,8 @@ static void xfm_tri(tri_t *t, xfm_t *xfm)
 
 static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c)
 {
+	PROFILE_WINDOW_START(triangle_span);
+
 	int ix;
 	int iy;
 	qval_t x;
@@ -148,10 +151,16 @@ static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c)
 		lz = qadd(lz, s->ldzdy);
 		rz = qadd(rz, s->rdzdy);
 	}
+
+	PROFILE_WINDOW_END(triangle_span);
 }
 
 static void draw_tri(tri_t *t, unsigned char *cb, qval_t *zb)
 {
+	PROFILE_WINDOW_START(triangle);
+
+	PROFILE_WINDOW_START(triangle_xfm);
+
 	vec_t v1 = t->a;
 	vec_t v2 = t->b;
 	vec_t v3 = t->c;
@@ -217,6 +226,10 @@ static void draw_tri(tri_t *t, unsigned char *cb, qval_t *zb)
 		v1 = v2;
 		v2 = v;
 	}
+
+	PROFILE_WINDOW_END(triangle_xfm);
+
+	PROFILE_WINDOW_START(triangle_rast);
 
 	qval_t x1 = v1.x;
 	qval_t y1 = v1.y;
@@ -312,10 +325,16 @@ static void draw_tri(tri_t *t, unsigned char *cb, qval_t *zb)
 
 		draw_span(&s, cb, zb, c);
 	}
+
+	PROFILE_WINDOW_END(triangle_rast);
+
+	PROFILE_WINDOW_END(triangle);
 }
 
 void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 {
+	PROFILE_WINDOW_START(model);
+
 	for (int i = 0; i < mdl->nfaces; i++)
 	{
 		tri_t t =
@@ -328,4 +347,6 @@ void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 		xfm_tri(&t, xfm);
 		draw_tri(&t, cb, zb);
 	}
+
+	PROFILE_WINDOW_END(model);
 }
