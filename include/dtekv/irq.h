@@ -15,12 +15,19 @@ static inline void irq_disable(void)
 
 static inline unsigned irq_save(void)
 {
-	/* stub */
+	unsigned irqf = csrr(mstatus);
+
+	irq_disable();
+
+	return irqf;
 }
 
 static inline void irq_restore(unsigned irqf)
 {
-	/* stub */
+	if ((irqf & (1 << 3)) != 0)
+	{
+		irq_enable();
+	}
 }
 
 #endif
