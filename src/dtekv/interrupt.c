@@ -1,7 +1,5 @@
-#include <stddef.h>
 #include <button_io.h>
-#include <json.h>
-#include <perf.h>
+#include <perf_json.h>
 #include <timer.h>
 #include <timer_io.h>
 #include <uart.h>
