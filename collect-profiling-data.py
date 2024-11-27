@@ -56,10 +56,17 @@ def read_profile_data_from_open_file(file):
     return data
 
 def default_printer(data):
+    frame_exec_time = None
     for window in data:
+        if window.name == "Frame":
+            frame_exec_time = window.exec_time
+        if frame_exec_time is None:
+            print("error: first registered window needs name \"Frame\"", file=sys.stderr)
+
         print(f'{window.name.replace("_", " ")}:')
         print(f"    Number of runs:     {window.runs}")
         print(f"    Execution time:     {round(window.exec_time, 2)}s")
+        print(f"    % of frame time:    {round(window.exec_time / frame_exec_time, 1)}%")
         print(f"    IPC:                {round(window.ipc, 2)}")
         print(f"    D-cache miss ratio: {round(window.d_miss_ratio * 100, 1)}%")
         print(f"    I-cache miss ratio: {round(window.i_miss_ratio * 100, 1)}%")
