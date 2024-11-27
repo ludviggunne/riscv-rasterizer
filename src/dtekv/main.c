@@ -14,7 +14,7 @@ static qval_t		zb[WIDTH * HEIGHT];
 
 static void display_func(void)
 {
-	PROFILE_WINDOW_START(draw_frame);
+	PROFILE_WINDOW_START(Frame);
 
 	for (int i = 0; i < sizeof(*cb) / sizeof*(*cb); i += 4)
 	{
@@ -28,7 +28,7 @@ static void display_func(void)
 
 	draw_model(g_model, &g_model_xfm, *cb, zb);
 
-	PROFILE_WINDOW_END(draw_frame);
+	PROFILE_WINDOW_END(Frame);
 
 	{
 		int sw = SWITCH_DATA;
