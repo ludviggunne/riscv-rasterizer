@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <io.h>
+#include <irq.h>
 #include <perf.h>
 #include <uart.h>
 
@@ -115,6 +116,7 @@ void profile_window_end(struct profile_window *win)
 	current.mhpmcounter8 -= win->off.mhpmcounter8;
 	current.mhpmcounter9 -= win->off.mhpmcounter9;
 
+	irq_disable();
 	win->acc.mcycle += current.mcycle;
 	win->acc.minstret += current.minstret;
 	win->acc.mhpmcounter3 += current.mhpmcounter3;
@@ -124,6 +126,7 @@ void profile_window_end(struct profile_window *win)
 	win->acc.mhpmcounter7 += current.mhpmcounter7;
 	win->acc.mhpmcounter8 += current.mhpmcounter8;
 	win->acc.mhpmcounter9 += current.mhpmcounter9;
+	irq_enable();
 
 	win->nruns++;
 }

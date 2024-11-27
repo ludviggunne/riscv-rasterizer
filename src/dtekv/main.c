@@ -19,6 +19,8 @@ static qval_t			zb[WIDTH * HEIGHT];
 
 static void display_func(void)
 {
+	PROFILE_WINDOW_START(draw_frame);
+
 	for (int i = 0; i < sizeof(*cb) / sizeof*(*cb); i += 4)
 	{
 		__asm__ ("sw zero, %0;" : "=m"(*(int *)&(*cb)[i]));
@@ -30,6 +32,8 @@ static void display_func(void)
 	}
 
 	draw_model(g_model, &g_model_xfm, *cb, zb);
+
+	PROFILE_WINDOW_END(draw_frame)
 
 	{
 		int sw = *(volatile int *) 0x04000010;

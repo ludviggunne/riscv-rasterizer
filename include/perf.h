@@ -69,8 +69,11 @@ void print_all_profile_window_info(void (*print)(struct profile_window *));
  * Convenience macro to create a profile window.
  */
 #define PROFILE_WINDOW_START(name) \
-	static struct profile_window *__pwin_ ## name = \
-		__pwin_ ## name = create_new_profile_window(#name); \
+	static struct profile_window *__pwin_ ## name; \
+	if (__pwin_ ## name == NULL) \
+	{ \
+		create_new_profile_window(#name); \
+	} \
 	profile_window_start(__pwin_ ## name);
 
 /*
