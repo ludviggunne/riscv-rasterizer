@@ -1,4 +1,0 @@
--Iinclude
--Iinclude/dtekv
--Iinclude/avr
--Ibuild
