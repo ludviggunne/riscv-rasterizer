@@ -2,7 +2,7 @@
 
 import sys
 import json
-import pprint
+import os
 
 _start_indicator = "# PROFILE START"
 _end_indicator = "# PROFILE END"
@@ -21,6 +21,7 @@ class ProfileWindow:
         self.d_stalls = json_object["mhpmcounter7"]
         self.hzd_stalls = json_object["mhpmcounter8"]
         self.alu_stalls = json_object["mhpmcounter9"]
+        self.exec_time = self.cycles / 30000000
         self.ipc = self.instrs / self.cycles
         self.d_miss_ratio = self.d_misses / self.mem_instrs
         self.d_hit_ratio = 1 - self.d_miss_ratio
@@ -36,7 +37,7 @@ def read_profile_data_from_open_file(file):
     found_start = False
 
     # Extract the profiling data from input
-    for line in sys.stdin:
+    for line in file:
         if not found_start:
             if line.startswith(_start_indicator):
                 found_start = True
@@ -54,6 +55,31 @@ def read_profile_data_from_open_file(file):
 
     return data
 
+def default_printer(data):
+    for window in data:
+        print(f'{window.name.replace("_", " ")}:')
+        print(f"    Execution time:     {round(window.exec_time, 2)}s")
+        print(f"    IPC:                {window.ipc}")
+        print(f"    D-cache miss ratio: {round(window.d_miss_ratio * 100, 1)}%")
+        print(f"    I-cache miss ratio: {round(window.i_miss_ratio * 100, 1)}%")
+        print(f"    ALU-stall ratio:    {round(window.alu_stall_ratio * 100, 1)}%")
+        print(f"    Hazard-stall ratio: {round(window.hzd_stall_ratio * 100, 1)}%")
+        print(f"    Memory intensity:   {round(window.mem_intensity * 100, 1)}%")
+        print("")
+
 sys.tracebacklimit = 0
-for window in read_profile_data_from_open_file(sys.stdin):
-    pprint.pp(window)
+data = read_profile_data_from_open_file(sys.stdin)
+default_printer(data)
+
+# Saving this for later
+# if len(sys.argv) < 2:
+#     print("Usage: {sys.argv[0]} <table name>", file=sys.stderr)
+#     sys.exit(1)
+
+# table_name = sys.argv[1]
+# table_path = os.path.join("tables", table_name)
+
+# os.makedirs(table_path, exist_ok=True)
+
+# for window in data:
+    # with open(os.path.join(table_path, window.name)) as file:
