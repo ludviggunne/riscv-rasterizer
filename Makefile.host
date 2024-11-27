@@ -23,7 +23,8 @@ clean:
 $(BUILDDIR):
 	mkdir -p $(@)
 
-$(RAST): src/host/main.c src/model.c src/rast.c src/qmath.c src/vmath.c src/uart.c src/host/perf.c
+$(RAST): src/host/main.c src/model.c src/rast.c src/qmath.c src/vmath.c \
+	src/uart.c src/host/perf.c
 $(OBJ2C): src/host/obj2c.c
 
 ifeq ($(shell uname -s | grep -o _NT-),_NT-)

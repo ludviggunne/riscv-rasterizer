@@ -4,7 +4,7 @@
 #include <util/setbaud.h>
 #include <util/delay.h>
 #include <string.h>
-#include "pif.h"
+#include <joybus.h>
 
 #define CTRL_PIN  2 // pin 2 on arduino
 #define DTEK_CLK  3 // pin 11 on arduino
@@ -102,13 +102,13 @@ int main(void)
 
 	// reset controller
 	uint8_t request = RESET;
-	pif_host_transmit(CTRL_PIN, &request, 1, recvbuf, 3);
+	joybus_host_transceive(CTRL_PIN, &request, 1, recvbuf, 3);
 	printf("reset done\n");
 
 	for (;;)
 	{
 		request = POLL;
-		pif_host_transmit(CTRL_PIN, &request, 1, recvbuf, 4);
+		joybus_host_transceive(CTRL_PIN, &request, 1, recvbuf, 4);
 		if (changed(recvbuf, recvbuf_prev)) {
 			printf("joystick: [ %d, %d ]\n", *(int8_t*)&recvbuf[2], *(int8_t*)&recvbuf[3]);
 			send(recvbuf);
