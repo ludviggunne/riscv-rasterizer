@@ -1,5 +1,4 @@
 #include <button_io.h>
-#include <model.h>
 #include <perf.h>
 #include <qmath.h>
 #include <rast.h>
@@ -18,22 +17,35 @@ static qval_t		zb[WIDTH * HEIGHT];
 
 static void display_func(void)
 {
-	PROFILE_WINDOW_START(Frame);
-
-	for (int i = 0; i < sizeof(*cb) / sizeof*(*cb); i += 4)
-	{
-		__asm__ ("sw zero, %0;" : "=m"(*(int *)&(*cb)[i]));
-	}
-
+	/* clear depth buffer */
 	for (int i = 0; i < sizeof(zb) / sizeof*(zb); i++)
 	{
 		zb[i] = QMAX;
 	}
 
+	/* wait for buffer swap */
+	while (VGA_STATUS & 1)
+	{
+	}
+
+	PROFILE_WINDOW_START(Frame);
+
+	PROFILE_WINDOW_START(buf_clear);
+
+	/* clear color buffer */
+	for (int i = 0; i < sizeof(*cb) / sizeof*(*cb); i += 4)
+	{
+		__asm__ ("sw zero, %0;" : "=m"(*(int *)&(*cb)[i]));
+	}
+
+	PROFILE_WINDOW_END(buf_clear);
+
+	/* draw model */
 	draw_model(g_model, &g_model_xfm, *cb, zb);
 
 	PROFILE_WINDOW_END(Frame);
 
+	/* handle switch input */
 	{
 		int sw = SWITCH_DATA;
 
@@ -71,16 +83,10 @@ static void display_func(void)
 		}
 	}
 
-	{
-		while (VGA_STATUS & 1)
-		{
-		}
-
-		VGA_BACK = cb;
-		VGA_FRONT = cb;
-
-		cb = &VGA_MEM[frame_count++ & 1];
-	}
+	/* swap buffer */
+	VGA_BACK = cb;
+	VGA_FRONT = cb;
+	cb = &VGA_MEM[frame_count++ & 1];
 }
 
 static void rast_main(int argc, char *argv[])
