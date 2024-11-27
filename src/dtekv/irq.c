@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <button_io.h>
+#include <json.h>
 #include <perf.h>
 #include <timer.h>
 #include <timer_io.h>
@@ -12,7 +13,7 @@ void interrupt(int mcause)
 	case BUTTON_IRQ:
 		if (BUTTON_DATA & 1)
 		{
-			print_all_profile_window_info(NULL);
+			print_all_profile_windows_json();
 		}
 		BUTTON_EDGECAPTURE = 0;
 		break;

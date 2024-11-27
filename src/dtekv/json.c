@@ -7,7 +7,7 @@ static void print_profile_window_json(struct profile_window *win,
                                       unsigned int nwins)
 {
 	uart_printf("    {\n"
-	            "        \"name\": %s,\n"
+	            "        \"name\": \"%s\",\n"
 		    "        \"runs\": %lu,\n"
 	            "        \"mcycle\": %lu,\n"
 	            "        \"minstret\": %lu,\n"
@@ -30,6 +30,7 @@ static void print_profile_window_json(struct profile_window *win,
 		    win->acc.mhpmcounter7,
 		    win->acc.mhpmcounter8,
 		    win->acc.mhpmcounter9,
+			/* fiffigt */
 		    index < nwins - 1 ? "," : "");
 }
 
@@ -39,5 +40,5 @@ void print_all_profile_windows_json(void)
 	            "[\n");
 	print_all_profile_window_info(print_profile_window_json);
 	uart_printf("]\n"
-	            "# PROFILE END");
+	            "# PROFILE END\n");
 }
