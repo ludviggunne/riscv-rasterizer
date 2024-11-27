@@ -59,7 +59,7 @@ def default_printer(data):
     for window in data:
         print(f'{window.name.replace("_", " ")}:')
         print(f"    Execution time:     {round(window.exec_time, 2)}s")
-        print(f"    IPC:                {window.ipc}")
+        print(f"    IPC:                {round(window.ipc, 2)}")
         print(f"    D-cache miss ratio: {round(window.d_miss_ratio * 100, 1)}%")
         print(f"    I-cache miss ratio: {round(window.i_miss_ratio * 100, 1)}%")
         print(f"    ALU-stall ratio:    {round(window.alu_stall_ratio * 100, 1)}%")
