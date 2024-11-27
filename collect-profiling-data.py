@@ -58,6 +58,7 @@ def read_profile_data_from_open_file(file):
 def default_printer(data):
     for window in data:
         print(f'{window.name.replace("_", " ")}:')
+        print(f'    Number of runs:     {window.runs}")
         print(f"    Execution time:     {round(window.exec_time, 2)}s")
         print(f"    IPC:                {round(window.ipc, 2)}")
         print(f"    D-cache miss ratio: {round(window.d_miss_ratio * 100, 1)}%")
