@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #define NUM_FRAMES_UNTIL_PROFILE_DUMP 500
+#define DO_PROFILE_DUMP 1
 
 static int		frame_count;
 static unsigned char	(*cb)[WIDTH * HEIGHT];
@@ -98,6 +99,7 @@ static void rast_main(int argc, char *argv[])
 	for (;;)
 	{
 		display_func();
+#if DO_PROFILE_DUMP
 		--frame_counter;
 		if (frame_counter == 0)
 		{
@@ -105,6 +107,7 @@ static void rast_main(int argc, char *argv[])
 			abort(); // ???
 			frame_counter = NUM_FRAMES_UNTIL_PROFILE_DUMP;
 		}
+#endif /* DO_PROFILE_DUMP */
 	}
 }
 
