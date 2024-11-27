@@ -93,6 +93,7 @@ static void rast_main(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+	clear_counters();
 	uart_init();
 	ctrl_init();
 	timer_init();

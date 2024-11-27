@@ -81,7 +81,7 @@ struct profile_window *create_new_profile_window(const char *name)
 
 void profile_window_start(struct profile_window *win)
 {
-	get_counters(&win->offset);
+	get_counters(&win->off);
 }
 
 void profile_window_end(struct profile_window *win)
@@ -89,74 +89,55 @@ void profile_window_end(struct profile_window *win)
 	struct counters current;
 	get_counters(&current);
 
-	// Obtain the values accumulated in the window
-	current.mcycle -= win->offset.mcycle;
-	current.minstret -= win->offset.minstret;
-	current.mhpmcounter3 -= win->offset.mhpmcounter3;
-	current.mhpmcounter4 -= win->offset.mhpmcounter4;
-	current.mhpmcounter5 -= win->offset.mhpmcounter5;
-	current.mhpmcounter6 -= win->offset.mhpmcounter6;
-	current.mhpmcounter7 -= win->offset.mhpmcounter7;
-	current.mhpmcounter8 -= win->offset.mhpmcounter8;
-	current.mhpmcounter9 -= win->offset.mhpmcounter9;
+	current.mcycle -= win->off.mcycle;
+	current.minstret -= win->off.minstret;
+	current.mhpmcounter3 -= win->off.mhpmcounter3;
+	current.mhpmcounter4 -= win->off.mhpmcounter4;
+	current.mhpmcounter5 -= win->off.mhpmcounter5;
+	current.mhpmcounter6 -= win->off.mhpmcounter6;
+	current.mhpmcounter7 -= win->off.mhpmcounter7;
+	current.mhpmcounter8 -= win->off.mhpmcounter8;
+	current.mhpmcounter9 -= win->off.mhpmcounter9;
 
-	// Update average values
-	unsigned long long mcycle = win->average.mcycle * win->times;
-	unsigned long long minstret = win->average.minstret * win->times;
-	unsigned long long mhpmcounter3 = win->average.mhpmcounter3 * win->times;
-	unsigned long long mhpmcounter4 = win->average.mhpmcounter4 * win->times;
-	unsigned long long mhpmcounter5 = win->average.mhpmcounter5 * win->times;
-	unsigned long long mhpmcounter6 = win->average.mhpmcounter6 * win->times;
-	unsigned long long mhpmcounter7 = win->average.mhpmcounter7 * win->times;
-	unsigned long long mhpmcounter8 = win->average.mhpmcounter8 * win->times;
-	unsigned long long mhpmcounter9 = win->average.mhpmcounter9 * win->times;
+	win->acc.mcycle += current.mcycle;
+	win->acc.minstret += current.minstret;
+	win->acc.mhpmcounter3 += current.mhpmcounter3;
+	win->acc.mhpmcounter4 += current.mhpmcounter4;
+	win->acc.mhpmcounter5 += current.mhpmcounter5;
+	win->acc.mhpmcounter6 += current.mhpmcounter6;
+	win->acc.mhpmcounter7 += current.mhpmcounter7;
+	win->acc.mhpmcounter8 += current.mhpmcounter8;
+	win->acc.mhpmcounter9 += current.mhpmcounter9;
 
-	mcycle += current.mcycle;
-	minstret += current.minstret;
-	mhpmcounter3 += current.mhpmcounter3;
-	mhpmcounter4 += current.mhpmcounter4;
-	mhpmcounter5 += current.mhpmcounter5;
-	mhpmcounter6 += current.mhpmcounter6;
-	mhpmcounter7 += current.mhpmcounter7;
-	mhpmcounter8 += current.mhpmcounter8;
-	mhpmcounter9 += current.mhpmcounter9;
-
-	win->times++;
-
-	mcycle /= win->times;
-	minstret /= win->times;
-	mhpmcounter3 /= win->times;
-	mhpmcounter4 /= win->times;
-	mhpmcounter5 /= win->times;
-	mhpmcounter6 /= win->times;
-	mhpmcounter7 /= win->times;
-	mhpmcounter8 /= win->times;
-	mhpmcounter9 /= win->times;
-
-	win->average.mcycle = mcycle;
-	win->average.minstret = minstret;
-	win->average.mhpmcounter3 = mhpmcounter3;
-	win->average.mhpmcounter4 = mhpmcounter4;
-	win->average.mhpmcounter5 = mhpmcounter5;
-	win->average.mhpmcounter6 = mhpmcounter6;
-	win->average.mhpmcounter7 = mhpmcounter7;
-	win->average.mhpmcounter8 = mhpmcounter8;
-	win->average.mhpmcounter9 = mhpmcounter9;
+	win->nruns++;
 }
 
-static void print_profile_window_info(struct profile_window *win)
+static void default_print(struct profile_window *win)
 {
 	uart_printf("%s:\n", win->name);
-	uart_printf("    Cycles: %d\n", win->average.mcycle);
-	uart_printf("    Instructions: %d\n", win->average.minstret);
-	uart_printf("    IPC: %d\n", win->average.minstret / win->average.mcycle);
+	uart_printf("    mcycleh:       %ul\n", win->acc.mcycle);
+	uart_printf("    minstreth:     %ul\n", win->acc.minstret);
+	uart_printf("    mhpmcounter3h: %ul\n", win->acc.mhpmcounter3);
+	uart_printf("    mhpmcounter4h: %ul\n", win->acc.mhpmcounter4);
+	uart_printf("    mhpmcounter5h: %ul\n", win->acc.mhpmcounter5);
+	uart_printf("    mhpmcounter6h: %ul\n", win->acc.mhpmcounter6);
+	uart_printf("    mhpmcounter7h: %ul\n", win->acc.mhpmcounter7);
+	uart_printf("    mhpmcounter8h: %ul\n", win->acc.mhpmcounter8);
+	uart_printf("    mhpmcounter9h: %ul\n", win->acc.mhpmcounter9);
 	uart_printf("\n");
 }
 
-void print_all_profile_window_info(void)
+void print_all_profile_window_info(void (*print)(struct profile_window *))
 {
-	for (int i = 0; i < s_window_count; i++)
+	if (print)
 	{
-		print_profile_window_info(&s_windows[i]);
+		for (int i = 0; i < s_window_count; i++)
+		{
+			print(&s_windows[i]);
+		}
+	}
+	else
+	{
+		print_all_profile_window_info(default_print);
 	}
 }

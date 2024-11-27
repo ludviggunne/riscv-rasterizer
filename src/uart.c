@@ -106,6 +106,61 @@ void uart_printf(const char *fmt, ...)
 				}
 				break;
 			}
+			case 'l':
+			{
+				fmt++;
+				c = *fmt;
+				switch (c)
+				{
+				case 0:
+					return;
+				case 'd':
+				{
+					long int x = va_arg(args, long int);
+					if (x == 0)
+					{
+						uart_putc('0');
+						continue;
+					}
+					if (x < 0)
+					{
+						uart_putc('-');
+						x = -x;
+					}
+					while (x)
+					{
+						buf[buflen++] = '0' + x % 10;
+						x /= 10;
+					}
+					for (int i = buflen - 1; i >= 0; i--)
+					{
+						uart_putc(buf[i]);
+					}
+					break;
+				}
+				case 'u':
+				{
+					unsigned long int x = va_arg(args, unsigned long int);
+					if (x == 0)
+					{
+						uart_putc('0');
+						continue;
+					}
+					while (x)
+					{
+						buf[buflen++] = '0' + x % 10;
+						x /= 10;
+					}
+					for (int i = buflen - 1; i >= 0; i--)
+					{
+						uart_putc(buf[i]);
+					}
+					break;
+				}
+				default:
+					break;
+				}
+			}
 			case 'p':
 			{
 				void *p = va_arg(args, void*);

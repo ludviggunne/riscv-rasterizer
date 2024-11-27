@@ -34,7 +34,7 @@ void profile_window_end(struct profile_window *win)
 	(void) win;
 }
 
-void print_all_profile_window_info(void)
+void print_all_profile_window_info(void (*print)(struct profile_window *))
 {
 }
 

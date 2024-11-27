@@ -6,26 +6,32 @@
 /*
  * Holds values obtained from hardware counters
  */
-struct counters {
-	unsigned int mcycle;
-	unsigned int minstret;
-	unsigned int mhpmcounter3;
-	unsigned int mhpmcounter4;
-	unsigned int mhpmcounter5;
-	unsigned int mhpmcounter6;
-	unsigned int mhpmcounter7;
-	unsigned int mhpmcounter8;
-	unsigned int mhpmcounter9;
+struct counters
+{
+	unsigned long long mcycle;
+	unsigned long long minstret;
+	unsigned long long mhpmcounter3;
+	unsigned long long mhpmcounter4;
+	unsigned long long mhpmcounter5;
+	unsigned long long mhpmcounter6;
+	unsigned long long mhpmcounter7;
+	unsigned long long mhpmcounter8;
+	unsigned long long mhpmcounter9;
 };
 
 /*
- * Represents the average counter values in a window of time,
+ * Holds the accumulated counter values in a window of time,
  * for example a frame or a function.
  */
-struct profile_window {
-	struct counters average;
-	struct counters offset;
-	unsigned int times;
+struct profile_window
+{
+	/* Total accumulated values */
+	struct counters acc;
+	/* The value fo the counters at the start of the window */
+	struct counters off;
+	/* Number of runs */
+	unsigned long long nruns;
+	/* Name of the window, for example 'Frame' */
 	const char *name;
 };
 
@@ -45,19 +51,20 @@ void get_counters(struct counters *counters);
 struct profile_window *create_new_profile_window(const char *name);
 
 /*
- * Start measuring.
+ * Start window.
  */
 void profile_window_start(struct profile_window *win);
 
 /*
- * Stop measuring and update average.
+ * Stop window.
  */
 void profile_window_end(struct profile_window *win);
 
 /*
- * Display information about all profile windows over uart.
+ * Display information about all profile windows over UART.
  */
-void print_all_profile_window_info(void);
+void print_all_profile_window_info(void (*print)(struct profile_window *));
+
 /*
  * Convenience macro to create a profile window.
  */
