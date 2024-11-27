@@ -66,7 +66,7 @@ def default_printer(data):
         print(f'{window.name.replace("_", " ")}:')
         print(f"    Number of runs:     {window.runs}")
         print(f"    Execution time:     {round(window.exec_time, 2)}s")
-        print(f"    % of frame time:    {round(window.exec_time / frame_exec_time, 1)}%")
+        print(f"    % of frame time:    {round(100 * window.exec_time / frame_exec_time, 1)}%")
         print(f"    IPC:                {round(window.ipc, 2)}")
         print(f"    D-cache miss ratio: {round(window.d_miss_ratio * 100, 1)}%")
         print(f"    I-cache miss ratio: {round(window.i_miss_ratio * 100, 1)}%")
