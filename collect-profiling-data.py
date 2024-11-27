@@ -32,6 +32,13 @@ class ProfileWindow:
         self.hzd_stall_ratio = self.hzd_stalls / self.cycles
         self.all_misses = self.i_misses + self.d_misses
 
+def die(msg):
+    print(msg, file=sys.stderr)
+    sys.exit(1)
+
+def pretty_name(name):
+    return (name[0].upper() + name[1:]).replace("_", " ")
+
 def read_profile_data_from_open_file(file):
     raw_data = ""
     found_start = False
@@ -56,6 +63,10 @@ def read_profile_data_from_open_file(file):
     return data
 
 def default_printer(data):
+
+    if len(data) == 0:
+        return
+
     frame_exec_time = None
 
     ipc_acc = 0
@@ -69,9 +80,9 @@ def default_printer(data):
         if window.name == "Frame":
             frame_exec_time = window.exec_time
         if frame_exec_time is None:
-            print("error: first registered window needs name \"Frame\"", file=sys.stderr)
+            die("error: first registered window needs name \"Frame\"")
 
-        print(f'{window.name.replace("_", " ")}:')
+        print(f"{pretty_name(window.name)}:")
         print(f"    Number of runs:     {window.runs}")
         print(f"    Execution time:     {round(window.exec_time, 2)}s")
         print(f"    % of frame time:    {round(100 * window.exec_time / frame_exec_time, 1)}%")
@@ -104,9 +115,34 @@ def default_printer(data):
     print(f"Average Hazard-stall ratio: {round(hzdstall_acc * 100, 1)}%")
     print(f"Average Memory intensity:   {round(memint_acc * 100, 1)}%")
 
+def save_latex_table(table, path):
+    with open(path, "w") as file:
+        outstr = "\\begin{tabular}{ | l | " + "c | " * (len(table[0]) - 1) + "}\n    \\hline\n"
+        outstr += "".join(map(lambda row: "    " + " & ".join(map(lambda x: str(x), row)) + " \\\\\n    \\hline\n", table))
+        outstr += "\n\\end{tabular}\n"
+        file.write(outstr)
+
+# Create table with a separate window on each row
+# and metrics for columns
+def create_table_layout_1(data):
+    table = [list(map(lambda x: "\\textbf{" + x + "}",
+            ["Window",
+            "IPC",
+            "D-cache miss ratio",
+            "I-cache miss ratio",
+            "Memory intensity"]))]
+    for window in data:
+        table.append([pretty_name(window.name),
+                    round(window.ipc, 2),
+                    str(round(100 * window.d_miss_ratio, 1)) + "\\%",
+                    str(round(100 * window.i_miss_ratio, 1)) + "\\%",
+                    str(round(100 * window.mem_intensity, 1)) + "\\%"])
+    return table
+
 sys.tracebacklimit = 0
 data = read_profile_data_from_open_file(sys.stdin)
 default_printer(data)
+save_latex_table(create_table_layout_1(data), "table.tex")
 
 # Saving this for later
 # if len(sys.argv) < 2:
