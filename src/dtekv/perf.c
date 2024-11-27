@@ -25,10 +25,6 @@
 static struct profile_window s_windows[MAX_PROFILE_WINDOWS] = { 0 };
 static unsigned int s_window_count;
 
-// Defined in stop.S
-__attribute__((noreturn))
-void _stop(void);
-
 void clear_counters(void)
 {
 	csrw(mcycle, 0);
