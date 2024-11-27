@@ -77,10 +77,10 @@ def default_printer(data):
     memint_acc = 0
 
     for window in data:
-        if window.name == "Frame":
+        if window.name == "frame":
             frame_exec_time = window.exec_time
         if frame_exec_time is None:
-            die("error: first registered window needs name \"Frame\"")
+            die("error: first registered window needs name \"frame\"")
 
         print(f"{pretty_name(window.name)}:")
         print(f"    Number of runs:     {window.runs}")

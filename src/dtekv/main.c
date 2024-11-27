@@ -7,10 +7,9 @@
 #include <uart.h>
 #include <vga_io.h>
 #include <perf_json.h>
-#include <stdlib.h>
 
-#define NUM_FRAMES_UNTIL_PROFILE_DUMP 500
-#define DO_PROFILE_DUMP 1
+#define PROFILE
+#define PROFILE_FRAMES	500
 
 static int		frame_count;
 static unsigned char	(*cb)[WIDTH * HEIGHT];
@@ -18,20 +17,28 @@ static qval_t		zb[WIDTH * HEIGHT];
 
 static void display_func(void)
 {
+	PROFILE_WINDOW_START(frame);
+
+	PROFILE_WINDOW_START(zbuf_clear);
+
 	/* clear depth buffer */
 	for (int i = 0; i < sizeof(zb) / sizeof*(zb); i++)
 	{
 		zb[i] = QMAX;
 	}
 
+	PROFILE_WINDOW_END(zbuf_clear);
+
+	PROFILE_WINDOW_START(swap);
+
 	/* wait for buffer swap */
 	while (VGA_STATUS & 1)
 	{
 	}
 
-	PROFILE_WINDOW_START(Frame);
+	PROFILE_WINDOW_END(swap);
 
-	PROFILE_WINDOW_START(buf_clear);
+	PROFILE_WINDOW_START(cbuf_clear);
 
 	/* clear color buffer */
 	for (int i = 0; i < sizeof(*cb) / sizeof*(*cb); i += 4)
@@ -39,12 +46,12 @@ static void display_func(void)
 		__asm__ ("sw zero, %0;" : "=m"(*(int *)&(*cb)[i]));
 	}
 
-	PROFILE_WINDOW_END(buf_clear);
+	PROFILE_WINDOW_END(cbuf_clear);
 
 	/* draw model */
 	draw_model(g_model, &g_model_xfm, *cb, zb);
 
-	PROFILE_WINDOW_END(Frame);
+	PROFILE_WINDOW_END(frame);
 
 	/* handle switch input */
 	{
@@ -94,20 +101,18 @@ static void rast_main(int argc, char *argv[])
 {
 	cb = &VGA_MEM[1];
 
-	int frame_counter = NUM_FRAMES_UNTIL_PROFILE_DUMP;
-
 	for (;;)
 	{
 		display_func();
-#if DO_PROFILE_DUMP
-		--frame_counter;
-		if (frame_counter == 0)
+
+#ifdef PROFILE
+		if (frame_count == PROFILE_FRAMES)
 		{
 			print_all_profile_windows_json();
-			abort(); // ???
-			frame_counter = NUM_FRAMES_UNTIL_PROFILE_DUMP;
+
+			break;
 		}
-#endif /* DO_PROFILE_DUMP */
+#endif
 	}
 }
 
