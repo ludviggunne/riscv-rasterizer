@@ -15,11 +15,11 @@ _reset:
 	/* clear bss */
 	la	t2, __bss_start
 	la	t3, __bss_end
-0:
 	bge	t2, t3, 1f
+0:
 	sw	zero, 0(t2)
 	addi	t2, t2, 4
-	beq	zero, zero, 0b
+	bne	t2, t3, 0b
 1:
 
 	/* initialize stack */
