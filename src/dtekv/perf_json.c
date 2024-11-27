@@ -17,7 +17,7 @@ static void print_profile_window_json(struct profile_window *win,
 	            "        \"mhpmcounter7\": %lu,\n"
 	            "        \"mhpmcounter8\": %lu,\n"
 	            "        \"mhpmcounter9\": %lu\n"
-	            "     }%s\n",
+	            "    }%s\n",
 	            win->name,
 	            win->nruns,
 		    win->acc.mcycle,
