@@ -33,7 +33,7 @@ static void display_func(void)
 
 	draw_model(g_model, &g_model_xfm, *cb, zb);
 
-	PROFILE_WINDOW_END(draw_frame)
+	PROFILE_WINDOW_END(draw_frame);
 
 	{
 		int sw = *(volatile int *) 0x04000010;
