@@ -114,8 +114,10 @@ void profile_window_end(struct profile_window *win)
 	win->nruns++;
 }
 
-static void default_print(struct profile_window *win)
+static void default_print(struct profile_window *win, unsigned int index, unsigned int nwins)
 {
+	(void)index;
+	(void)nwins;
 	uart_printf("%s:\n", win->name);
 	uart_printf("    mcycleh:       %ul\n", win->acc.mcycle);
 	uart_printf("    minstreth:     %ul\n", win->acc.minstret);
@@ -129,13 +131,13 @@ static void default_print(struct profile_window *win)
 	uart_printf("\n");
 }
 
-void print_all_profile_window_info(void (*print)(struct profile_window *))
+void print_all_profile_window_info(void (*print)(struct profile_window *, unsigned int, unsigned int))
 {
 	if (print)
 	{
 		for (int i = 0; i < s_window_count; i++)
 		{
-			print(&s_windows[i]);
+			print(&s_windows[i], i, s_window_count);
 		}
 	}
 	else

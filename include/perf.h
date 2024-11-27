@@ -63,7 +63,7 @@ void profile_window_end(struct profile_window *win);
 /*
  * Display information about all profile windows over UART.
  */
-void print_all_profile_window_info(void (*print)(struct profile_window *));
+void print_all_profile_window_info(void (*print)(struct profile_window *, unsigned int, unsigned int));
 
 /*
  * Convenience macro to create a profile window.
