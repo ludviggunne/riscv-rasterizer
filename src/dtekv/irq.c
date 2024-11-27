@@ -1,8 +1,7 @@
+#include <stddef.h>
 #include <perf.h>
-#include <display.h>
-#include <ctrl.h>
-#include <uart.h>
 #include <timer.h>
+#include <uart.h>
 
 void interrupt(int mcause)
 {
@@ -10,7 +9,7 @@ void interrupt(int mcause)
 	switch (mcause)
 	{
 	case 18:
-		ctrl_recv();
+		print_all_profile_window_info(NULL);
 		break;
 	case MCAUSE_TIMER:
 		timer_clear_interrupt();
