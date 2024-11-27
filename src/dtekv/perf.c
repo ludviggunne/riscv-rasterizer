@@ -6,23 +6,6 @@
 
 #define MAX_PROFILE_WINDOWS 32
 
-/*
- * Convenience macros to clear/read from system registers.
- */
-#define reg(name)\
-	({\
-	unsigned int v;\
-	asm volatile (\
-	"csrr %0, " name "\n"\
-	: "=r" (v));\
-	v;\
-	})
-
-#define clear(reg)\
-	asm volatile (\
-	"csrw " reg ", zero\n"\
-	)
-
 static struct profile_window s_windows[MAX_PROFILE_WINDOWS] = { 0 };
 static unsigned int s_window_count;
 
