@@ -35,7 +35,9 @@ static void print_profile_window_json(struct profile_window *win,
 
 void print_all_profile_windows_json(void)
 {
-	uart_printf("[\n");
+	uart_printf("# PROFILE START\n"
+	            "[\n");
 	print_all_profile_window_info(print_profile_window_json);
-	uart_printf("]\n");
+	uart_printf("]\n"
+	            "# PROFILE END");
 }
