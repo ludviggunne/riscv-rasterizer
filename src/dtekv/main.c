@@ -7,6 +7,10 @@
 #include <timer.h>
 #include <uart.h>
 #include <vga_io.h>
+#include <perf_json.h>
+#include <stdlib.h>
+
+#define NUM_FRAMES_UNTIL_PROFILE_DUMP 500
 
 static int		frame_count;
 static unsigned char	(*cb)[WIDTH * HEIGHT];
@@ -83,9 +87,18 @@ static void rast_main(int argc, char *argv[])
 {
 	cb = &VGA_MEM[1];
 
+	int frame_counter = NUM_FRAMES_UNTIL_PROFILE_DUMP;
+
 	for (;;)
 	{
 		display_func();
+		--frame_counter;
+		if (frame_counter == 0)
+		{
+			print_all_profile_windows_json();
+			abort(); // ???
+			frame_counter = NUM_FRAMES_UNTIL_PROFILE_DUMP;
+		}
 	}
 }
 
