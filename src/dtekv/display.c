@@ -1,3 +1,4 @@
+#include <display_io.h>
 #include <qmath.h>
 
 static unsigned char display_chrtbl[256] =
@@ -74,8 +75,6 @@ static unsigned char display_chrtbl[256] =
 
 void display_char(int pos, int c)
 {
-	volatile unsigned int *display_regs = (void *) 0x04000050;
-
 	if (c & 0x80)
 	{
 		c = (display_chrtbl[c ^ 0x80] ^ 0x80);
@@ -85,7 +84,7 @@ void display_char(int pos, int c)
 		c = display_chrtbl[c];
 	}
 
-	display_regs[(5 - pos) * 4] = c;
+	DISPLAY_BASE[(5 - pos) * 4] = c;
 }
 
 void display_qval(qval_t v)

@@ -1,16 +1,16 @@
 #include <ctrl.h>
+#include <gpio_io.h>
 #include <model.h>
 #include <uart.h>
 
 #define BIT(x) (1 << x)
-#define GPIO_BASE ((volatile int*)0x040000e0)
 
 void ctrl_init(void)
 {
-	// *(GPIO_BASE + 1) &= ~(BIT(CLKPIN) | BIT(DATAPIN)); // set pins as inputs
-	// *(GPIO_BASE + 2) |= BIT(CLKPIN); // enable interrupts for clock pin
-	*(GPIO_BASE + 1) = 0;
-	*(GPIO_BASE + 2) = 0xffffffff;
+	// GPIO1_DIRECTION &= ~(BIT(CLKPIN) | BIT(DATAPIN)); // set pins as inputs
+	// GPIO1_INTERRUPTMASK |= BIT(CLKPIN); // enable interrupts for clock pin
+	GPIO1_DIRECTION = 0;
+	GPIO1_INTERRUPTMASK = 0xffffffff;
 }
 
 void ctrl_recv(void)
@@ -22,9 +22,9 @@ void ctrl_recv(void)
 	data = 0;
 	for (int i = 0; i < 32; i++)
 	{
-		while (!(*GPIO_BASE & BIT(CLKPIN)));
-		data |= !!(*GPIO_BASE & BIT(DATAPIN));
-		while ((*GPIO_BASE & BIT(CLKPIN)));
+		while (!(GPIO1_DATA & BIT(CLKPIN)));
+		data |= !!(GPIO1_DATA & BIT(DATAPIN));
+		while ((GPIO1_DATA & BIT(CLKPIN)));
 		data <<= 1;
 	}
 
@@ -41,8 +41,8 @@ void ctrl_recv(void)
 
 	uart_printf("joystick: [ %q, %q ]\n", qx, qy);
 
-	// clear interrupt
-	*(GPIO_BASE + 3) = 0;
+	/* clear interrupt */
+	GPIO1_EDGECAPTURE = 0;
 }
 
 

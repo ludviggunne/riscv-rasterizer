@@ -9,10 +9,9 @@
 #include <stdio.h>
 #endif
 #include <qmath.h>
-#include <uart.h>
-
-#define UART_DATA    ((volatile int *) 0x04000040)
-#define UART_CONTROL ((volatile int *) 0x04000044)
+#ifdef __riscv
+#include <uart_io.h>
+#endif
 
 static int is_init = 0;
 static const char hex[] = "0123456789abcdef";
@@ -21,8 +20,8 @@ void uart_init(void)
 {
 	if (is_init) return;
 #ifdef __riscv
-	// // disable interrupts
-	// *UART_CONTROL &= ~3;
+	/* disable interrupts */
+	// UART_CONTROL &= ~3;
 #endif
 	is_init = 1;
 }
@@ -31,10 +30,10 @@ void uart_putc(char c)
 {
 	c &= 127;
 #ifdef __riscv
-	// wait for FIFO to be available
-	while (!(*UART_CONTROL & 0xffff0000));
-	// write
-	*UART_DATA = (*UART_DATA & ~0xff) | c;
+	/* wait for FIFO to be available */
+	while (!(UART_CONTROL & 0xffff0000));
+	/* write */
+	UART_DATA = (UART_DATA & ~0xff) | c;
 #else
 	fputc(c, stdout);
 #endif
@@ -49,7 +48,7 @@ void uart_printf(const char *fmt, ...)
 	va_list args;
 	va_start(args, fmt);
 
-	// Process format string
+	/* Process format string */
 	for (; *fmt; fmt++)
 	{
 		buflen = 0;
@@ -116,7 +115,7 @@ void uart_printf(const char *fmt, ...)
 					return;
 				case 'd':
 				{
-					long int x = va_arg(args, long int);
+					long long int x = va_arg(args, long long int);
 					if (x == 0)
 					{
 						uart_putc('0');
@@ -140,7 +139,7 @@ void uart_printf(const char *fmt, ...)
 				}
 				case 'u':
 				{
-					unsigned long int x = va_arg(args, unsigned long int);
+					unsigned long long int x = va_arg(args, unsigned long long int);
 					if (x == 0)
 					{
 						uart_putc('0');
@@ -160,6 +159,7 @@ void uart_printf(const char *fmt, ...)
 				default:
 					break;
 				}
+				break;
 			}
 			case 'p':
 			{

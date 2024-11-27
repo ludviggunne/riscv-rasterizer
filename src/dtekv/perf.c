@@ -119,15 +119,15 @@ static void default_print(struct profile_window *win, unsigned int index, unsign
 	(void)index;
 	(void)nwins;
 	uart_printf("%s:\n", win->name);
-	uart_printf("    mcycleh:       %ul\n", win->acc.mcycle);
-	uart_printf("    minstreth:     %ul\n", win->acc.minstret);
-	uart_printf("    mhpmcounter3h: %ul\n", win->acc.mhpmcounter3);
-	uart_printf("    mhpmcounter4h: %ul\n", win->acc.mhpmcounter4);
-	uart_printf("    mhpmcounter5h: %ul\n", win->acc.mhpmcounter5);
-	uart_printf("    mhpmcounter6h: %ul\n", win->acc.mhpmcounter6);
-	uart_printf("    mhpmcounter7h: %ul\n", win->acc.mhpmcounter7);
-	uart_printf("    mhpmcounter8h: %ul\n", win->acc.mhpmcounter8);
-	uart_printf("    mhpmcounter9h: %ul\n", win->acc.mhpmcounter9);
+	uart_printf("    mcycle:       %lu\n", win->acc.mcycle);
+	uart_printf("    minstret:     %lu\n", win->acc.minstret);
+	uart_printf("    mhpmcounter3: %lu\n", win->acc.mhpmcounter3);
+	uart_printf("    mhpmcounter4: %lu\n", win->acc.mhpmcounter4);
+	uart_printf("    mhpmcounter5: %lu\n", win->acc.mhpmcounter5);
+	uart_printf("    mhpmcounter6: %lu\n", win->acc.mhpmcounter6);
+	uart_printf("    mhpmcounter7: %lu\n", win->acc.mhpmcounter7);
+	uart_printf("    mhpmcounter8: %lu\n", win->acc.mhpmcounter8);
+	uart_printf("    mhpmcounter9: %lu\n", win->acc.mhpmcounter9);
 	uart_printf("\n");
 }
 

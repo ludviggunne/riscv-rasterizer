@@ -1,21 +1,16 @@
-#include <display.h>
+#include <button_io.h>
 #include <model.h>
+#include <perf.h>
 #include <qmath.h>
 #include <rast.h>
-#include <uart.h>
-#include <ctrl.h>
-#include <perf.h>
+#include <switch_io.h>
 #include <timer.h>
+#include <uart.h>
+#include <vga_io.h>
 
-extern void *volatile		VGA_FRONT;
-extern void *volatile		VGA_BACK;
-extern volatile unsigned	VGA_RES;
-extern volatile unsigned	VGA_STATUS;
-extern unsigned char		VGA_MEM[2][WIDTH * HEIGHT];
-
-static int			frame_count;
-static unsigned char		(*cb)[WIDTH * HEIGHT];
-static qval_t			zb[WIDTH * HEIGHT];
+static int		frame_count;
+static unsigned char	(*cb)[WIDTH * HEIGHT];
+static qval_t		zb[WIDTH * HEIGHT];
 
 static void display_func(void)
 {
@@ -36,7 +31,7 @@ static void display_func(void)
 	PROFILE_WINDOW_END(draw_frame);
 
 	{
-		int sw = *(volatile int *) 0x04000010;
+		int sw = SWITCH_DATA;
 
 		if (sw & (1 << 0))
 		{
@@ -97,11 +92,12 @@ static void rast_main(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-	clear_counters();
 	uart_init();
-	ctrl_init();
 	timer_init();
 	clear_counters();
+
+	/* enable button interrupts */
+	BUTTON_INTERRUPTMASK = 1;
 
 	timer_start(1000);
 	rast_main(argc, argv);
