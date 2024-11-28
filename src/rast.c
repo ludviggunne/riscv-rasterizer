@@ -29,6 +29,8 @@ typedef struct
 
 static void xfm_vtx(vec_t *v, xfm_t *xfm)
 {
+	qval_t z_norm = QVAL(0.01);
+
 	{
 		qval_t x = v->x;
 		qval_t y = v->y;
@@ -62,13 +64,53 @@ static void xfm_vtx(vec_t *v, xfm_t *xfm)
 	v->x = qadd(qmul(v->x, xfm->s), xfm->t.x);
 	v->y = qadd(qmul(v->y, xfm->s), xfm->t.y);
 	v->z = qadd(qmul(v->z, xfm->s), xfm->t.z);
+
+	v->x = qadd(qdiv(v->x, qmul(v->z, z_norm)), QINT(WIDTH / 2));
+	v->y = qadd(qdiv(v->y, qmul(v->z, z_norm)), QINT(HEIGHT / 2));
 }
 
-static void xfm_tri(tri_t *t, xfm_t *xfm)
+static void xfm_tri(tri_t *t, vec_t *n, xfm_t *xfm)
 {
+	PROFILE_WINDOW_START(triangle_xfm);
+
 	xfm_vtx(&t->a, xfm);
 	xfm_vtx(&t->b, xfm);
 	xfm_vtx(&t->c, xfm);
+
+	vec_t v1 = t->a;
+	vec_t v2 = t->b;
+	vec_t v3 = t->c;
+
+	{
+		vec_t u = vsub(v2, v1);
+		vec_t v = vsub(v3, v1);
+
+		{
+			qval_t l = vlen(u);
+
+			if (l == 0)
+			{
+				return;
+			}
+
+			u = vscl(u, qdiv(QONE, l));
+		}
+		{
+			qval_t l = vlen(v);
+
+			if (l == 0)
+			{
+				return;
+			}
+
+			v = vscl(v, qdiv(QONE, l));
+		}
+
+		*n = vcrs(u, v);
+		*n = vscl(*n, qdiv(QONE, vlen(*n)));
+	}
+
+	PROFILE_WINDOW_END(triangle_xfm);
 }
 
 static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c)
@@ -155,58 +197,20 @@ static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c)
 	PROFILE_WINDOW_END(triangle_span);
 }
 
-static void draw_tri(tri_t *t, unsigned char *cb, qval_t *zb)
+static void draw_tri(tri_t *t, vec_t *n, unsigned char *cb, qval_t *zb)
 {
+	if (n->z >= 0)
+	{
+		return;
+	}
+
 	PROFILE_WINDOW_START(triangle);
 
-	PROFILE_WINDOW_START(triangle_xfm);
+	int c = QTOI(qmul(n->z, QVAL(-255)));
 
 	vec_t v1 = t->a;
 	vec_t v2 = t->b;
 	vec_t v3 = t->c;
-
-	vec_t n;
-	{
-		vec_t u = vsub(v2, v1);
-		vec_t v = vsub(v3, v1);
-
-		{
-			qval_t l = vlen(u);
-
-			if (l == 0)
-			{
-				return;
-			}
-
-			u = vscl(u, qdiv(QONE, l));
-		}
-		{
-			qval_t l = vlen(v);
-
-			if (l == 0)
-			{
-				return;
-			}
-
-			v = vscl(v, qdiv(QONE, l));
-		}
-
-		n = vcrs(u, v);
-		n = vscl(n, qdiv(QONE, vlen(n)));
-	}
-	if (n.z > 0)
-	{
-		return;
-	}
-	int c = QTOI(qmul(n.z, QVAL(-255)));
-
-	qval_t z_norm = QVAL(0.01);
-	v1.x = qadd(qdiv(v1.x, qmul(v1.z, z_norm)), QINT(WIDTH / 2));
-	v1.y = qadd(qdiv(v1.y, qmul(v1.z, z_norm)), QINT(HEIGHT / 2));
-	v2.x = qadd(qdiv(v2.x, qmul(v2.z, z_norm)), QINT(WIDTH / 2));
-	v2.y = qadd(qdiv(v2.y, qmul(v2.z, z_norm)), QINT(HEIGHT / 2));
-	v3.x = qadd(qdiv(v3.x, qmul(v3.z, z_norm)), QINT(WIDTH / 2));
-	v3.y = qadd(qdiv(v3.y, qmul(v3.z, z_norm)), QINT(HEIGHT / 2));
 
 	if (v1.y > v2.y)
 	{
@@ -226,10 +230,6 @@ static void draw_tri(tri_t *t, unsigned char *cb, qval_t *zb)
 		v1 = v2;
 		v2 = v;
 	}
-
-	PROFILE_WINDOW_END(triangle_xfm);
-
-	PROFILE_WINDOW_START(triangle_rast);
 
 	qval_t x1 = v1.x;
 	qval_t y1 = v1.y;
@@ -326,8 +326,6 @@ static void draw_tri(tri_t *t, unsigned char *cb, qval_t *zb)
 		draw_span(&s, cb, zb, c);
 	}
 
-	PROFILE_WINDOW_END(triangle_rast);
-
 	PROFILE_WINDOW_END(triangle);
 }
 
@@ -343,9 +341,11 @@ void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 			mdl->verts[mdl->faces[i].v1],
 			mdl->verts[mdl->faces[i].v2],
 		};
+		vec_t n;
 
-		xfm_tri(&t, xfm);
-		draw_tri(&t, cb, zb);
+		xfm_tri(&t, &n, xfm);
+
+		draw_tri(&t, &n, cb, zb);
 	}
 
 	PROFILE_WINDOW_END(model);
