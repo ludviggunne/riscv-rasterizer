@@ -8,9 +8,10 @@ _reset:
 	.option	pop
 
 	/* enable interrupts */
-	li	t1, 0xFFFFFFFF
-	csrw	mie, t1
-	csrs	mstatus, 3
+	csrs	mie, 3		/* msie */
+	csrs	mie, 7		/* mtie */
+	csrs	mie, 11		/* meie */
+	csrs	mstatus, 3	/* mie */
 
 	/* clear bss */
 	la	t2, __bss_start
