@@ -181,7 +181,7 @@ int main(int argc, char **argv)
 	printf("};\n");
 	printf("\n");
 	printf("static const vec_t norms[%zu] = {\n", norms.size / 3);
-	for (size_t i = 0; i < verts.size; i += 3)
+	for (size_t i = 0; i < norms.size; i += 3)
 	{
 		printf("\tVEC(%d, %d, %d),\n",
 		       QVAL(norms.data[i + 0].f),
