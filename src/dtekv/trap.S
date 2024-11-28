@@ -50,9 +50,13 @@ _trap:
 
 _interrupt:
 	/* handle interrupt */
-	slli	a0, a0, 1
-	srli	a0, a0, 1
-	jal	interrupt
+	slli	t0, a0, 2
+	andi	t0, t0, 0x7F
+	la	t1, __irq_tbl
+	add	t0, t1, t0
+	lw	t0, 0(t0)
+	beq	t0, zero, _trap_exit
+	jalr	t0
 
 _trap_exit:
 	/* load context */
@@ -98,3 +102,7 @@ _trap_ctxt:
 _trap_stack:
 	.fill	0x1000
 _trap_stack_top:
+
+	.globl	__irq_tbl
+__irq_tbl:
+	.fill	0x80

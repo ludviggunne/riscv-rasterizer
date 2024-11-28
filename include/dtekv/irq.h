@@ -15,7 +15,7 @@ static inline void irq_disable(void)
 
 static inline unsigned irq_save(void)
 {
-	unsigned irqf = csrr(mstatus);
+	unsigned irqf = csrr(mstatus) & (1 << 3);
 
 	irq_disable();
 
@@ -24,7 +24,7 @@ static inline unsigned irq_save(void)
 
 static inline void irq_restore(unsigned irqf)
 {
-	if ((irqf & (1 << 3)) != 0)
+	if (irqf)
 	{
 		irq_enable();
 	}

@@ -1,5 +1,5 @@
-#ifndef VGA_H
-#define VGA_H
+#ifndef VGA_IO_H
+#define VGA_IO_H
 
 #define VGA_WIDTH		320
 #define VGA_HEIGHT		240

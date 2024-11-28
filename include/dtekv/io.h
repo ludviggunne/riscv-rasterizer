@@ -4,7 +4,7 @@
 #define csrr(csr) \
 	({ \
 		unsigned int v; \
-		asm \
+		asm volatile \
 		( \
 			"csrr %0, " #csr ";" \
 			: "=r" (v) \
@@ -24,7 +24,7 @@
 
 #define csrs(csr, i) \
 	({ \
-		asm \
+		asm volatile \
 		( \
 			"csrs " #csr ", %0;" \
 			:: "i" (i) \
@@ -34,7 +34,7 @@
 
 #define csrc(csr, i) \
 	({ \
-		asm \
+		asm volatile \
 		( \
 			"csrc " #csr ", %0;" \
 			:: "i" (i) \

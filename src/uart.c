@@ -13,14 +13,7 @@
 #include <uart_io.h>
 #endif
 
-static int is_init = 0;
 static const char hex[] = "0123456789abcdef";
-
-void uart_init(void)
-{
-	if (is_init) return;
-	is_init = 1;
-}
 
 void uart_putc(char c)
 {
@@ -37,7 +30,6 @@ void uart_putc(char c)
 
 void uart_printf(const char *fmt, ...)
 {
-	uart_init();
 	char buf[32];
 	size_t buflen;
 

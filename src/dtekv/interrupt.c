@@ -1,24 +1,6 @@
-#include <button_io.h>
-#include <perf_json.h>
-#include <timer.h>
-#include <timer_io.h>
-#include <uart.h>
+extern void (*__irq_tbl[32])(void);
 
-void interrupt(int mcause)
+void register_interrupt(int irq_no, void (*fn)(void))
 {
-	switch (mcause)
-	{
-	case BUTTON_IRQ:
-		if (BUTTON_DATA & 1)
-		{
-			print_all_profile_windows_json();
-		}
-		BUTTON_EDGECAPTURE = 0;
-		break;
-	case TIMER_IRQ:
-		timer_clr_int();
-		break;
-	default:
-		break;
-	}
+	__irq_tbl[irq_no & 31] = fn;
 }

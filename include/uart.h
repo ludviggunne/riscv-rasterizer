@@ -9,11 +9,6 @@
 /* Functions for printing over UART. */
 
 /*
- * Initialize UART.
- */
-void uart_init(void);
-
-/*
  * Write a character to UART.
  */
 void uart_putc(char c);

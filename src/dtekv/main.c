@@ -1,17 +1,13 @@
-#include <button_io.h>
 #include <perf.h>
 #include <qmath.h>
 #include <rast.h>
-#include <switch_io.h>
-#include <timer.h>
-#include <uart.h>
-#include <vga_io.h>
+#include <switch.h>
+#include <vga.h>
 #include <perf_json.h>
 
 #define PROFILE
 #define PROFILE_FRAMES	500
 
-static int		frame_count;
 static unsigned char	(*cb)[WIDTH * HEIGHT];
 static qval_t		zb[WIDTH * HEIGHT];
 
@@ -32,9 +28,7 @@ static void display_func(void)
 	PROFILE_WINDOW_START(swap);
 
 	/* wait for buffer swap */
-	while (VGA_STATUS & 1)
-	{
-	}
+	vga_finish();
 
 	PROFILE_WINDOW_END(swap);
 
@@ -55,7 +49,7 @@ static void display_func(void)
 
 	/* handle switch input */
 	{
-		int sw = SWITCH_DATA;
+		int sw = switch_get_all();
 
 		if (sw & (1 << 0))
 		{
@@ -92,20 +86,22 @@ static void display_func(void)
 	}
 
 	/* swap buffer */
-	VGA_BACK = cb;
-	VGA_FRONT = cb;
-	cb = &VGA_MEM[frame_count++ & 1];
+	cb = vga_swap();
 }
 
 static void rast_main(int argc, char *argv[])
 {
-	cb = &VGA_MEM[1];
+	cb = vga_get_buf();
 
 	for (;;)
 	{
 		display_func();
 
 #ifdef PROFILE
+		static int frame_count;
+
+		frame_count++;
+
 		if (frame_count == PROFILE_FRAMES)
 		{
 			print_all_profile_windows_json();
@@ -118,13 +114,7 @@ static void rast_main(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-	uart_init();
-	timer_init();
 	clear_counters();
 
-	/* enable button interrupts */
-	BUTTON_INTERRUPTMASK = 1;
-
-	timer_start(1000);
 	rast_main(argc, argv);
 }

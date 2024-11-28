@@ -1,11 +1,8 @@
-#include <math.h>
-#include <stdio.h>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <model.h>
 #include <qmath.h>
 #include <rast.h>
-#include <uart.h>
 
 #define SCALE		4
 
@@ -143,7 +140,5 @@ static void rast_main(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-	uart_init();
-
 	rast_main(argc, argv);
 }
