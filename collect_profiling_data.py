@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+#
+# This script collects profiling data sent over UART,
+# computes some additional metrics, and compiles it
+# into various forms.
+#
+
 import sys
 import json
 import os
@@ -145,16 +151,3 @@ sys.tracebacklimit = 0
 data = read_profile_data_from_open_file(sys.stdin)
 default_printer(data)
 save_latex_table(create_table_layout_1(data), "table.tex")
-
-# Saving this for later
-# if len(sys.argv) < 2:
-#     print("Usage: {sys.argv[0]} <table name>", file=sys.stderr)
-#     sys.exit(1)
-
-# table_name = sys.argv[1]
-# table_path = os.path.join("tables", table_name)
-
-# os.makedirs(table_path, exist_ok=True)
-
-# for window in data:
-    # with open(os.path.join(table_path, window.name)) as file:
