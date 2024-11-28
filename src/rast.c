@@ -27,92 +27,6 @@ typedef struct
 	qval_t	rdzdy;
 } span_t;
 
-static void xfm_vtx(vec_t *v, xfm_t *xfm)
-{
-	qval_t z_norm = QVAL(0.01);
-
-	{
-		qval_t x = v->x;
-		qval_t y = v->y;
-		qval_t z = v->z;
-
-		v->x = qadd(qmul( qcos(xfm->r), x), qmul(-qsin(xfm->r), y));
-		v->y = qadd(qmul( qsin(xfm->r), x), qmul( qcos(xfm->r), y));
-		v->z = z;
-	}
-
-	{
-		qval_t x = v->x;
-		qval_t y = v->y;
-		qval_t z = v->z;
-
-		v->x = x;
-		v->y = qadd(qmul( qcos(xfm->p), y), qmul(-qsin(xfm->p), z));
-		v->z = qadd(qmul( qsin(xfm->p), y), qmul( qcos(xfm->p), z));
-	}
-
-	{
-		qval_t x = v->x;
-		qval_t y = v->y;
-		qval_t z = v->z;
-
-		v->x = qadd(qmul( qcos(xfm->y), x), qmul(-qsin(xfm->y), z));
-		v->y = y;
-		v->z = qadd(qmul( qsin(xfm->y), x), qmul( qcos(xfm->y), z));
-	}
-
-	v->x = qadd(qmul(v->x, xfm->s), xfm->t.x);
-	v->y = qadd(qmul(v->y, xfm->s), xfm->t.y);
-	v->z = qadd(qmul(v->z, xfm->s), xfm->t.z);
-
-	v->x = qadd(qdiv(v->x, qmul(v->z, z_norm)), QINT(WIDTH / 2));
-	v->y = qadd(qdiv(v->y, qmul(v->z, z_norm)), QINT(HEIGHT / 2));
-}
-
-static void xfm_tri(tri_t *t, vec_t *n, xfm_t *xfm)
-{
-	PROFILE_WINDOW_START(triangle_xfm);
-
-	xfm_vtx(&t->a, xfm);
-	xfm_vtx(&t->b, xfm);
-	xfm_vtx(&t->c, xfm);
-
-	vec_t v1 = t->a;
-	vec_t v2 = t->b;
-	vec_t v3 = t->c;
-
-	{
-		vec_t u = vsub(v2, v1);
-		vec_t v = vsub(v3, v1);
-
-		{
-			qval_t l = vlen(u);
-
-			if (l == 0)
-			{
-				return;
-			}
-
-			u = vscl(u, qdiv(QONE, l));
-		}
-		{
-			qval_t l = vlen(v);
-
-			if (l == 0)
-			{
-				return;
-			}
-
-			v = vscl(v, qdiv(QONE, l));
-		}
-
-		*n = vcrs(u, v);
-		*n = vscl(*n, qdiv(QONE, vlen(*n)));
-	}
-
-	PROFILE_WINDOW_END(triangle_xfm);
-}
-
 static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c)
 {
 	PROFILE_WINDOW_START(triangle_span);
@@ -329,23 +243,116 @@ static void draw_tri(tri_t *t, vec_t *n, unsigned char *cb, qval_t *zb)
 	PROFILE_WINDOW_END(triangle);
 }
 
+static vec_t xfm_vert[10000];
+static vec_t xfm_norm[10000];
+
 void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 {
 	PROFILE_WINDOW_START(model);
+
+	PROFILE_WINDOW_START(model_xfm);
+
+	qval_t rs, rc;
+	qval_t ps, pc;
+	qval_t ys, yc;
+	qval_t z_norm = QVAL(0.01);
+
+	qsincos(xfm->r, &rs, &rc);
+	qsincos(xfm->p, &ps, &pc);
+	qsincos(xfm->y, &ys, &yc);
+
+	for (int i = 0; i < mdl->nverts; i++)
+	{
+		const vec_t *v = &mdl->verts[i];
+		vec_t *w = &xfm_vert[i];
+
+		{
+			qval_t x = v->x;
+			qval_t y = v->y;
+			qval_t z = v->z;
+
+			w->x = qadd(qmul( rc, x), qmul(-rs, y));
+			w->y = qadd(qmul( rs, x), qmul( rc, y));
+			w->z = z;
+		}
+
+		{
+			qval_t x = w->x;
+			qval_t y = w->y;
+			qval_t z = w->z;
+
+			w->x = x;
+			w->y = qadd(qmul( pc, y), qmul(-ps, z));
+			w->z = qadd(qmul( ps, y), qmul( pc, z));
+		}
+
+		{
+			qval_t x = w->x;
+			qval_t y = w->y;
+			qval_t z = w->z;
+
+			w->x = qadd(qmul( yc, x), qmul(-ys, z));
+			w->y = y;
+			w->z = qadd(qmul( ys, x), qmul( yc, z));
+		}
+
+		w->x = qadd(qmul(w->x, xfm->s), xfm->t.x);
+		w->y = qadd(qmul(w->y, xfm->s), xfm->t.y);
+		w->z = qadd(qmul(w->z, xfm->s), xfm->t.z);		
+
+		w->x = qadd(qdiv(w->x, qmul(w->z, z_norm)), QINT(WIDTH / 2));
+		w->y = qadd(qdiv(w->y, qmul(w->z, z_norm)), QINT(HEIGHT / 2));
+	}
+
+	for (int i = 0; i < mdl->nnorms; i++)
+	{
+		const vec_t *v = &mdl->norms[i];
+		vec_t *w = &xfm_norm[i];
+
+		{
+			qval_t x = v->x;
+			qval_t y = v->y;
+			qval_t z = v->z;
+
+			w->x = qadd(qmul( rc, x), qmul(-rs, y));
+			w->y = qadd(qmul( rs, x), qmul( rc, y));
+			w->z = z;
+		}
+
+		{
+			qval_t x = w->x;
+			qval_t y = w->y;
+			qval_t z = w->z;
+
+			w->x = x;
+			w->y = qadd(qmul( pc, y), qmul(-ps, z));
+			w->z = qadd(qmul( ps, y), qmul( pc, z));
+		}
+
+		{
+			qval_t x = w->x;
+			qval_t y = w->y;
+			qval_t z = w->z;
+
+			w->x = qadd(qmul( yc, x), qmul(-ys, z));
+			w->y = y;
+			w->z = qadd(qmul( ys, x), qmul( yc, z));
+		}
+	}
+
+	PROFILE_WINDOW_END(model_xfm);
 
 	for (int i = 0; i < mdl->nfaces; i++)
 	{
 		tri_t t =
 		{
-			mdl->verts[mdl->faces[i].v0],
-			mdl->verts[mdl->faces[i].v1],
-			mdl->verts[mdl->faces[i].v2],
+			xfm_vert[mdl->faces[i].v0],
+			xfm_vert[mdl->faces[i].v1],
+			xfm_vert[mdl->faces[i].v2],
 		};
-		vec_t n;
+		vec_t *n = &xfm_norm[mdl->faces[i].n];
 
-		xfm_tri(&t, &n, xfm);
-
-		draw_tri(&t, &n, cb, zb);
+		draw_tri(&t, n, cb, zb);
 	}
 
 	PROFILE_WINDOW_END(model);
