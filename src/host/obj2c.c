@@ -144,10 +144,27 @@ int main(int argc, char **argv)
 			ny /= l;
 			nz /= l;
 
-			list_push(&faces, (value_t) { .i = norms.size  / 3});
-			list_push(&norms, (value_t) { .f = nx });
-			list_push(&norms, (value_t) { .f = ny });
-			list_push(&norms, (value_t) { .f = nz });
+			size_t norm_idx = norms.size;
+
+			for (size_t i = 0; i < norms.size; i += 3)
+			{
+				if (	QVAL(nx) == QVAL(norms.data[i + 0].f)
+				&&	QVAL(ny) == QVAL(norms.data[i + 1].f)
+				&&	QVAL(nz) == QVAL(norms.data[i + 2].f))
+				{
+					norm_idx = i;
+					break;
+				}
+			}
+
+			if (norm_idx == norms.size)
+			{
+				list_push(&norms, (value_t) { .f = nx });
+				list_push(&norms, (value_t) { .f = ny });
+				list_push(&norms, (value_t) { .f = nz });
+			}
+
+			list_push(&faces, (value_t) { .i = norm_idx / 3});
 
 			continue;
 		}
