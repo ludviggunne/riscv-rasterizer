@@ -22,6 +22,7 @@ class ProfileWindow:
         self.hzd_stalls = json_object["mhpmcounter8"]
         self.alu_stalls = json_object["mhpmcounter9"]
         self.exec_time = self.cycles / 30000000
+        self.avg_exec_time = self.exec_time / self.runs
         self.ipc = self.instrs / self.cycles
         self.d_miss_ratio = self.d_misses / self.mem_instrs
         self.d_hit_ratio = 1 - self.d_miss_ratio
@@ -83,15 +84,16 @@ def default_printer(data):
             die("error: first registered window needs name \"frame\"")
 
         print(f"{pretty_name(window.name)}:")
-        print(f"    Number of runs:     {window.runs}")
-        print(f"    Execution time:     {round(window.exec_time, 2)}s")
-        print(f"    % of frame time:    {round(100 * window.exec_time / frame_exec_time, 1)}%")
-        print(f"    IPC:                {round(window.ipc, 2)}")
-        print(f"    D-cache miss ratio: {round(window.d_miss_ratio * 100, 1)}%")
-        print(f"    I-cache miss ratio: {round(window.i_miss_ratio * 100, 1)}%")
-        print(f"    ALU-stall ratio:    {round(window.alu_stall_ratio * 100, 1)}%")
-        print(f"    Hazard-stall ratio: {round(window.hzd_stall_ratio * 100, 1)}%")
-        print(f"    Memory intensity:   {round(window.mem_intensity * 100, 1)}%")
+        print(f"    Number of runs:         {window.runs}")
+        print(f"    Total execution time:   {round(window.exec_time, 2)}s")
+        print(f"    Average execution time: {round(window.avg_exec_time, 2)}s")
+        print(f"    % of frame time:        {round(100 * window.exec_time / frame_exec_time, 1)}%")
+        print(f"    IPC:                    {round(window.ipc, 2)}")
+        print(f"    D-cache miss ratio:     {round(window.d_miss_ratio * 100, 1)}%")
+        print(f"    I-cache miss ratio:     {round(window.i_miss_ratio * 100, 1)}%")
+        print(f"    ALU-stall ratio:        {round(window.alu_stall_ratio * 100, 1)}%")
+        print(f"    Hazard-stall ratio:     {round(window.hzd_stall_ratio * 100, 1)}%")
+        print(f"    Memory intensity:       {round(window.mem_intensity * 100, 1)}%")
         print("")
 
         ipc_acc += window.ipc
