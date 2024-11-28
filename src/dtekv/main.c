@@ -116,7 +116,6 @@ static void rast_main(int argc, char *argv[])
 	}
 }
 
-
 int main(int argc, char *argv[])
 {
 	uart_init();
