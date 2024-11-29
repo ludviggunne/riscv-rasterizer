@@ -116,7 +116,7 @@ void profile_window_end(struct profile_window *win)
 	win->nruns++;
 }
 
-static void default_print(struct profile_window *win, unsigned int index, unsigned int nwins)
+static void default_print_callback(struct profile_window *win, unsigned int index, unsigned int nwins)
 {
 	(void)index;
 	(void)nwins;
@@ -133,20 +133,20 @@ static void default_print(struct profile_window *win, unsigned int index, unsign
 	uart_printf("\n");
 }
 
-void print_all_profile_window_info(void (*print)(struct profile_window *, unsigned int, unsigned int))
+void print_all_profile_window_info(pw_print_callback_t print_callback)
 {
 #ifndef PROFILE_ENABLE
 	return;
 #endif
-	if (print)
+	if (print_callback)
 	{
 		for (int i = 0; i < s_window_count; i++)
 		{
-			print(&s_windows[i], i, s_window_count);
+			print_callback(&s_windows[i], i, s_window_count);
 		}
 	}
 	else
 	{
-		print_all_profile_window_info(default_print);
+		print_all_profile_window_info(default_print_callback);
 	}
 }
