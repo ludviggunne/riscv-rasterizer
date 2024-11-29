@@ -11,39 +11,15 @@ static unsigned int		s_window_count;
 
 void get_counters(struct counters *counters)
 {
-	csrw(mcountinhibit, -1);
-
-	counters->mcycle = csrr(mcycleh);
-	counters->minstret = csrr(minstreth);
-	counters->mhpmcounter3 = csrr(mhpmcounter3h);
-	counters->mhpmcounter4 = csrr(mhpmcounter4h);
-	counters->mhpmcounter5 = csrr(mhpmcounter5h);
-	counters->mhpmcounter6 = csrr(mhpmcounter6h);
-	counters->mhpmcounter7 = csrr(mhpmcounter7h);
-	counters->mhpmcounter8 = csrr(mhpmcounter8h);
-	counters->mhpmcounter9 = csrr(mhpmcounter9h);
-
-	counters->mcycle <<= 32;
-	counters->minstret <<= 32;
-	counters->mhpmcounter3 <<= 32;
-	counters->mhpmcounter4 <<= 32;
-	counters->mhpmcounter5 <<= 32;
-	counters->mhpmcounter6 <<= 32;
-	counters->mhpmcounter7 <<= 32;
-	counters->mhpmcounter8 <<= 32;
-	counters->mhpmcounter9 <<= 32;
-
-	counters->mcycle |= csrr(mcycle);
-	counters->minstret |= csrr(minstret);
-	counters->mhpmcounter3 |= csrr(mhpmcounter3);
-	counters->mhpmcounter4 |= csrr(mhpmcounter4);
-	counters->mhpmcounter5 |= csrr(mhpmcounter5);
-	counters->mhpmcounter6 |= csrr(mhpmcounter6);
-	counters->mhpmcounter7 |= csrr(mhpmcounter7);
-	counters->mhpmcounter8 |= csrr(mhpmcounter8);
-	counters->mhpmcounter9 |= csrr(mhpmcounter9);
-
-	csrw(mcountinhibit, 0);
+	counters->mcycle = csrr64(mcycle);
+	counters->minstret = csrr64(minstret);
+	counters->mhpmcounter3 = csrr64(mhpmcounter3);
+	counters->mhpmcounter4 = csrr64(mhpmcounter4);
+	counters->mhpmcounter5 = csrr64(mhpmcounter5);
+	counters->mhpmcounter6 = csrr64(mhpmcounter6);
+	counters->mhpmcounter7 = csrr64(mhpmcounter7);
+	counters->mhpmcounter8 = csrr64(mhpmcounter8);
+	counters->mhpmcounter9 = csrr64(mhpmcounter9);
 }
 
 struct profile_window *create_new_profile_window(const char *name)

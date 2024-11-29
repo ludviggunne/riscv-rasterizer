@@ -5,12 +5,12 @@
 
 static inline void irq_enable(void)
 {
-	csrs(mstatus, 3);
+	csrsi(mstatus, 3);
 }
 
 static inline void irq_disable(void)
 {
-	csrc(mstatus, 3);
+	csrci(mstatus, 3);
 }
 
 static inline unsigned irq_save(void)

@@ -3,13 +3,30 @@
 
 #define csrr(csr) \
 	({ \
-		unsigned int v; \
+		unsigned v; \
 		asm volatile \
 		( \
 			"csrr %0, " #csr ";" \
 			: "=r" (v) \
 		); \
 		v; \
+	})
+
+#define csrr64(csr) \
+	({ \
+		unsigned hi; \
+		unsigned lo; \
+		unsigned ch; \
+		asm volatile \
+		( \
+			"0:" \
+			"csrr %0, " #csr "h;" \
+			"csrr %1, " #csr ";" \
+			"csrr %2, " #csr "h;" \
+			"bne  %0, %2, 0b;" \
+			: "=r" (hi), "=r" (lo), "=r" (ch) \
+		); \
+		((unsigned long long) hi << 32) | (unsigned long long) lo; \
 	})
 
 #define csrw(csr, v) \
@@ -22,21 +39,21 @@
 		(void) 0; \
 	})
 
-#define csrs(csr, i) \
+#define csrsi(csr, i) \
 	({ \
 		asm volatile \
 		( \
-			"csrs " #csr ", %0;" \
+			"csrsi " #csr ", %0;" \
 			:: "i" (i) \
 		); \
 		(void) 0; \
 	})
 
-#define csrc(csr, i) \
+#define csrci(csr, i) \
 	({ \
 		asm volatile \
 		( \
-			"csrc " #csr ", %0;" \
+			"csrci " #csr ", %0;" \
 			:: "i" (i) \
 		); \
 		(void) 0; \
