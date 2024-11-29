@@ -113,7 +113,5 @@ static void rast_main(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-	clear_counters();
-
 	rast_main(argc, argv);
 }

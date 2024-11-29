@@ -9,28 +9,6 @@
 static struct profile_window	s_windows[MAX_PROFILE_WINDOWS];
 static unsigned int		s_window_count;
 
-void clear_counters(void)
-{
-	csrw(mcycle, 0);
-	csrw(minstret, 0);
-	csrw(mhpmcounter3, 0);
-	csrw(mhpmcounter4, 0);
-	csrw(mhpmcounter5, 0);
-	csrw(mhpmcounter6, 0);
-	csrw(mhpmcounter7, 0);
-	csrw(mhpmcounter8, 0);
-	csrw(mhpmcounter9, 0);
-	csrw(mcycleh, 0);
-	csrw(minstreth, 0);
-	csrw(mhpmcounter3h, 0);
-	csrw(mhpmcounter4h, 0);
-	csrw(mhpmcounter5h, 0);
-	csrw(mhpmcounter6h, 0);
-	csrw(mhpmcounter7h, 0);
-	csrw(mhpmcounter8h, 0);
-	csrw(mhpmcounter9h, 0);
-}
-
 void get_counters(struct counters *counters)
 {
 	csrw(mcountinhibit, -1);

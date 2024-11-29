@@ -36,11 +36,6 @@ struct profile_window
 };
 
 /*
- * Clear hardware counters.
- */
-void clear_counters(void);
-
-/*
  * Obtain the current values of the hardware counters.
  */
 void get_counters(struct counters *counters);
