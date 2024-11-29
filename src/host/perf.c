@@ -14,10 +14,6 @@ void get_counters(struct counters *counters)
 	(void) counters;
 }
 
-void dump_perf_info(void)
-{
-}
-
 struct profile_window *create_new_profile_window(const char *name)
 {
 	(void) name;
