@@ -14,6 +14,11 @@
 void uart_putc(char c);
 
 /*
+ * Write a string to UART.
+ */
+void uart_puts(const char *s);
+
+/*
  * Print formatted string to UART.
  * Supported format specifiers:
  * %d   - int

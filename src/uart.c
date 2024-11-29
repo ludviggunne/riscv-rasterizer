@@ -28,6 +28,14 @@ void uart_putc(char c)
 #endif
 }
 
+void uart_puts(const char *s)
+{
+	for (; *s; s++)
+	{
+		uart_putc(*s);
+	}
+}
+
 void uart_printf(const char *fmt, ...)
 {
 	char buf[32];
@@ -154,14 +162,10 @@ void uart_printf(const char *fmt, ...)
 				void *p = va_arg(args, void*);
 				if (p == 0)
 				{
-					uart_putc('N');
-					uart_putc('U');
-					uart_putc('L');
-					uart_putc('L');
+					uart_puts("NULL");
 					continue;
 				}
-				uart_putc('0');
-				uart_putc('x');;
+				uart_puts("0x");
 				size_t i = sizeof(void*) * 8;
 				do {
 					i -= 4;
@@ -173,20 +177,14 @@ void uart_printf(const char *fmt, ...)
 			case 'q':
 			{
 				qval_t q = va_arg(args, qval_t);
-				buflen = qsnprint(q, buf, sizeof(buf));
-				for (const char *ptr = buf; *ptr; ptr++)
-				{
-					uart_putc(*ptr);
-				}
+				(void) qsnprint(q, buf, sizeof(buf));
+				uart_puts(buf);
 				break;
 			}
 			case 's':
 			{
 				const char *s = va_arg(args, const char *);
-				for (; *s; s++)
-				{
-					uart_putc(*s);
-				}
+				uart_puts(s);
 				break;
 			}
 			case '%':
