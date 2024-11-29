@@ -111,7 +111,10 @@ static void rast_main(int argc, char *argv[])
 	}
 }
 
+#include "test_mcountinhibit.c"
+
 int main(int argc, char *argv[])
 {
+	void test_mcountinhibit();
 	rast_main(argc, argv);
 }
