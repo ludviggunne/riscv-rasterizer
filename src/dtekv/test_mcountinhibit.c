@@ -5,7 +5,7 @@
 #include <io.h>
 #include <uart.h>
 
-static int test_mcountinhibit_flag = 1;
+static volatile int test_mcountinhibit_flag = 1;
 
 static void test_mcountinhibit_timer_fn(void)
 {
