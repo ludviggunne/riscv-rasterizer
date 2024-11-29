@@ -6,7 +6,15 @@
 
 #include <stddef.h>
 #include <qmath.h>
-#include <vmath.h>
+
+typedef struct
+{
+	qval_t x;
+	qval_t y;
+	qval_t z;
+} vec_t;
+
+#define VEC(_x, _y, _z) ((vec_t){.x = (_x), .y = (_y), .z = (_z)})
 
 typedef struct
 {

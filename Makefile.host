@@ -23,7 +23,7 @@ clean:
 $(BUILDDIR):
 	mkdir -p $(@)
 
-$(RAST): src/host/main.c src/model.c src/rast.c src/qmath.c src/vmath.c \
+$(RAST): src/host/main.c src/model.c src/rast.c src/qmath.c \
 	src/uart.c src/host/perf.c
 $(OBJ2C): src/host/obj2c.c
 

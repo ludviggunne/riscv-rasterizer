@@ -30,7 +30,7 @@ $(RAST_ELF): src/dtekv/abort.c src/dtekv/button.c src/dtekv/ctrl.c \
 	src/dtekv/reset.S src/dtekv/stack.S src/dtekv/start.S \
 	src/dtekv/stop.S src/dtekv/switch.c src/dtekv/timer.c \
 	src/dtekv/trap.S src/dtekv/vga.c src/model.c src/qmath.c src/rast.c \
-	src/uart.c src/vmath.c | $(BUILDDIR)
+	src/uart.c | $(BUILDDIR)
 	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)
 
 $(RAST_BIN): $(RAST_ELF) | $(BUILDDIR)

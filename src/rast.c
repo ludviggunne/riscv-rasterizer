@@ -2,7 +2,6 @@
 #include <perf.h>
 #include <qmath.h>
 #include <rast.h>
-#include <vmath.h>
 
 typedef struct
 {

@@ -1,6 +1,5 @@
 #include <model.h>
 #include <qmath.h>
-#include <vmath.h>
 
 #define MODEL 0
 

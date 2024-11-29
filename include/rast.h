@@ -3,7 +3,6 @@
 
 #include <model.h>
 #include <qmath.h>
-#include <vmath.h>
 
 #define WIDTH	320
 #define HEIGHT	240
