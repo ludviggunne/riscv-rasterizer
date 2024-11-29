@@ -33,10 +33,7 @@ void clear_counters(void)
 
 void get_counters(struct counters *counters)
 {
-	/* FIXME: Race condition.
-	 * The low part of a csr can roll over inbetween reading the hi part
-	 * and the lo part.
-	 */
+	csrw(mcountinhibit, -1);
 
 	counters->mcycle = csrr(mcycleh);
 	counters->minstret = csrr(minstreth);
@@ -67,6 +64,8 @@ void get_counters(struct counters *counters)
 	counters->mhpmcounter7 |= csrr(mhpmcounter7);
 	counters->mhpmcounter8 |= csrr(mhpmcounter8);
 	counters->mhpmcounter9 |= csrr(mhpmcounter9);
+
+	csrw(mcountinhibit, 0);
 }
 
 struct profile_window *create_new_profile_window(const char *name)
