@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <init.h>
 #include <irq.h>
 #include <timer_io.h>
 
@@ -14,16 +15,19 @@ static void timer_irq_handler(void)
 	}
 }
 
+DEFINE_INITCALL(IRQ, timer_init)
+{
+	register_irq(TIMER_IRQ, timer_irq_handler);
+}
+
 void timer_start(unsigned int ms, void (*fn)(void))
 {
 	int irqf = irq_save();
 
-	register_irq(TIMER_IRQ, timer_irq_handler);
+	timer_fn = fn;
 
 	TIMER_CONTROL = 8;
 	TIMER_STATUS = 1;
-
-	timer_fn = fn;
 
 	if (timer_fn != NULL)
 	{

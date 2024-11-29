@@ -1,3 +1,5 @@
+#include <init.h>
+
 	.text
 	.globl	_reset
 _reset:
@@ -6,11 +8,6 @@ _reset:
 	.option	norelax
 	la	gp, __global_pointer$
 	.option	pop
-
-	/* enable interrupts */
-	li	t0, 0xFFFFF888	/* irqs, meie, mtie, msie */
-	csrs	mie, t0
-	csrs	mstatus, 3	/* mie */
 
 	/* clear bss */
 	la	t2, __bss_start
@@ -24,6 +21,15 @@ _reset:
 
 	/* initialize stack */
 	la	sp, _stack_top
+
+    /* initialize irqs */
+    li  a0, __INITLVL_IRQ
+    jal __do_initcalls
+
+	/* enable interrupts */
+	li	t0, 0xFFFFF888	/* irqs, meie, mtie, msie */
+	csrs	mie, t0
+	csrs	mstatus, 3	/* mie */
 
 	/* jump to program entry */
 	jal	_start

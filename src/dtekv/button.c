@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <button_io.h>
+#include <init.h>
 #include <irq.h>
 
 static void (*button_fn)(int);
@@ -14,11 +15,14 @@ static void button_irq_handler(void)
 	}
 }
 
+DEFINE_INITCALL(IRQ, button_init)
+{
+	register_irq(BUTTON_IRQ, button_irq_handler);
+}
+
 void button_set_event(void (*fn)(int))
 {
 	int irqf = irq_save();
-
-	register_irq(BUTTON_IRQ, button_irq_handler);
 
 	button_fn = fn;
 

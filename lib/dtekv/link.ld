@@ -11,6 +11,13 @@ SECTIONS
 
 	.text		: { *(.text .text.* .gnu.linkonce.t.*) }
 
+	.init		:
+	{
+		__init_0_start = . ;
+		KEEP(*(.init.0))
+		__init_0_end = . ;
+	}
+
 	.rodata		: { *(.rodata .rodata.* .gnu.linkonce.r.*) }
 
 	.data		: { *(.data .data.* .gnu.linkonce.d.*) }
