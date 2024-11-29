@@ -36,6 +36,6 @@ void profile_window_end(struct profile_window *win)
 
 void print_all_profile_window_info(pw_print_callback_t print_callback)
 {
-	(void)print_callback;
+	(void) print_callback;
 }
 

@@ -4,10 +4,10 @@
 #include <perf.h>
 #include <uart.h>
 
-#define MAX_PROFILE_WINDOWS 32
+#define MAX_PROFILE_WINDOWS	32
 
-static struct profile_window s_windows[MAX_PROFILE_WINDOWS] = { 0 };
-static unsigned int s_window_count;
+static struct profile_window	s_windows[MAX_PROFILE_WINDOWS];
+static unsigned int		s_window_count;
 
 void clear_counters(void)
 {
@@ -33,6 +33,11 @@ void clear_counters(void)
 
 void get_counters(struct counters *counters)
 {
+	/* FIXME: Race condition.
+	 * The low part of a csr can roll over inbetween reading the hi part
+	 * and the lo part.
+	 */
+
 	counters->mcycle = csrr(mcycleh);
 	counters->minstret = csrr(minstreth);
 	counters->mhpmcounter3 = csrr(mhpmcounter3h);
@@ -68,9 +73,9 @@ struct profile_window *create_new_profile_window(const char *name)
 {
 	if (s_window_count == MAX_PROFILE_WINDOWS)
 	{
-		uart_printf(	"error: could not create profile window '%s', "
-				"reached max window count %d\n",
-				name, MAX_PROFILE_WINDOWS);
+		uart_printf("error: could not create profile window '%s', "
+		            "reached max window count %d\n",
+		            name, MAX_PROFILE_WINDOWS);
 		abort();
 	}
 
@@ -118,8 +123,9 @@ void profile_window_end(struct profile_window *win)
 
 static void default_print_callback(struct profile_window *win, unsigned int index, unsigned int nwins)
 {
-	(void)index;
-	(void)nwins;
+	(void) index;
+	(void) nwins;
+
 	uart_printf("%s:\n", win->name);
 	uart_printf("    mcycle:       %lu\n", win->acc.mcycle);
 	uart_printf("    minstret:     %lu\n", win->acc.minstret);
@@ -135,9 +141,6 @@ static void default_print_callback(struct profile_window *win, unsigned int inde
 
 void print_all_profile_window_info(pw_print_callback_t print_callback)
 {
-#ifndef PROFILE_ENABLE
-	return;
-#endif
 	if (print_callback)
 	{
 		for (int i = 0; i < s_window_count; i++)
