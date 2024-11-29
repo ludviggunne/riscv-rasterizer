@@ -1,6 +1,5 @@
 #include <stddef.h>
 #include <button_io.h>
-#include <interrupt.h>
 #include <irq.h>
 
 static void (*button_fn)(int);
@@ -19,7 +18,7 @@ void button_set_event(void (*fn)(int))
 {
 	int irqf = irq_save();
 
-	register_interrupt(BUTTON_IRQ, button_irq_handler);
+	register_irq(BUTTON_IRQ, button_irq_handler);
 
 	button_fn = fn;
 

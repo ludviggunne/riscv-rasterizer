@@ -30,4 +30,6 @@ static inline void irq_restore(unsigned irqf)
 	}
 }
 
+void register_irq(int irq_no, void (*fn)(void));
+
 #endif

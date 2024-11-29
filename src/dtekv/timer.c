@@ -1,5 +1,4 @@
 #include <stddef.h>
-#include <interrupt.h>
 #include <irq.h>
 #include <timer_io.h>
 
@@ -19,7 +18,7 @@ void timer_start(unsigned int ms, void (*fn)(void))
 {
 	int irqf = irq_save();
 
-	register_interrupt(TIMER_IRQ, timer_irq_handler);
+	register_irq(TIMER_IRQ, timer_irq_handler);
 
 	TIMER_CONTROL = 8;
 	TIMER_STATUS = 1;
