@@ -65,6 +65,8 @@ void profile_window_end(struct profile_window *win);
  */
 void print_all_profile_window_info(void (*print)(struct profile_window *, unsigned int, unsigned int));
 
+#ifdef PROFILE_ENABLE
+
 /*
  * Convenience macro to create a profile window.
  */
@@ -81,5 +83,13 @@ void print_all_profile_window_info(void (*print)(struct profile_window *, unsign
  */
 #define PROFILE_WINDOW_END(name) \
 	profile_window_end(__pwin_ ## name);
+
+#else
+
+/* PROFILING DISABLED */
+#define PROFILE_WINDOW_START(name) ;
+#define PROFILE_WINDOW_END(name) ;
+
+#endif
 
 #endif

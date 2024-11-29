@@ -135,6 +135,9 @@ static void default_print(struct profile_window *win, unsigned int index, unsign
 
 void print_all_profile_window_info(void (*print)(struct profile_window *, unsigned int, unsigned int))
 {
+#ifndef PROFILE_ENABLE
+	return;
+#endif
 	if (print)
 	{
 		for (int i = 0; i < s_window_count; i++)
