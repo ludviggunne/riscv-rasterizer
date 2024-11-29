@@ -1,11 +1,10 @@
 #include <perf.h>
+#include <perf_json.h>
 #include <qmath.h>
 #include <rast.h>
 #include <switch.h>
 #include <vga.h>
-#include <perf_json.h>
 
-#define PROFILE
 #define PROFILE_FRAMES	500
 
 static unsigned char	(*cb)[WIDTH * HEIGHT];
@@ -97,7 +96,7 @@ static void rast_main(int argc, char *argv[])
 	{
 		display_func();
 
-#ifdef PROFILE
+#ifdef PROFILE_ENABLE
 		static int frame_count;
 
 		frame_count++;
