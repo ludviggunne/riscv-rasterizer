@@ -14,7 +14,7 @@ SECTIONS
 	.init		:
 	{
 		__init_0_start = . ;
-		KEEP(*(.init.0))
+		KEEP (*(.init.0 .init.0.*))
 		__init_0_end = . ;
 	}
 
