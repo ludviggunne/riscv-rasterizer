@@ -1,5 +1,5 @@
-#ifndef IO_H
-#define IO_H
+#ifndef CSR_H
+#define CSR_H
 
 #define csrr(csr) \
 	({ \

@@ -1,7 +1,7 @@
 #ifndef IRQ_H
 #define IRQ_H
 
-#include <io.h>
+#include <csr.h>
 
 static inline void irq_enable(void)
 {
