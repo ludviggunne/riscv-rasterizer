@@ -22,9 +22,9 @@ _reset:
 	/* initialize stack */
 	la	sp, _stack_top
 
-    /* initialize irqs */
-    li  a0, __INITLVL_IRQ
-    jal __do_initcalls
+	/* initialize irqs */
+	li	a0, __INITLVL_IRQ
+	jal	__do_initcalls
 
 	/* enable interrupts */
 	li	t0, 0xFFFFF888	/* irqs, meie, mtie, msie */

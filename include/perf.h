@@ -59,9 +59,9 @@ void profile_window_end(struct profile_window *win);
  * Display information about all profile windows.
  */
 typedef void (*pw_print_callback_t)(
-	struct profile_window *, /* Window to print */
-	unsigned int,            /* Window index */
-	unsigned int             /* Number of windows */
+	struct profile_window *,	/* Window to print */
+	unsigned int,			/* Window index */
+	unsigned int			/* Number of windows */
 );
 void print_all_profile_window_info(pw_print_callback_t print_callback);
 

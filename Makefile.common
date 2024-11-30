@@ -5,7 +5,7 @@ ALL		= $(BUILDDIR)cube.h \
 			$(BUILDDIR)modern.h \
 			$(BUILDDIR)rat.h \
 			$(BUILDDIR)rat_lofi.h \
-			$(BUILDDIR)teapot.h  \
+			$(BUILDDIR)teapot.h \
 			$(BUILDDIR)torus.h
 
 .PHONY: all clean

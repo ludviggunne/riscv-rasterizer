@@ -2,7 +2,8 @@
 #define MODEL_H
 
 /* 3D model data.
-   Usually created with obj2c.c */
+ * Usually created with obj2c.c
+ */
 
 #include <stddef.h>
 #include <qmath.h>

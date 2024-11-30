@@ -268,7 +268,7 @@ int qsnprint(qval_t v, char *buf, int len)
 			while (f != 0)
 			{
 				f = f * 10;
-				c = '0' +  (f >> QFBITS);
+				c = '0' + (f >> QFBITS);
 				f = (f & QFMASK);
 
 				if (++n < len)

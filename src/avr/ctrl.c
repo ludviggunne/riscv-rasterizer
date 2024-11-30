@@ -6,17 +6,17 @@
 #include <string.h>
 #include <joybus.h>
 
-#define CTRL_PIN  2 /* pin 2 on arduino */
-#define DTEK_CLK  3 /* pin 11 on arduino */
-#define DTEK_DATA 4 /* pin 12 on arduino */
-#define LED 5
+#define CTRL_PIN	2 /* pin 2 on arduino */
+#define DTEK_CLK	3 /* pin 11 on arduino */
+#define DTEK_DATA	4 /* pin 12 on arduino */
+#define LED		5
 
-#define RESET 0xff
-#define POLL 0x01
+#define RESET		0xff
+#define POLL		0x01
 
-#define THRESHOLD 2
+#define THRESHOLD	2
 
-#define ABS(x) ((x) < 0 ? -(x) : (x))
+#define ABS(x)		((x) < 0 ? -(x) : (x))
 
 /* determine if the controller inputs has changed */
 int changed(uint8_t *now, uint8_t *then)

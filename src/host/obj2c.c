@@ -230,4 +230,3 @@ int main(int argc, char **argv)
 	printf("#endif\n");
 	printf("#endif\n");
 }
-
