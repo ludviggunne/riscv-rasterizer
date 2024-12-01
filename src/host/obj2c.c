@@ -178,39 +178,35 @@ int main(int argc, char **argv)
 	       __FILE__, fname,  tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
 	printf(" */\n");
 	printf("\n");
-	printf("#ifndef %s_H_INCLUDED\n", ucname);
-	printf("#define %s_H_INCLUDED\n", ucname);
-	printf("\n");
 	printf("#include <model.h>\n");
 	printf("\n");
-	printf("extern model_t %s_model;\n", mname);
-	printf("\n");
-	printf("#ifdef %s_IMPL\n", ucname);
-	printf("\n");
-	printf("static const vec_t verts[%zu] = {\n", verts.size / 3);
+	printf("static const vec_t %s_verts[] =\n", mname);
+	printf("{\n");
 	for (size_t i = 0; i < verts.size; i += 3)
 	{
-		printf("\tVEC(%d, %d, %d),\n",
+		printf("\t{ %d, %d, %d },\n",
 		       QVAL(verts.data[i + 0].f),
 		       QVAL(verts.data[i + 1].f),
 		       QVAL(verts.data[i + 2].f));
 	}
 	printf("};\n");
 	printf("\n");
-	printf("static const vec_t norms[%zu] = {\n", norms.size / 3);
+	printf("static const vec_t %s_norms[] =\n", mname);
+	printf("{\n");
 	for (size_t i = 0; i < norms.size; i += 3)
 	{
-		printf("\tVEC(%d, %d, %d),\n",
+		printf("\t{ %d, %d, %d },\n",
 		       QVAL(norms.data[i + 0].f),
 		       QVAL(norms.data[i + 1].f),
 		       QVAL(norms.data[i + 2].f));
 	}
 	printf("};\n");
 	printf("\n");
-	printf("static const face_t faces[%zu] = {\n", faces.size / 4);
+	printf("static const face_t %s_faces[] =\n", mname);
+	printf("{\n");
 	for (size_t i = 0; i < faces.size; i += 4)
 	{
-		printf("\t(face_t) { .v0 = %zu, .v1 = %zu, .v2 = %zu, .n = %zu },\n",
+		printf("\t{ %zu, %zu, %zu, %zu },\n",
 		       faces.data[i + 0].i,
 		       faces.data[i + 1].i,
 		       faces.data[i + 2].i,
@@ -218,15 +214,10 @@ int main(int argc, char **argv)
 	}
 	printf("};\n");
 	printf("\n");
-	printf("model_t %s_model = (model_t) {\n", mname);
-	printf("\t.verts = verts,\n");
-	printf("\t.nverts = %zu,\n", verts.size / 3);
-	printf("\t.norms = norms,\n");
-	printf("\t.nnorms = %zu,\n", norms.size / 3);
-	printf("\t.faces = faces,\n");
-	printf("\t.nfaces = %zu,\n", faces.size / 4);
+	printf("model_t %s_model =\n", mname);
+	printf("{\n");
+	printf("\t%s_verts, %zu,\n", mname, verts.size / 3);
+	printf("\t%s_norms, %zu,\n", mname, norms.size / 3);
+	printf("\t%s_faces, %zu,\n", mname, faces.size / 4);
 	printf("};\n");
-	printf("\n");
-	printf("#endif\n");
-	printf("#endif\n");
 }

@@ -24,39 +24,39 @@ static void display_func(void)
 		zb[i] = QMAX;
 	}
 
-	draw_model(g_model, &g_model_xfm, cb, zb);
+	draw_model(*g_model, g_model_xfm, cb, zb);
 
 	if (keys[GLUT_KEY_LEFT])
 	{
-		g_model_xfm.y = qadd(g_model_xfm.y, QVAL(-0.02));
+		g_model_xfm->y = qadd(g_model_xfm->y, QVAL(-0.02));
 	}
 	if (keys[GLUT_KEY_RIGHT])
 	{
-		g_model_xfm.y = qadd(g_model_xfm.y, QVAL( 0.02));
+		g_model_xfm->y = qadd(g_model_xfm->y, QVAL( 0.02));
 	}
 	if (keys[GLUT_KEY_UP])
 	{
-		g_model_xfm.p = qadd(g_model_xfm.p, QVAL( 0.02));
+		g_model_xfm->p = qadd(g_model_xfm->p, QVAL( 0.02));
 	}
 	if (keys[GLUT_KEY_DOWN])
 	{
-		g_model_xfm.p = qadd(g_model_xfm.p, QVAL(-0.02));
+		g_model_xfm->p = qadd(g_model_xfm->p, QVAL(-0.02));
 	}
 	if (keys[','])
 	{
-		g_model_xfm.r = qadd(g_model_xfm.r, QVAL( 0.02));
+		g_model_xfm->r = qadd(g_model_xfm->r, QVAL( 0.02));
 	}
 	if (keys['.'])
 	{
-		g_model_xfm.r = qadd(g_model_xfm.r, QVAL(-0.02));
+		g_model_xfm->r = qadd(g_model_xfm->r, QVAL(-0.02));
 	}
 	if (keys['+'])
 	{
-		g_model_xfm.s = qadd(g_model_xfm.s, QVAL( 0.1));
+		g_model_xfm->s = qadd(g_model_xfm->s, QVAL( 0.1));
 	}
 	if (keys['-'])
 	{
-		g_model_xfm.s = qadd(g_model_xfm.s, QVAL(-0.1));
+		g_model_xfm->s = qadd(g_model_xfm->s, QVAL(-0.1));
 	}
 
 	{

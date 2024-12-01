@@ -1,12 +1,12 @@
 HOST_BUILDDIR	= build/host/
 OBJ2C		= $(HOST_BUILDDIR)obj2c
 BUILDDIR	= build/
-ALL		= $(BUILDDIR)cube.h \
-			$(BUILDDIR)modern.h \
-			$(BUILDDIR)rat.h \
-			$(BUILDDIR)rat_lofi.h \
-			$(BUILDDIR)teapot.h \
-			$(BUILDDIR)torus.h
+ALL		= $(BUILDDIR)cube.c \
+			$(BUILDDIR)modern.c \
+			$(BUILDDIR)rat.c \
+			$(BUILDDIR)rat_lofi.c \
+			$(BUILDDIR)teapot.c \
+			$(BUILDDIR)torus.c
 
 .PHONY: all clean
 
@@ -21,6 +21,6 @@ $(OBJ2C): src/host/obj2c.c
 $(BUILDDIR):
 	mkdir -p $(@)
 
-$(BUILDDIR)%.h: MODEL_NAME = $(@:$(BUILDDIR)%.h=%)
-$(BUILDDIR)%.h: res/%.obj $(OBJ2C) | $(BUILDDIR)
+$(BUILDDIR)%.c: MODEL_NAME = $(@:$(BUILDDIR)%.c=%)
+$(BUILDDIR)%.c: res/%.obj $(OBJ2C) | $(BUILDDIR)
 	$(OBJ2C) $(<) $(MODEL_NAME) >$(@)

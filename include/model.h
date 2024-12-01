@@ -15,8 +15,6 @@ typedef struct
 	qval_t z;
 } vec_t;
 
-#define VEC(_x, _y, _z) ((vec_t){.x = (_x), .y = (_y), .z = (_z)})
-
 typedef struct
 {
 	/* Vertex indices */
@@ -53,7 +51,11 @@ typedef struct
 	size_t		nfaces;
 } model_t;
 
-extern model_t *	g_model;
-extern xfm_t		g_model_xfm;
+extern model_t **	g_model;
+extern xfm_t *		g_model_xfm;
+
+int	model_count(void);
+int	model_current(void);
+void	model_select(int num);
 
 #endif

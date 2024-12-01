@@ -34,13 +34,11 @@ void ctrl_recv(void)
 	qval_t qx = QINT(x);
 	qval_t qy = QINT(y);
 
-	g_model_xfm.y += TRANSFORM_SPEED * qx;
-	g_model_xfm.p += TRANSFORM_SPEED * qy;
+	g_model_xfm->y += TRANSFORM_SPEED * qx;
+	g_model_xfm->p += TRANSFORM_SPEED * qy;
 
 	uart_printf("joystick: [ %q, %q ]\n", qx, qy);
 
 	/* clear interrupt */
 	GPIO1_EDGECAPTURE = 0;
 }
-
-
