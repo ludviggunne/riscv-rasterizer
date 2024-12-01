@@ -19,7 +19,7 @@ typedef unsigned int	quval_t;
 #define QZERO	QINT(0)
 #define QONE	QINT(1)
 #define QPI	QVAL(3.14159265358979323846)
-#define QMAX	0x7FFFFFFF;
+#define QMAX	0x7FFFFFFF
 
 qval_t	qadd(qval_t a, qval_t b);
 qval_t	qsub(qval_t a, qval_t b);
