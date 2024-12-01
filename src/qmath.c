@@ -1,6 +1,8 @@
 #include <stddef.h>
 #include <qmath.h>
 
+#include "qsintbl.c"
+
 qval_t qadd(qval_t a, qval_t b)
 {
 	return a + b;
@@ -109,8 +111,6 @@ qval_t qsqrt(qval_t v)
 
 	return r;
 }
-
-#include "qsintbl.c"
 
 void qsincos_s(int v, qval_t *sptr, qval_t *cptr)
 {
