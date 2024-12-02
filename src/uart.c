@@ -1,7 +1,4 @@
-/*
- * By: Ludvig Gunne Lindström
- * Last modified: 2024-09-17
- */
+/* By: Ludvig Gunne Lindström */
 
 #include <stdarg.h>
 #include <stddef.h>

@@ -5,6 +5,8 @@
 # computes some additional metrics, and compiles it
 # into various forms.
 #
+# By: Ludvig Gunne Lindström
+#
 
 import sys
 import json

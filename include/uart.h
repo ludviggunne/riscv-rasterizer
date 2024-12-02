@@ -1,12 +1,10 @@
-/*
- * By: Ludvig Gunne Lindström
- * Last modified: 2024-09-17
- */
-
 #ifndef UART_H
 #define UART_H
 
-/* Functions for printing over UART. */
+/*
+ * Functions for printing over UART.
+ * By: Ludvig Gunne Lindström
+ */
 
 /*
  * Write a character to UART.

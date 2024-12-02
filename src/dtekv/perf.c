@@ -1,3 +1,5 @@
+/* By: Ludvig Gunne Lindström */
+
 #include <stdlib.h>
 #include <csr.h>
 #include <irq.h>

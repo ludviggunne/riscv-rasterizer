@@ -1,7 +1,10 @@
 #ifndef PERF_H
 #define PERF_H
 
-/* Types and functions for dealing with hardware counters and profiling. */
+/*
+ * Types and functions for dealing with hardware counters and profiling.
+ * By: Ludvig Gunne Lindström
+ */
 
 /*
  * Holds values obtained from hardware counters

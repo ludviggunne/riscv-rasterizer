@@ -1,3 +1,5 @@
+/* By: Ludvig Gunne Lindström */
+
 #include <perf.h>
 #include <uart.h>
 
