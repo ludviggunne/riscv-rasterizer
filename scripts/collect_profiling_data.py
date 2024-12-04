@@ -132,24 +132,28 @@ def save_latex_table(table, path):
         outstr += "\n\\end{tabular}\n"
         file.write(outstr)
 
+def save_csv_table(table, path):
+    with open(path, "w") as file:
+        for row in table:
+            file.write(", ".join(map(str, row)) + "\n")
+
 # Create table with a separate window on each row
 # and metrics for columns
 def create_table_layout_1(data):
-    table = [list(map(lambda x: "\\textbf{" + x + "}",
-            ["Window",
+    table = [["Window",
             "IPC",
             "D-cache miss ratio",
             "I-cache miss ratio",
-            "Memory intensity"]))]
+            "Memory intensity"]]
     for window in data:
         table.append([pretty_name(window.name),
                     round(window.ipc, 2),
-                    str(round(100 * window.d_miss_ratio, 1)) + "\\%",
-                    str(round(100 * window.i_miss_ratio, 1)) + "\\%",
-                    str(round(100 * window.mem_intensity, 1)) + "\\%"])
+                    str(round(100 * window.d_miss_ratio, 1)) + "%",
+                    str(round(100 * window.i_miss_ratio, 1)) + "%",
+                    str(round(100 * window.mem_intensity, 1)) + "%"])
     return table
 
 sys.tracebacklimit = 0
 data = read_profile_data_from_open_file(sys.stdin)
 default_printer(data)
-save_latex_table(create_table_layout_1(data), "table.tex")
+save_csv_table(create_table_layout_1(data), "table.csv")
