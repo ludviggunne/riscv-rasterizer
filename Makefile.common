@@ -7,7 +7,8 @@ ALL		= $(BUILDDIR)cube.c \
 			$(BUILDDIR)rat_lofi.c \
 			$(BUILDDIR)teapot.c \
 			$(BUILDDIR)torus.c \
-			$(BUILDDIR)skull.c
+			$(BUILDDIR)skull.c \
+			$(BUILDDIR)riscv.c
 
 .PHONY: all clean
 
