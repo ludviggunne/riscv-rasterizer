@@ -6,7 +6,9 @@
 #include <switch.h>
 #include <vga.h>
 
-#define PROFILE_FRAMES	500
+#if defined(PROFILE_ENABLE) && !defined(PROFILE_FRAMES)
+# define PROFILE_FRAMES	500
+#endif
 
 static unsigned char	(*cb)[WIDTH * HEIGHT];
 static qval_t		zb[WIDTH * HEIGHT];

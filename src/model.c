@@ -8,6 +8,10 @@
 #include <modern.c>
 #include <torus.c>
 
+#ifndef DEFAULT_MODEL
+#define DEFAULT_MODEL 0
+#endif
+
 static model_t *model[] =
 {
 	&cube_model,
@@ -48,10 +52,10 @@ static xfm_t model_xfm[] =
 	},
 };
 
-static int	model_num	= 0;
+static int	model_num	= DEFAULT_MODEL;
 
-model_t **	g_model		= &model[0];
-xfm_t *		g_model_xfm	= &model_xfm[0];
+model_t **	g_model		= &model[DEFAULT_MODEL];
+xfm_t *		g_model_xfm	= &model_xfm[DEFAULT_MODEL];
 
 int model_count(void)
 {
