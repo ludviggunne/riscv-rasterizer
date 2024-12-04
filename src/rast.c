@@ -26,7 +26,7 @@ typedef struct
 	qval_t	rdzdy;
 } span_t;
 
-static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c)
+static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c[])
 {
 	PROFILE_WINDOW_START(triangle_span);
 
@@ -71,6 +71,8 @@ static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c)
 				dzdx = 0;
 			}
 
+			int ci = (QTOI(x) ^ QTOI(y)) & 1;
+
 			while (x <= rx)
 			{
 				ix = QTOI(x);
@@ -80,12 +82,13 @@ static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c)
 					if (z < zb[iy * WIDTH + ix])
 					{
 						zb[iy * WIDTH + ix] = z;
-						cb[iy * WIDTH + ix] = c;
+						cb[iy * WIDTH + ix] = c[ci];
 					}
 				}
 
 				x = qadd(x, QONE);
 				z = qadd(z, dzdx);
+				ci = ci ^ 1;
 			}
 		}
 
@@ -108,7 +111,7 @@ static void draw_tri(tri_t *t, vec_t *n, unsigned char *cb, qval_t *zb)
 
 	PROFILE_WINDOW_START(triangle);
 
-	int c = 0;
+	int c[2];
 	{
 		int r = 0;
 		int g = 0;
@@ -143,19 +146,23 @@ static void draw_tri(tri_t *t, vec_t *n, unsigned char *cb, qval_t *zb)
 				continue;
 			}
 
-			m = qmul(m, QINT(-255));
+			m = qmul(m, -QINT(255));
 			r += QTOI(qmul(l_c->x, m));
 			g += QTOI(qmul(l_c->y, m));
 			b += QTOI(qmul(l_c->z, m));
 		}
 
-		r = (r > 255 ? 255 : r);
-		g = (g > 255 ? 255 : g);
-		b = (b > 255 ? 255 : b);
+#define CLAMP(x) ((x) > 255 ? 255 : (x))
+		c[0] = 0;
+		c[0] = c[0] | ((CLAMP(r) >> 5) << 5);
+		c[0] = c[0] | ((CLAMP(g) >> 5) << 2);
+		c[0] = c[0] | ((CLAMP(b) >> 6) << 0);
 
-		c = c | ((r >> 5) << 5);
-		c = c | ((g >> 5) << 2);
-		c = c | ((b >> 6) << 0);
+		c[1] = 0;
+		c[1] = c[1] | ((CLAMP(r + 15) >> 5) << 5);
+		c[1] = c[1] | ((CLAMP(g + 15) >> 5) << 2);
+		c[1] = c[1] | ((CLAMP(b +  7) >> 6) << 0);
+#undef CLAMP
 	}
 
 	vec_t v1 = t->a;
