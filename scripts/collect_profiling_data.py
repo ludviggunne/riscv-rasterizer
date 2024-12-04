@@ -36,6 +36,8 @@ class ProfileWindow:
         self.d_hit_ratio = 1 - self.d_miss_ratio
         self.i_miss_ratio = self.i_misses / self.instrs
         self.i_hit_ratio = 1 - self.i_miss_ratio
+        self.d_stall_ratio = self.d_stalls / self.cycles
+        self.i_stall_ratio = self.i_stalls / self.cycles
         self.alu_stall_ratio = self.alu_stalls / self.cycles
         self.mem_intensity = self.mem_instrs / self.instrs
         self.hzd_stall_ratio = self.hzd_stalls / self.cycles
@@ -78,13 +80,6 @@ def default_printer(data):
 
     frame_exec_time = None
 
-    ipc_acc = 0
-    dmiss_acc = 0
-    imiss_acc = 0
-    alustall_acc = 0
-    hzdstall_acc = 0
-    memint_acc = 0
-
     for window in data:
         if window.name == "frame":
             frame_exec_time = window.exec_time
@@ -97,40 +92,19 @@ def default_printer(data):
         print(f"    Average execution time: {round(window.avg_exec_time, 2)}s")
         print(f"    % of frame time:        {round(100 * window.exec_time / frame_exec_time, 1)}%")
         print(f"    IPC:                    {round(window.ipc, 2)}")
-        print(f"    D-cache miss ratio:     {round(window.d_miss_ratio * 100, 1)}%")
-        print(f"    I-cache miss ratio:     {round(window.i_miss_ratio * 100, 1)}%")
+        print(f"    D-cache stall ratio:     {round(window.d_stall_ratio * 100, 1)}%")
+        print(f"    I-cache stall ratio:     {round(window.i_stall_ratio * 100, 1)}%")
         print(f"    ALU-stall ratio:        {round(window.alu_stall_ratio * 100, 1)}%")
         print(f"    Hazard-stall ratio:     {round(window.hzd_stall_ratio * 100, 1)}%")
         print(f"    Memory intensity:       {round(window.mem_intensity * 100, 1)}%")
         print("")
 
-        ipc_acc += window.ipc
-        dmiss_acc += window.d_miss_ratio
-        imiss_acc += window.i_miss_ratio
-        alustall_acc += window.alu_stall_ratio
-        hzdstall_acc += window.hzd_stall_ratio
-        memint_acc += window.mem_intensity
-
-    ipc_acc /= len(data)
-    dmiss_acc /= len(data)
-    imiss_acc /= len(data)
-    alustall_acc /= len(data)
-    hzdstall_acc /= len(data)
-    memint_acc /= len(data)
-
-    print(f"Average IPC:                {round(ipc_acc, 2)}")
-    print(f"Average D-cache miss ratio: {round(dmiss_acc * 100, 1)}%")
-    print(f"Average I-cache miss ratio: {round(imiss_acc * 100, 1)}%")
-    print(f"Average ALU-stall ratio:    {round(alustall_acc * 100, 1)}%")
-    print(f"Average Hazard-stall ratio: {round(hzdstall_acc * 100, 1)}%")
-    print(f"Average Memory intensity:   {round(memint_acc * 100, 1)}%")
-
-def save_latex_table(table, path):
-    with open(path, "w") as file:
-        outstr = "\\begin{tabular}{ | l | " + "c | " * (len(table[0]) - 1) + "}\n    \\hline\n"
-        outstr += "".join(map(lambda row: "    " + " & ".join(map(lambda x: str(x), row)) + " \\\\\n    \\hline\n", table))
-        outstr += "\n\\end{tabular}\n"
-        file.write(outstr)
+# def save_latex_table(table, path):
+#     with open(path, "w") as file:
+#         outstr = "\\begin{tabular}{ | l | " + "c | " * (len(table[0]) - 1) + "}\n    \\hline\n"
+#         outstr += "".join(map(lambda row: "    " + " & ".join(map(lambda x: str(x), row)) + " \\\\\n    \\hline\n", table))
+#         outstr += "\n\\end{tabular}\n"
+#         file.write(outstr)
 
 def save_csv_table(table, path):
     with open(path, "w") as file:
