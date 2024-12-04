@@ -30,16 +30,16 @@ static xfm_t model_xfm[] =
 	},
 	{
 		.s = QVAL(6),
-		.t = { QVAL(0), QVAL(-5), QVAL(25) },
+		.t = { QVAL(0), QVAL(-10), QVAL(25) },
 	},
 	{
 		.s = QVAL(2),
-		.t = { QVAL(0), QVAL(0), QVAL(25) },
+		.t = { QVAL(0), QVAL(-10), QVAL(25) },
 		.y = QPIHALF,
 	},
 	{
 		.s = QVAL(2),
-		.t = { QVAL(0), QVAL(0), QVAL(25) },
+		.t = { QVAL(0), QVAL(-10), QVAL(25) },
 		.y = QPIHALF,
 	},
 	{
