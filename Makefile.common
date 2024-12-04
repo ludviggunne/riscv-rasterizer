@@ -1,21 +1,16 @@
 HOST_BUILDDIR	= build/host/
 OBJ2C		= $(HOST_BUILDDIR)obj2c
 BUILDDIR	= build/
-ALL		= $(BUILDDIR)cube.c \
-			$(BUILDDIR)modern.c \
-			$(BUILDDIR)rat.c \
-			$(BUILDDIR)rat_lofi.c \
-			$(BUILDDIR)teapot.c \
-			$(BUILDDIR)torus.c \
-			$(BUILDDIR)skull.c \
-			$(BUILDDIR)riscv.c
+MODELS		= cube teapot rat rat_lofi modern torus skull riscv
+MODELS_SRC	= $(MODELS:%=$(BUILDDIR)%.c)
+MODELS_C	= $(BUILDDIR)models.c
 
 .PHONY: all clean
 
-all: $(ALL)
+all: $(MODELS_C)
 
 clean:
-	rm -f $(ALL)
+	rm -f $(MODELS_SRC) $(MODELS_C)
 
 $(OBJ2C): src/host/obj2c.c
 	$(MAKE) -f Makefile.host $(@)
@@ -23,6 +18,13 @@ $(OBJ2C): src/host/obj2c.c
 $(BUILDDIR):
 	mkdir -p $(@)
 
-$(BUILDDIR)%.c: MODEL_NAME = $(@:$(BUILDDIR)%.c=%)
-$(BUILDDIR)%.c: res/%.obj $(OBJ2C) | $(BUILDDIR)
+$(MODELS_SRC): MODEL_NAME = $(@:$(BUILDDIR)%.c=%)
+$(MODELS_SRC): $(BUILDDIR)%.c: res/%.obj $(OBJ2C) | $(BUILDDIR)
 	$(OBJ2C) $(<) $(MODEL_NAME) >$(@)
+
+$(MODELS_C): $(MODELS_SRC) | $(BUILDDIR)
+	pre='-1'; for m in $(MODELS); do printf '#define MODELNUM_'"$${m}"'\t('"$${pre}"' + 1)\n'; pre='MODELNUM_'"$${m}"; done >$(@); printf '#define NUM_MODELS\t('"$${pre}"' + 1)\n\n' >>$(@)
+	for m in $(MODELS); do printf '#include <'"$${m}"'.c>\n'; done >>$(@)
+	printf '\nstatic model_t *models[] =\n{\n' >>$(@)
+	for m in $(MODELS); do printf "\t"'&'"$${m}"'_model,\n'; done >>$(@)
+	printf '};\n' >>$(@)

@@ -242,18 +242,34 @@ void draw_tri(tri_t *t, unsigned char c[], unsigned char *cb, qval_t *zb)
 static vec_t		xfm_vert[10000];
 static vec_t		xfm_norm[10000];
 static unsigned char	norm_col[10000][2];
-static vec_t		light_ns[] =
-{
-	{ QVAL( 0.0000), QVAL( 0.0000), QVAL( 1.0000) },
-	{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
-	{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
-};
-static vec_t		light_cs[] =
-{
-	{ QVAL(0.50), QVAL(0.50), QVAL(0.50) },
-	{ QVAL(1.00), QVAL(0.00), QVAL(0.00) },
-	{ QVAL(0.00), QVAL(0.00), QVAL(1.00) },
-};
+
+#if 0
+	/* Bisexual lighting */
+	static vec_t		light_ns[] =
+	{
+		{ QVAL( 0.0000), QVAL( 0.0000), QVAL( 1.0000) },
+		{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
+		{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
+	};
+	static vec_t		light_cs[] =
+	{
+		{ QVAL(0.50), QVAL(0.50), QVAL(0.50) },
+		{ QVAL(1.00), QVAL(0.00), QVAL(0.00) },
+		{ QVAL(0.00), QVAL(0.00), QVAL(1.00) },
+	};
+#else
+	/* Natural-ish light from front-left */
+	static vec_t		light_ns[] =
+	{
+		{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
+		{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
+	};
+	static vec_t		light_cs[] =
+	{
+		{ QVAL(0.80), QVAL(0.80), QVAL(0.60) },
+		{ QVAL(0.60), QVAL(0.60), QVAL(0.80) },
+	};
+#endif
 
 void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 {
