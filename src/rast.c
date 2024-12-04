@@ -110,9 +110,24 @@ void draw_span(span_t *s, unsigned char c[], unsigned char *cb, qval_t *zb)
 static
 void draw_tri(tri_t *t, unsigned char c[], unsigned char *cb, qval_t *zb)
 {
+	/* near culling */
 	if (t->a.z < Z_NEAR || t->b.z < Z_NEAR || t->c.z < Z_NEAR)
 	{
 		return;
+	}
+
+	{
+		/* backface culling */
+		qval_t s = 0;
+
+		s = qadd(s, qmul(t->a.x, qsub(t->b.y, t->c.y)));
+		s = qadd(s, qmul(t->b.x, qsub(t->c.y, t->a.y)));
+		s = qadd(s, qmul(t->c.x, qsub(t->a.y, t->b.y)));
+
+		if (s >= 0)
+		{
+			return;
+		}
 	}
 
 	PROFILE_WINDOW_START(triangle);
@@ -239,7 +254,6 @@ void draw_tri(tri_t *t, unsigned char c[], unsigned char *cb, qval_t *zb)
 }
 
 static vec_t		xfm_vert[10000];
-static vec_t		xfm_norm[10000];
 static unsigned char	norm_col[10000][2];
 
 #if 0
@@ -335,39 +349,39 @@ void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 
 	for (int i = 0; i < mdl->nnorms; i++)
 	{
-		vec_t *	n = &xfm_norm[i];
+		vec_t	n = mdl->norms[i];
 		int	r = 0;
 		int	g = 0;
 		int	b = 0;
 
 		{
-			qval_t x = mdl->norms[i].x;
-			qval_t y = mdl->norms[i].y;
-			qval_t z = mdl->norms[i].z;
+			qval_t x = n.x;
+			qval_t y = n.y;
+			qval_t z = n.z;
 
-			n->x = qadd(qmul( rc, x), qmul(-rs, y));
-			n->y = qadd(qmul( rs, x), qmul( rc, y));
-			n->z = z;
+			n.x = qadd(qmul( rc, x), qmul(-rs, y));
+			n.y = qadd(qmul( rs, x), qmul( rc, y));
+			n.z = z;
 		}
 
 		{
-			qval_t x = n->x;
-			qval_t y = n->y;
-			qval_t z = n->z;
+			qval_t x = n.x;
+			qval_t y = n.y;
+			qval_t z = n.z;
 
-			n->x = x;
-			n->y = qadd(qmul( pc, y), qmul(-ps, z));
-			n->z = qadd(qmul( ps, y), qmul( pc, z));
+			n.x = x;
+			n.y = qadd(qmul( pc, y), qmul(-ps, z));
+			n.z = qadd(qmul( ps, y), qmul( pc, z));
 		}
 
 		{
-			qval_t x = n->x;
-			qval_t y = n->y;
-			qval_t z = n->z;
+			qval_t x = n.x;
+			qval_t y = n.y;
+			qval_t z = n.z;
 
-			n->x = qadd(qmul( yc, x), qmul(-ys, z));
-			n->y = y;
-			n->z = qadd(qmul( ys, x), qmul( yc, z));
+			n.x = qadd(qmul( yc, x), qmul(-ys, z));
+			n.y = y;
+			n.z = qadd(qmul( ys, x), qmul( yc, z));
 		}
 
 		for (int j = 0; j < sizeof(light_ns) / sizeof*(light_ns); j++)
@@ -377,9 +391,9 @@ void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 			qval_t m;
 
 			m = QINT(0);
-			m = qadd(m, qmul(n->x, l_n->x));
-			m = qadd(m, qmul(n->y, l_n->y));
-			m = qadd(m, qmul(n->z, l_n->z));
+			m = qadd(m, qmul(n.x, l_n->x));
+			m = qadd(m, qmul(n.y, l_n->y));
+			m = qadd(m, qmul(n.z, l_n->z));
 
 			if (m >= 0)
 			{
@@ -407,11 +421,6 @@ void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 
 	for (int i = 0; i < mdl->nfaces; i++)
 	{
-		if (xfm_norm[mdl->faces[i].n].z >= 0)
-		{
-			continue;
-		}
-
 		tri_t t =
 		{
 			xfm_vert[mdl->faces[i].v0],
