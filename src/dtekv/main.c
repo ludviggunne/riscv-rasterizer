@@ -20,9 +20,24 @@ static void display_func(void)
 	PROFILE_WINDOW_START(zbuf_clear);
 
 	/* clear depth buffer */
-	for (int i = 0; i < sizeof(zb) / sizeof*(zb); i++)
+	for (int i = 0; i < sizeof(zb) / sizeof*(zb); i += 16)
 	{
-		zb[i] = QMAX;
+		zb[i +  0] = QMAX;
+		zb[i +  1] = QMAX;
+		zb[i +  2] = QMAX;
+		zb[i +  3] = QMAX;
+		zb[i +  4] = QMAX;
+		zb[i +  5] = QMAX;
+		zb[i +  6] = QMAX;
+		zb[i +  7] = QMAX;
+		zb[i +  8] = QMAX;
+		zb[i +  9] = QMAX;
+		zb[i + 10] = QMAX;
+		zb[i + 11] = QMAX;
+		zb[i + 12] = QMAX;
+		zb[i + 13] = QMAX;
+		zb[i + 14] = QMAX;
+		zb[i + 15] = QMAX;
 	}
 
 	PROFILE_WINDOW_END(zbuf_clear);
@@ -37,9 +52,31 @@ static void display_func(void)
 	PROFILE_WINDOW_START(cbuf_clear);
 
 	/* clear color buffer */
-	for (int i = 0; i < sizeof(*cb) / sizeof*(*cb); i += 4)
+	for (int i = 0; i < sizeof(*cb) / sizeof(int); i += 16)
 	{
-		__asm__ ("sw zero, %0;" : "=m"(*(int *)&(*cb)[i]));
+		/* this is written in assembly to prevent the compiler from
+		 * emitting a call to memset, which we don't have */
+		__asm__
+		(
+			"sw zero,  0(%0);"
+			"sw zero,  4(%0);"
+			"sw zero,  8(%0);"
+			"sw zero, 12(%0);"
+			"sw zero, 16(%0);"
+			"sw zero, 20(%0);"
+			"sw zero, 24(%0);"
+			"sw zero, 28(%0);"
+			"sw zero, 32(%0);"
+			"sw zero, 36(%0);"
+			"sw zero, 40(%0);"
+			"sw zero, 44(%0);"
+			"sw zero, 48(%0);"
+			"sw zero, 52(%0);"
+			"sw zero, 56(%0);"
+			"sw zero, 60(%0);"
+			:: "r"(&((int *) cb)[i])
+			: "memory"
+		);
 	}
 
 	PROFILE_WINDOW_END(cbuf_clear);
