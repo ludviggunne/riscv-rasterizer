@@ -156,4 +156,3 @@ def create_table_layout_1(data):
 sys.tracebacklimit = 0
 data = read_profile_data_from_open_file(sys.stdin)
 default_printer(data)
-save_csv_table(create_table_layout_1(data), "table.csv")
