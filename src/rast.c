@@ -109,7 +109,9 @@ void draw_span(span_t *s, unsigned char c[], unsigned char *cb, qval_t *zb)
 static
 void draw_tri(tri_t *t, unsigned char c[], unsigned char *cb, qval_t *zb)
 {
-	if (t->a.z <= 0 || t->b.z <= 0 || t->c.z <= 0)
+	const qval_t near = QVAL(1);
+
+	if (t->a.z < near || t->b.z < near || t->c.z < near)
 	{
 		return;
 	}
