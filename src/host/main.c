@@ -26,19 +26,27 @@ static void display_func(void)
 
 	draw_model(*g_model, g_model_xfm, cb, zb);
 
-	static int mdl_selected = 0;
-	if (keys['M'])
+	/* handle input */
 	{
-		if (!mdl_selected)
+		static int mdl_selected = 0;
+
+		if (keys['M'])
 		{
-			model_select((model_current() + 1) % model_count());
+			if (!mdl_selected)
+			{
+				model_select
+				(
+					(model_current() + 1) % model_count()
+				);
+			}
+			mdl_selected = 1;
 		}
-		mdl_selected = 1;
+		else
+		{
+			mdl_selected = 0;
+		}
 	}
-	else
-	{
-		mdl_selected = 0;
-	}
+
 	if (keys[GLUT_KEY_LEFT])
 	{
 		g_model_xfm->y = qadd(g_model_xfm->y, QVAL(-0.02));

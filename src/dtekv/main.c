@@ -1,3 +1,4 @@
+#include <button.h>
 #include <perf.h>
 #include <perf_json.h>
 #include <qmath.h>
@@ -46,12 +47,11 @@ static void display_func(void)
 
 	PROFILE_WINDOW_END(frame);
 
-	/* handle switch input */
+	/* handle input */
 	{
-		int sw = switch_get_all();
-
 		static int mdl_selected = 0;
-		if (sw & (1 << 8))
+
+		if (button_get())
 		{
 			if (!mdl_selected)
 			{
@@ -66,6 +66,10 @@ static void display_func(void)
 		{
 			mdl_selected = 0;
 		}
+	}
+	{
+		int sw = switch_get_all();
+
 		if (sw & (1 << 0))
 		{
 			g_model_xfm->y = qadd(g_model_xfm->y, QVAL(-0.02));

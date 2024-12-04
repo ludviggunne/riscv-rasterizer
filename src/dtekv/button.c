@@ -20,6 +20,11 @@ DEFINE_INITCALL(IRQ, button_init)
 	register_irq(BUTTON_IRQ, button_irq_handler);
 }
 
+int button_get(void)
+{
+	return BUTTON_DATA;
+}
+
 void button_set_event(void (*fn)(int))
 {
 	int irqf = irq_save();
