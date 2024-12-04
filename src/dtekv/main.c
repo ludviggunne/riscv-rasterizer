@@ -50,6 +50,22 @@ static void display_func(void)
 	{
 		int sw = switch_get_all();
 
+		static int mdl_selected = 0;
+		if (sw & (1 << 8))
+		{
+			if (!mdl_selected)
+			{
+				model_select
+				(
+					(model_current() + 1) % model_count()
+				);
+			}
+			mdl_selected = 1;
+		}
+		else
+		{
+			mdl_selected = 0;
+		}
 		if (sw & (1 << 0))
 		{
 			g_model_xfm->y = qadd(g_model_xfm->y, QVAL(-0.02));

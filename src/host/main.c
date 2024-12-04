@@ -26,6 +26,19 @@ static void display_func(void)
 
 	draw_model(*g_model, g_model_xfm, cb, zb);
 
+	static int mdl_selected = 0;
+	if (keys['M'])
+	{
+		if (!mdl_selected)
+		{
+			model_select((model_current() + 1) % model_count());
+		}
+		mdl_selected = 1;
+	}
+	else
+	{
+		mdl_selected = 0;
+	}
 	if (keys[GLUT_KEY_LEFT])
 	{
 		g_model_xfm->y = qadd(g_model_xfm->y, QVAL(-0.02));
