@@ -35,6 +35,7 @@ void draw_span(span_t *s, unsigned char c[], unsigned char *cb, qval_t *zb)
 
 	int ix;
 	int iy;
+	int ci;
 	qval_t x;
 	qval_t y;
 	qval_t z;
@@ -64,6 +65,8 @@ void draw_span(span_t *s, unsigned char c[], unsigned char *cb, qval_t *zb)
 		{
 			x = lx & ~0xFFFF;
 			z = lz;
+			ci = (QTOI(x) ^ QTOI(y)) & 1;
+
 
 			if (lx != rx)
 			{
@@ -73,8 +76,6 @@ void draw_span(span_t *s, unsigned char c[], unsigned char *cb, qval_t *zb)
 			{
 				dzdx = 0;
 			}
-
-			int ci = (QTOI(x) ^ QTOI(y)) & 1;
 
 			while (x <= rx)
 			{

@@ -7,6 +7,7 @@
 #include <rat_lofi.c>
 #include <modern.c>
 #include <torus.c>
+#include <skull.c>
 
 #ifndef DEFAULT_MODEL
 #define DEFAULT_MODEL 0
@@ -20,6 +21,7 @@ static model_t *model[] =
 	&rat_lofi_model,
 	&modern_model,
 	&torus_model,
+	&skull_model,
 };
 
 static xfm_t model_xfm[] =
@@ -48,6 +50,10 @@ static xfm_t model_xfm[] =
 	},
 	{
 		.s = QVAL(0.05),
+		.t = { QVAL(0), QVAL(0), QVAL(25) },
+	},
+	{
+		.s = QVAL(4),
 		.t = { QVAL(0), QVAL(0), QVAL(25) },
 	},
 };
