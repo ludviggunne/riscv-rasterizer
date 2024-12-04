@@ -41,8 +41,6 @@ static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c)
 	qval_t rx;
 	qval_t dzdx;
 
-	c = ((c & 0xE0) >> 0) | ((c & 0xE0) >> 3) | ((c & 0xC0) >> 6);
-
 	y = s->y1;
 
 	lx = s->lx;
@@ -82,16 +80,7 @@ static void draw_span(span_t *s, unsigned char *cb, qval_t *zb, int c)
 					if (z < zb[iy * WIDTH + ix])
 					{
 						zb[iy * WIDTH + ix] = z;
-						if (	((ix + iy) & 1) &&
-							(c & 0x20) &&
-							(c < 0xC0))
-						{
-							cb[iy * WIDTH + ix] = c + 1;
-						}
-						else
-						{
-							cb[iy * WIDTH + ix] = c;
-						}
+						cb[iy * WIDTH + ix] = c;
 					}
 				}
 
@@ -119,7 +108,55 @@ static void draw_tri(tri_t *t, vec_t *n, unsigned char *cb, qval_t *zb)
 
 	PROFILE_WINDOW_START(triangle);
 
-	int c = QTOI(qmul(n->z, QVAL(-255)));
+	int c = 0;
+	{
+		int r = 0;
+		int g = 0;
+		int b = 0;
+
+		vec_t light_ns[] =
+		{
+			{ QVAL( 0.0000), QVAL( 0.0000), QVAL( 1.0000) },
+			{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
+			{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
+		};
+		vec_t light_cs[] =
+		{
+			{ QVAL(0.50), QVAL(0.50), QVAL(0.50) },
+			{ QVAL(1.00), QVAL(0.00), QVAL(0.00) },
+			{ QVAL(0.00), QVAL(0.00), QVAL(1.00) },
+		};
+
+		for (int i = 0; i < sizeof(light_ns) / sizeof*(light_ns); i++)
+		{
+			vec_t *l_n = &light_ns[i];
+			vec_t *l_c = &light_cs[i];
+			qval_t m;
+
+			m = QINT(0);
+			m = qadd(m, qmul(n->x, l_n->x));
+			m = qadd(m, qmul(n->y, l_n->y));
+			m = qadd(m, qmul(n->z, l_n->z));
+
+			if (m >= 0)
+			{
+				continue;
+			}
+
+			m = qmul(m, QINT(-255));
+			r += QTOI(qmul(l_c->x, m));
+			g += QTOI(qmul(l_c->y, m));
+			b += QTOI(qmul(l_c->z, m));
+		}
+
+		r = (r > 255 ? 255 : r);
+		g = (g > 255 ? 255 : g);
+		b = (b > 255 ? 255 : b);
+
+		c = c | ((r >> 5) << 5);
+		c = c | ((g >> 5) << 2);
+		c = c | ((b >> 6) << 0);
+	}
 
 	vec_t v1 = t->a;
 	vec_t v2 = t->b;
