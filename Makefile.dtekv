@@ -4,7 +4,7 @@ CC 		= $(PROGRAM_PREFIX)gcc
 OBJDUMP		= $(PROGRAM_PREFIX)objdump
 OBJCOPY		= $(PROGRAM_PREFIX)objcopy
 MACHFLAGS	= -mabi=ilp32 -march=rv32imzicsr
-CPPFLAGS	= -Iinclude -Iinclude/dtekv -Ibuild -DPROFILE_ENABLE
+CPPFLAGS	= -Iinclude -Iinclude/dtekv -Ibuild
 ASFLAGS		= $(MACHFLAGS)
 CFLAGS		= $(MACHFLAGS) -fno-pic -g -Wall -O3 -flto -fuse-linker-plugin
 LDSCRIPT	= link.ld
@@ -13,6 +13,10 @@ LDLIBS		= -ldtekv
 BUILDDIR	= build/dtekv/
 RAST_ELF	= $(BUILDDIR)rast.elf
 RAST_BIN	= $(BUILDDIR)rast.bin
+
+ifeq ($(PROFILE),1)
+CPPFLAGS	+= -DPROFILE_ENABLED
+endif
 
 .PHONY: all clean
 
