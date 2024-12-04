@@ -3,6 +3,7 @@
 #include <qmath.h>
 #include <rast.h>
 
+#define Z_NEAR		QINT(1)
 #define CLAMP(x)	((x) > 255 ? 255 : (x))
 
 typedef struct
@@ -109,9 +110,7 @@ void draw_span(span_t *s, unsigned char c[], unsigned char *cb, qval_t *zb)
 static
 void draw_tri(tri_t *t, unsigned char c[], unsigned char *cb, qval_t *zb)
 {
-	const qval_t near = QVAL(1);
-
-	if (t->a.z < near || t->b.z < near || t->c.z < near)
+	if (t->a.z < Z_NEAR || t->b.z < Z_NEAR || t->c.z < Z_NEAR)
 	{
 		return;
 	}
@@ -324,6 +323,11 @@ void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 		w->x = qadd(qmul(w->x, xfm->s), xfm->t.x);
 		w->y = qadd(qmul(w->y, xfm->s), xfm->t.y);
 		w->z = qadd(qmul(w->z, xfm->s), xfm->t.z);		
+
+		if (w->z < Z_NEAR)
+		{
+			continue;
+		}
 
 		w->x = qadd(qdiv(w->x, qmul(w->z, z_norm)), QINT(WIDTH / 2));
 		w->y = qadd(qdiv(w->y, qmul(w->z, z_norm)), QINT(HEIGHT / 2));
