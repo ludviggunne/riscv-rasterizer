@@ -22,27 +22,29 @@ static xfm_t model_xfm[] =
 {
 	{
 		.s = QVAL(1),
-		.t = { QZERO, QZERO, QVAL(25) },
+		.t = { QVAL(0), QVAL(0), QVAL(25) },
 	},
 	{
 		.s = QVAL(6),
-		.t = { QZERO, QZERO, QVAL(25) },
+		.t = { QVAL(0), QVAL(-5), QVAL(25) },
 	},
 	{
-		.s = QVAL(1),
-		.t = { QZERO, QZERO, QVAL(25) },
+		.s = QVAL(2),
+		.t = { QVAL(0), QVAL(0), QVAL(25) },
+		.y = QPIHALF,
 	},
 	{
-		.s = QVAL(1),
-		.t = { QZERO, QZERO, QVAL(25) },
+		.s = QVAL(2),
+		.t = { QVAL(0), QVAL(0), QVAL(25) },
+		.y = QPIHALF,
 	},
 	{
-		.s = QVAL(0.01),
-		.t = { QZERO, QZERO, QVAL(25) },
+		.s = QVAL(0.02),
+		.t = { QVAL(0), QVAL(0), QVAL(25) },
 	},
 	{
 		.s = QVAL(0.05),
-		.t = { QZERO, QZERO, QVAL(25) },
+		.t = { QVAL(0), QVAL(0), QVAL(25) },
 	},
 };
 
