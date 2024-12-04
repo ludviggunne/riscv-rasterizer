@@ -109,6 +109,11 @@ static void draw_tri(tri_t *t, vec_t *n, unsigned char *cb, qval_t *zb)
 		return;
 	}
 
+	if (t->a.z <= 0 || t->b.z <= 0 || t->c.z <= 0)
+	{
+		return;
+	}
+
 	PROFILE_WINDOW_START(triangle);
 
 	int c[2];
