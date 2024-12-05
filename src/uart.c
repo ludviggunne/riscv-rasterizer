@@ -2,6 +2,7 @@
 
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdlib.h>
 #ifndef __riscv
 #include <stdio.h>
 #endif
@@ -37,6 +38,7 @@ void uart_printf(const char *fmt, ...)
 {
 	char buf[32];
 	size_t buflen;
+	(void)buflen;
 
 	va_list args;
 	va_start(args, fmt);
@@ -56,104 +58,10 @@ void uart_printf(const char *fmt, ...)
 			case 0:
 				return;
 			case 'd':
-			{
-				int x = va_arg(args, int);
-				if (x == 0)
-				{
-					uart_putc('0');
-					continue;
-				}
-				if (x < 0)
-				{
-					uart_putc('-');
-					x = -x;
-				}
-				while (x)
-				{
-					buf[buflen++] = '0' + x % 10;
-					x /= 10;
-				}
-				for (int i = buflen - 1; i >= 0; i--)
-				{
-					uart_putc(buf[i]);
-				}
-				break;
-			}
 			case 'u':
-			{
-				unsigned int x = va_arg(args, unsigned int);
-				if (x == 0)
-				{
-					uart_putc('0');
-					continue;
-				}
-				while (x)
-				{
-					buf[buflen++] = '0' + x % 10;
-					x /= 10;
-				}
-				for (int i = buflen - 1; i >= 0; i--)
-				{
-					uart_putc(buf[i]);
-				}
-				break;
-			}
 			case 'l':
-			{
-				fmt++;
-				c = *fmt;
-				switch (c)
-				{
-				case 0:
-					return;
-				case 'd':
-				{
-					long long int x = va_arg(args, long long int);
-					if (x == 0)
-					{
-						uart_putc('0');
-						continue;
-					}
-					if (x < 0)
-					{
-						uart_putc('-');
-						x = -x;
-					}
-					while (x)
-					{
-						buf[buflen++] = '0' + x % 10;
-						x /= 10;
-					}
-					for (int i = buflen - 1; i >= 0; i--)
-					{
-						uart_putc(buf[i]);
-					}
-					break;
-				}
-				case 'u':
-				{
-					unsigned long long int x = va_arg(args, unsigned long long int);
-					if (x == 0)
-					{
-						uart_putc('0');
-						continue;
-					}
-					while (x)
-					{
-						buf[buflen++] = '0' + x % 10;
-						x /= 10;
-					}
-					for (int i = buflen - 1; i >= 0; i--)
-					{
-						uart_putc(buf[i]);
-					}
-					break;
-				}
-				default:
-					break;
-				}
-				break;
-			}
+				uart_puts("ABORT: decimal format not supported in unoptimized build\n");
+				abort();
 			case 'p':
 			{
 				void *p = va_arg(args, void*);
@@ -167,6 +75,18 @@ void uart_printf(const char *fmt, ...)
 				do {
 					i -= 4;
 					size_t v = ((size_t) p >> i) & 15;
+					uart_putc(hex[v]);
+				} while (i);
+				break;
+			}
+			case 'x':
+			{
+				unsigned long long *p = va_arg(args, unsigned long long*);
+				uart_puts("0x");
+				int i = 64;
+				do {
+					i -= 4;
+					int v = (*p >> i) & 15;
 					uart_putc(hex[v]);
 				} while (i);
 				break;
@@ -197,4 +117,6 @@ void uart_printf(const char *fmt, ...)
 			break;
 		}
 	}
+
+	va_end(args);
 }

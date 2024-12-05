@@ -9,28 +9,28 @@ static void print_profile_window_json(struct profile_window *win,
 {
 	uart_printf("    {\n"
 	            "        \"name\": \"%s\",\n"
-	            "        \"runs\": %lu,\n"
-	            "        \"mcycle\": %lu,\n"
-	            "        \"minstret\": %lu,\n"
-	            "        \"mhpmcounter3\": %lu,\n"
-	            "        \"mhpmcounter4\": %lu,\n"
-	            "        \"mhpmcounter5\": %lu,\n"
-	            "        \"mhpmcounter6\": %lu,\n"
-	            "        \"mhpmcounter7\": %lu,\n"
-	            "        \"mhpmcounter8\": %lu,\n"
-	            "        \"mhpmcounter9\": %lu\n"
+	            "        \"runs\": \"%x\",\n"
+	            "        \"mcycle\": \"%x\",\n"
+	            "        \"minstret\": \"%x\",\n"
+	            "        \"mhpmcounter3\": \"%x\",\n"
+	            "        \"mhpmcounter4\": \"%x\",\n"
+	            "        \"mhpmcounter5\": \"%x\",\n"
+	            "        \"mhpmcounter6\": \"%x\",\n"
+	            "        \"mhpmcounter7\": \"%x\",\n"
+	            "        \"mhpmcounter8\": \"%x\",\n"
+	            "        \"mhpmcounter9\": \"%x\"\n"
 	            "    }%s\n",
 	            win->name,
-	            win->nruns,
-	            win->acc.mcycle,
-	            win->acc.minstret,
-	            win->acc.mhpmcounter3,
-	            win->acc.mhpmcounter4,
-	            win->acc.mhpmcounter5,
-	            win->acc.mhpmcounter6,
-	            win->acc.mhpmcounter7,
-	            win->acc.mhpmcounter8,
-	            win->acc.mhpmcounter9,
+	            &win->nruns,
+	            &win->acc.mcycle,
+	            &win->acc.minstret,
+	            &win->acc.mhpmcounter3,
+	            &win->acc.mhpmcounter4,
+	            &win->acc.mhpmcounter5,
+	            &win->acc.mhpmcounter6,
+	            &win->acc.mhpmcounter7,
+	            &win->acc.mhpmcounter8,
+	            &win->acc.mhpmcounter9,
 	            /* fiffigt */
 	            index < nwins - 1 ? "," : "");
 }

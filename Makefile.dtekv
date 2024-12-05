@@ -6,7 +6,7 @@ OBJCOPY		= $(PROGRAM_PREFIX)objcopy
 MACHFLAGS	= -mabi=ilp32 -march=rv32imzicsr
 CPPFLAGS	= -Iinclude -Iinclude/dtekv -Ibuild
 ASFLAGS		= $(MACHFLAGS)
-CFLAGS		= $(MACHFLAGS) -fno-pic -g -Wall -O3 -flto -fuse-linker-plugin
+CFLAGS		= $(MACHFLAGS) -fno-pic -g -Wall -O0
 LDSCRIPT	= link.ld
 LDFLAGS		= -T $(LDSCRIPT) -Llib -Llib/dtekv -nostdlib -Wl,-no-pie,--build-id=none,--no-warn-rwx-segments
 LDLIBS		= -ldtekv
@@ -39,7 +39,7 @@ $(RAST_ELF): src/dtekv/abort.c src/dtekv/button.c src/dtekv/ctrl.c \
 	src/dtekv/reset.S src/dtekv/stack.S src/dtekv/start.S \
 	src/dtekv/stop.S src/dtekv/switch.c src/dtekv/timer.c \
 	src/dtekv/trap.S src/dtekv/vga.c src/model.c src/qmath.c src/rast.c \
-	src/uart.c | $(BUILDDIR)
+	src/uart.c src/vmath.c | $(BUILDDIR)
 	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)
 
 $(RAST_BIN): $(RAST_ELF) | $(BUILDDIR)

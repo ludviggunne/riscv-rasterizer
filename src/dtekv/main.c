@@ -23,24 +23,9 @@ static void display_func(void)
 	PROFILE_WINDOW_START(zbuf_clear);
 
 	/* clear depth buffer */
-	for (int i = 0; i < WIDTH * HEIGHT; i += 16)
+	for (int i = 0; i < WIDTH * HEIGHT; i++)
 	{
-		zb[i +  0] = QMAX;
-		zb[i +  1] = QMAX;
-		zb[i +  2] = QMAX;
-		zb[i +  3] = QMAX;
-		zb[i +  4] = QMAX;
-		zb[i +  5] = QMAX;
-		zb[i +  6] = QMAX;
-		zb[i +  7] = QMAX;
-		zb[i +  8] = QMAX;
-		zb[i +  9] = QMAX;
-		zb[i + 10] = QMAX;
-		zb[i + 11] = QMAX;
-		zb[i + 12] = QMAX;
-		zb[i + 13] = QMAX;
-		zb[i + 14] = QMAX;
-		zb[i + 15] = QMAX;
+		zb[i] = QMAX;
 	}
 
 	PROFILE_WINDOW_END(zbuf_clear);
@@ -59,35 +44,13 @@ static void display_func(void)
 		int *s = (void *) &(*cb)[0];
 		int *e = (void *) &(*cb)[WIDTH * HEIGHT];
 
-		for (int *p = s; p < e; p += 16)
+		for (int *p = s; p < e; p++)
 		{
 			/*
 			 * this is written in assembly to prevent the compiler
 			 * from emitting a call to memset, which we don't have
-			 *
-			 * the nops are there to work around an apparent bug
-			 * where writing too quickly to the vga memory causes
-			 * strange glitches and flickering
 			 */
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 0]));
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 1]));
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 2]));
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 3]));
-			__asm__ volatile ("nop;");
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 4]));
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 5]));
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 6]));
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 7]));
-			__asm__ volatile ("nop;");
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 8]));
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 9]));
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[10]));
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[11]));
-			__asm__ volatile ("nop;");
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[12]));
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[13]));
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[14]));
-			__asm__ volatile ("sw zero, %0;" : "=m"(p[15]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[0]));
 		}
 	}
 
@@ -182,6 +145,7 @@ static void rast_main(int argc, char *argv[])
 	}
 }
 
+#if 0
 static void timer_fn(void)
 {
 	static int v[5];
@@ -203,9 +167,13 @@ static void timer_fn(void)
 		}
 	}
 }
+#endif
 
 int main(int argc, char *argv[])
 {
+#if 0
 	timer_start(1000, 1, timer_fn);
+#endif
+
 	rast_main(argc, argv);
 }

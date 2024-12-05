@@ -2,6 +2,7 @@
 #include <perf.h>
 #include <qmath.h>
 #include <rast.h>
+#include <vmath.h>
 
 #define Z_NEAR		QVAL(1)
 #define CLAMP(x)	((x) > 255 ? 255 : (x))
@@ -36,8 +37,6 @@ typedef struct
 	vec_t *	col;
 } light_t;
 
-static vec_t		xfm_vert[10000];
-static unsigned char	norm_col[10000][2];
 static int		light_num;
 static light_t		lights[] =
 {
@@ -116,8 +115,110 @@ void light_select(int n)
 	light_num = n;
 }
 
+static void xfm_vtx(vec_t *v, xfm_t *xfm)
+{
+	{
+		qval_t x = v->x;
+		qval_t y = v->y;
+		qval_t z = v->z;
+
+		v->x = qadd(qmul( qcos(xfm->r), x), qmul(-qsin(xfm->r), y));
+		v->y = qadd(qmul( qsin(xfm->r), x), qmul( qcos(xfm->r), y));
+		v->z = z;
+	}
+
+	{
+		qval_t x = v->x;
+		qval_t y = v->y;
+		qval_t z = v->z;
+
+		v->x = x;
+		v->y = qadd(qmul( qcos(xfm->p), y), qmul(-qsin(xfm->p), z));
+		v->z = qadd(qmul( qsin(xfm->p), y), qmul( qcos(xfm->p), z));
+	}
+
+	{
+		qval_t x = v->x;
+		qval_t y = v->y;
+		qval_t z = v->z;
+
+		v->x = qadd(qmul( qcos(xfm->y), x), qmul(-qsin(xfm->y), z));
+		v->y = y;
+		v->z = qadd(qmul( qsin(xfm->y), x), qmul( qcos(xfm->y), z));
+	}
+
+	v->x = qadd(qmul(v->x, xfm->s), xfm->t.x);
+	v->y = qadd(qmul(v->y, xfm->s), xfm->t.y);
+	v->z = qadd(qmul(v->z, xfm->s), xfm->t.z);
+}
+
+static void xfm_tri(tri_t *t, vec_t *n, xfm_t *xfm)
+{
+	PROFILE_WINDOW_START(triangle_xfm);
+
+	vec_t *verts[] = { &t->a, &t->b, &t->c };
+
+	for (int i = 0; i < 3; i++)
+	{
+		vec_t *v = verts[i];
+
+		xfm_vtx(v, xfm);
+
+		if (v->z < Z_NEAR)
+		{
+			return;
+		}
+	}
+
+	{
+		vec_t u = vsub(*verts[1], *verts[0]);
+		vec_t v = vsub(*verts[2], *verts[0]);
+
+		{
+			qval_t l = vlen(u);
+
+			if (l != 0)
+			{
+				u = vscl(u, qdiv(QONE, l));
+			}
+		}
+
+		{
+			qval_t l = vlen(v);
+
+			if (l != 0)
+			{
+				v = vscl(v, qdiv(QONE, l));
+			}
+		}
+
+		*n = vcrs(u, v);
+
+		{
+			qval_t l = vlen(*n);
+
+			if (l != 0)
+			{
+				*n = vscl(*n, qdiv(QONE, l));
+			}
+
+		}
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		qval_t z_norm = QVAL(0.01);
+		vec_t *v = verts[i];
+
+		v->x = qadd(qdiv(v->x, qmul(v->z, z_norm)), QINT(WIDTH / 2));
+		v->y = qadd(qdiv(v->y, qmul(v->z, z_norm)), QINT(HEIGHT / 2));
+	}
+
+	PROFILE_WINDOW_END(triangle_xfm);
+}
+
 static
-void draw_span(span_t *s, unsigned char c[], unsigned char *cb, qval_t *zb)
+void draw_span(span_t *s, unsigned char c[2], unsigned char *cb, qval_t *zb)
 {
 	PROFILE_WINDOW_START(triangle_span);
 
@@ -154,7 +255,6 @@ void draw_span(span_t *s, unsigned char c[], unsigned char *cb, qval_t *zb)
 			x = lx & ~0xFFFF;
 			z = lz;
 			ci = (QTOI(x) ^ QTOI(y)) & 1;
-
 
 			if (lx != rx)
 			{
@@ -194,8 +294,7 @@ void draw_span(span_t *s, unsigned char c[], unsigned char *cb, qval_t *zb)
 	PROFILE_WINDOW_END(triangle_span);
 }
 
-static
-void draw_tri(tri_t *t, unsigned char c[], unsigned char *cb, qval_t *zb)
+static void draw_tri(tri_t *t, vec_t *n, unsigned char *cb, qval_t *zb)
 {
 	/* near culling */
 	if (t->a.z < Z_NEAR || t->b.z < Z_NEAR || t->c.z < Z_NEAR)
@@ -218,6 +317,43 @@ void draw_tri(tri_t *t, unsigned char c[], unsigned char *cb, qval_t *zb)
 	}
 
 	PROFILE_WINDOW_START(triangle);
+
+	int r = 0;
+	int g = 0;
+	int b = 0;
+
+	for (int i = 0; i < lights[light_num].num; i++)
+	{
+		vec_t *d = &lights[light_num].dir[i];
+		vec_t *c = &lights[light_num].col[i];
+		qval_t m;
+
+		m = QINT(0);
+		m = qadd(m, qmul(n->x, d->x));
+		m = qadd(m, qmul(n->y, d->y));
+		m = qadd(m, qmul(n->z, d->z));
+
+		if (m >= 0)
+		{
+			continue;
+		}
+
+		m = qmul(m, -QINT(255));
+		r += QTOI(qmul(c->x, m));
+		g += QTOI(qmul(c->y, m));
+		b += QTOI(qmul(c->z, m));
+	}
+
+	unsigned char c[2];
+	c[0] = 0;
+	c[0] = c[0] | ((CLAMP(r) >> 5) << 5);
+	c[0] = c[0] | ((CLAMP(g) >> 5) << 2);
+	c[0] = c[0] | ((CLAMP(b) >> 6) << 0);
+
+	c[1] = 0;
+	c[1] = c[1] | ((CLAMP(r + 15) >> 5) << 5);
+	c[1] = c[1] | ((CLAMP(g + 15) >> 5) << 2);
+	c[1] = c[1] | ((CLAMP(b +  7) >> 6) << 0);
 
 	vec_t v1 = t->a;
 	vec_t v2 = t->b;
@@ -344,147 +480,19 @@ void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 {
 	PROFILE_WINDOW_START(model);
 
-	PROFILE_WINDOW_START(model_xfm);
-
-	qval_t rs, rc;
-	qval_t ps, pc;
-	qval_t ys, yc;
-	qval_t z_norm = QVAL(0.01);
-
-	qsincos(xfm->r, &rs, &rc);
-	qsincos(xfm->p, &ps, &pc);
-	qsincos(xfm->y, &ys, &yc);
-
-	for (int i = 0; i < mdl->nverts; i++)
-	{
-		const vec_t *	v = &mdl->verts[i];
-		vec_t *		w = &xfm_vert[i];
-
-		{
-			qval_t x = v->x;
-			qval_t y = v->y;
-			qval_t z = v->z;
-
-			w->x = qadd(qmul( rc, x), qmul(-rs, y));
-			w->y = qadd(qmul( rs, x), qmul( rc, y));
-			w->z = z;
-		}
-
-		{
-			qval_t x = w->x;
-			qval_t y = w->y;
-			qval_t z = w->z;
-
-			w->x = x;
-			w->y = qadd(qmul( pc, y), qmul(-ps, z));
-			w->z = qadd(qmul( ps, y), qmul( pc, z));
-		}
-
-		{
-			qval_t x = w->x;
-			qval_t y = w->y;
-			qval_t z = w->z;
-
-			w->x = qadd(qmul( yc, x), qmul(-ys, z));
-			w->y = y;
-			w->z = qadd(qmul( ys, x), qmul( yc, z));
-		}
-
-		w->x = qadd(qmul(w->x, xfm->s), xfm->t.x);
-		w->y = qadd(qmul(w->y, xfm->s), xfm->t.y);
-		w->z = qadd(qmul(w->z, xfm->s), xfm->t.z);		
-
-		if (w->z < Z_NEAR)
-		{
-			continue;
-		}
-
-		w->x = qadd(qdiv(w->x, qmul(w->z, z_norm)), QINT(WIDTH / 2));
-		w->y = qadd(qdiv(w->y, qmul(w->z, z_norm)), QINT(HEIGHT / 2));
-	}
-
-	for (int i = 0; i < mdl->nnorms; i++)
-	{
-		vec_t	n = mdl->norms[i];
-		int	r = 0;
-		int	g = 0;
-		int	b = 0;
-
-		{
-			qval_t x = n.x;
-			qval_t y = n.y;
-			qval_t z = n.z;
-
-			n.x = qadd(qmul( rc, x), qmul(-rs, y));
-			n.y = qadd(qmul( rs, x), qmul( rc, y));
-			n.z = z;
-		}
-
-		{
-			qval_t x = n.x;
-			qval_t y = n.y;
-			qval_t z = n.z;
-
-			n.x = x;
-			n.y = qadd(qmul( pc, y), qmul(-ps, z));
-			n.z = qadd(qmul( ps, y), qmul( pc, z));
-		}
-
-		{
-			qval_t x = n.x;
-			qval_t y = n.y;
-			qval_t z = n.z;
-
-			n.x = qadd(qmul( yc, x), qmul(-ys, z));
-			n.y = y;
-			n.z = qadd(qmul( ys, x), qmul( yc, z));
-		}
-
-		for (int j = 0; j < lights[light_num].num; j++)
-		{
-			vec_t *d = &lights[light_num].dir[j];
-			vec_t *c = &lights[light_num].col[j];
-			qval_t m;
-
-			m = QZERO;
-			m = qadd(m, qmul(n.x, d->x));
-			m = qadd(m, qmul(n.y, d->y));
-			m = qadd(m, qmul(n.z, d->z));
-
-			if (m >= 0)
-			{
-				continue;
-			}
-
-			m = qmul(m, -QINT(255));
-			r += QTOI(qmul(c->x, m));
-			g += QTOI(qmul(c->y, m));
-			b += QTOI(qmul(c->z, m));
-		}
-
-		norm_col[i][0] = 0;
-		norm_col[i][0] = norm_col[i][0] | ((CLAMP(r) >> 5) << 5);
-		norm_col[i][0] = norm_col[i][0] | ((CLAMP(g) >> 5) << 2);
-		norm_col[i][0] = norm_col[i][0] | ((CLAMP(b) >> 6) << 0);
-
-		norm_col[i][1] = 0;
-		norm_col[i][1] = norm_col[i][1] | ((CLAMP(r + 15) >> 5) << 5);
-		norm_col[i][1] = norm_col[i][1] | ((CLAMP(g + 15) >> 5) << 2);
-		norm_col[i][1] = norm_col[i][1] | ((CLAMP(b +  7) >> 6) << 0);
-	}
-
-	PROFILE_WINDOW_END(model_xfm);
-
 	for (int i = 0; i < mdl->nfaces; i++)
 	{
 		tri_t t =
 		{
-			xfm_vert[mdl->faces[i].v0],
-			xfm_vert[mdl->faces[i].v1],
-			xfm_vert[mdl->faces[i].v2],
+			mdl->verts[mdl->faces[i].v0],
+			mdl->verts[mdl->faces[i].v1],
+			mdl->verts[mdl->faces[i].v2],
 		};
+		vec_t n;
 
-		draw_tri(&t, norm_col[mdl->faces[i].n], cb, zb);
+		xfm_tri(&t, &n, xfm);
+
+		draw_tri(&t, &n, cb, zb);
 	}
 
 	PROFILE_WINDOW_END(model);

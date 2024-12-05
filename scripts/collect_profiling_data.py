@@ -19,16 +19,16 @@ class ProfileWindow:
     def __init__(self, json_object):
         # Collect the data in to a Python object and do some calculations
         self.name = json_object["name"]
-        self.runs = json_object["runs"]
-        self.cycles = json_object["mcycle"]
-        self.instrs = json_object["minstret"]
-        self.mem_instrs = json_object["mhpmcounter3"]
-        self.i_misses = json_object["mhpmcounter4"]
-        self.d_misses = json_object["mhpmcounter5"]
-        self.i_stalls = json_object["mhpmcounter6"]
-        self.d_stalls = json_object["mhpmcounter7"]
-        self.hzd_stalls = json_object["mhpmcounter8"]
-        self.alu_stalls = json_object["mhpmcounter9"]
+        self.runs = int(json_object["runs"], 16)
+        self.cycles = int(json_object["mcycle"], 16)
+        self.instrs = int(json_object["minstret"], 16)
+        self.mem_instrs = int(json_object["mhpmcounter3"], 16)
+        self.i_misses = int(json_object["mhpmcounter4"], 16)
+        self.d_misses = int(json_object["mhpmcounter5"], 16)
+        self.i_stalls = int(json_object["mhpmcounter6"], 16)
+        self.d_stalls = int(json_object["mhpmcounter7"], 16)
+        self.hzd_stalls = int(json_object["mhpmcounter8"], 16)
+        self.alu_stalls = int(json_object["mhpmcounter9"], 16)
         self.exec_time = self.cycles / 30000000
         self.avg_exec_time = self.exec_time / self.runs
         self.ipc = self.instrs / self.cycles

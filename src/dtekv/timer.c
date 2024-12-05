@@ -33,8 +33,10 @@ void timer_start(unsigned int ms, int cont, void (*fn)(void))
 	{
 		unsigned long long counter = ms;
 
+#if 0
 		counter = counter * TIMER_FREQ;
 		counter = counter / 1000;
+#endif
 
 		TIMER_PERIODL = counter & 0xFFFF;
 		TIMER_PERIODH = counter >> 16;
