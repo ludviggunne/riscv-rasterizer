@@ -1,3 +1,4 @@
+/* By: Tommy Bergman */
 #include <button.h>
 #include <display.h>
 #include <perf.h>

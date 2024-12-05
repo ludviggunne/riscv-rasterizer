@@ -1,37 +1,29 @@
+# By: Tommy Bergman
 BUILDDIR	= build/
 
 .PHONY: all clean
 
-all: all-common all-host all-dtekv all-avr
+all: all-models all-host all-dtekv
 
 clean:
 	rm -rf $(BUILDDIR)
 
-.PHONY: all-common clean-common all-host clean-host all-dtekv clean-dtekv all-avr clean-avr flash-avr
+.PHONY: all-models clean-models all-host clean-host all-dtekv clean-dtekv
 
-all-common:
-	$(MAKE) -f Makefile.common all
+all-models:
+	$(MAKE) -f Makefile.models all
 
-clean-common:
-	$(MAKE) -f Makefile.common clean
+clean-models:
+	$(MAKE) -f Makefile.models clean
 
-all-host: all-common
+all-host:
 	$(MAKE) -f Makefile.host all
 
 clean-host:
 	$(MAKE) -f Makefile.host clean
 
-all-dtekv: all-common
+all-dtekv: all-models
 	$(MAKE) -f Makefile.dtekv all
 
 clean-dtekv:
 	$(MAKE) -f Makefile.dtekv clean
-
-all-avr: all-common
-	$(MAKE) -f Makefile.avr all
-
-clean-avr:
-	$(MAKE) -f Makefile.avr clean
-
-flash-avr:
-	$(MAKE) -f Makefile.avr flash

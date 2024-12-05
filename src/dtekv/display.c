@@ -1,3 +1,4 @@
+/* By: Tommy Bergman */
 #include <display_io.h>
 #include <qmath.h>
 

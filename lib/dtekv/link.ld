@@ -1,3 +1,4 @@
+/* By: Tommy Bergman */
 OUTPUT_FORMAT("elf32-littleriscv", "elf32-bigriscv", "elf32-littleriscv")
 OUTPUT_ARCH(riscv)
 

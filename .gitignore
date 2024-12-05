@@ -5,4 +5,5 @@
 /*.nix
 /*.tex
 /.*
+/*.zip
 /__pycache__

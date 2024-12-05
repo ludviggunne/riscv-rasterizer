@@ -1,3 +1,4 @@
+/* By: Tommy Bergman */
 #ifndef RAST_H
 #define RAST_H
 

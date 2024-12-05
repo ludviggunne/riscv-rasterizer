@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 #ifndef IRQ_H
 #define IRQ_H
 

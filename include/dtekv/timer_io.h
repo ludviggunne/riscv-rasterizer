@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 #ifndef TIMER_IO_H
 #define TIMER_IO_H
 

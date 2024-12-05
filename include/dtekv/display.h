@@ -1,3 +1,4 @@
+/* By: Tommy Bergman */
 #ifndef DISPLAY_H
 #define DISPLAY_H
 

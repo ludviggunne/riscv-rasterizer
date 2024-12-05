@@ -1,9 +1,9 @@
+/* By: Ludvig Gunne Lindström */
 #ifndef UART_H
 #define UART_H
 
 /*
  * Functions for printing over UART.
- * By: Ludvig Gunne Lindström
  */
 
 /*

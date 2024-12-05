@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 #include <model.h>
 #include <qmath.h>
 

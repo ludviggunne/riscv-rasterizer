@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 #ifndef VGA_H
 #define VGA_H
 

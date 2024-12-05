@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 #ifndef SWITCH_IO_H
 #define SWITCH_IO_H
 

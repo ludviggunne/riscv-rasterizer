@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 #ifndef MODEL_H
 #define MODEL_H
 

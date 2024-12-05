@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 #include <switch_io.h>
 
 unsigned switch_get_all(void)

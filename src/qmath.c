@@ -1,3 +1,4 @@
+/* By: Tommy Bergman */
 #include <stddef.h>
 #include <qmath.h>
 

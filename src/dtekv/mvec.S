@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 	.section	.mvec, "ax", @progbits
 
 _tvec:

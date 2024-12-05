@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 #ifndef DISPLAY_IO_H
 #define DISPLAY_IO_H
 

@@ -1,3 +1,4 @@
+/* By: Tommy Bergman */
 #define INITCALL_CASE(lvl) \
 	extern void (*__init_ ## lvl ## _start)(void); \
 	extern void (*__init_ ## lvl ## _end)(void); \

@@ -1,3 +1,4 @@
+# By: Tommy Bergman
 PROGRAM_PREFIX	=
 CC 		= $(PROGRAM_PREFIX)gcc
 OBJDUMP		= $(PROGRAM_PREFIX)objdump
@@ -13,35 +14,19 @@ BUILDDIR	= build/host/
 RAST		= $(BUILDDIR)rast
 OBJ2C		= $(BUILDDIR)obj2c
 
-ifneq ($(PROFILE_FRAMES),)
-CPPFLAGS	+= -DPROFILE_ENABLE -DPROFILE_FRAMES=$(PROFILE_FRAMES)
-else ifneq ($(PROFILE),)
-CPPFLAGS	+= -DPROFILE_ENABLE
-endif
-ifneq ($(MODEL),)
-CPPFLAGS	+= -DDEFAULT_MODEL=$(MODEL)
-endif
-
 .PHONY: all clean
 
-all: $(RAST) $(OBJ2C)
+all: $(OBJ2C)
 
 clean:
-	rm -f $(RAST) $(OBJ2C)
+	rm -f $(OBJ2C)
 
 $(BUILDDIR):
 	mkdir -p $(@)
 
-$(RAST): src/host/main.c src/model.c src/rast.c src/qmath.c \
-	src/uart.c src/host/perf.c
 $(OBJ2C): src/host/obj2c.c
 
-ifeq ($(shell uname -s | grep -o _NT-),_NT-)
-$(RAST): LDLIBS += -lfreeglut -lopengl32 -lglew32
-else
-$(RAST): LDLIBS += -lglut -lGL -lGLEW -lm
 $(OBJ2C): LDLIBS += -lm
-endif
 
-$(RAST) $(OBJ2C): | $(BUILDDIR)
+$(OBJ2C): | $(BUILDDIR)
 	$(CC) -o $(@) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(^) $(LDLIBS)

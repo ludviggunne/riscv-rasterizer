@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 #include <vga_io.h>
 
 static int vga_current = 1;

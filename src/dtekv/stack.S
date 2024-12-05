@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 	.bss
 	.globl	_stack
 	.globl	_stack_top

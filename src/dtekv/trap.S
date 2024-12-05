@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 	.text
 	.globl	_trap
 _trap:

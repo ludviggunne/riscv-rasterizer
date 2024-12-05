@@ -1,3 +1,4 @@
+/* By: Tommy Bergman */
 #include <model.h>
 #include <perf.h>
 #include <qmath.h>

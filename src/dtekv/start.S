@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 	.text
 	.globl	_start
 _start:

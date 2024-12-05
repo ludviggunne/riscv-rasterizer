@@ -11,8 +11,6 @@
 #include <string.h>
 #include <model.h>
 
-#include "getline.c"
-
 const char *argv0 = NULL;
 
 void usage(FILE *f)

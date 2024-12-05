@@ -1,3 +1,4 @@
+/* By: Ludvig Gunne Lindström */
 #ifndef SWITCH_H
 #define SWITCH_H
 

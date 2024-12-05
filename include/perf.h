@@ -1,9 +1,9 @@
+/* By: Ludvig Gunne Lindström */
 #ifndef PERF_H
 #define PERF_H
 
 /*
  * Types and functions for dealing with hardware counters and profiling.
- * By: Ludvig Gunne Lindström
  */
 
 /*

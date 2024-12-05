@@ -1,3 +1,4 @@
+/* By: Tommy Bergman */
 #ifndef QMATH_H
 #define QMATH_H
 

@@ -1,3 +1,4 @@
+# By: Tommy Bergman
 TARGET_TOOLS	= riscv32-unknown-elf- riscv64-unknown-elf- riscv64-linux-gnu- riscv64-none-elf-
 PROGRAM_PREFIX	:= $(shell for i in $(TARGET_TOOLS); do if which $${i}gcc >/dev/null 2>&1; then echo $${i}; break; fi done)
 CC 		= $(PROGRAM_PREFIX)gcc
@@ -33,7 +34,7 @@ clean:
 $(BUILDDIR):
 	mkdir -p $(@)
 
-$(RAST_ELF): src/dtekv/abort.c src/dtekv/button.c src/dtekv/ctrl.c \
+$(RAST_ELF): src/dtekv/abort.c src/dtekv/button.c \
 	src/dtekv/display.c src/dtekv/init.c src/dtekv/irq.c src/dtekv/main.c \
 	src/dtekv/mvec.S src/dtekv/perf.c src/dtekv/perf_json.c \
 	src/dtekv/reset.S src/dtekv/stack.S src/dtekv/start.S \
