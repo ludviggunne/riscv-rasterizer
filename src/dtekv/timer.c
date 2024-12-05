@@ -20,7 +20,7 @@ DEFINE_INITCALL(IRQ, timer_init)
 	register_irq(TIMER_IRQ, timer_irq_handler);
 }
 
-void timer_start(unsigned int ms, void (*fn)(void))
+void timer_start(unsigned int ms, int cont, void (*fn)(void))
 {
 	int irqf = irq_save();
 
@@ -38,7 +38,15 @@ void timer_start(unsigned int ms, void (*fn)(void))
 
 		TIMER_PERIODL = counter & 0xFFFF;
 		TIMER_PERIODH = counter >> 16;
-		TIMER_CONTROL = 7;
+
+		if (cont)
+		{
+			TIMER_CONTROL = 7;
+		}
+		else
+		{
+			TIMER_CONTROL = 5;
+		}
 	}
 
 	irq_restore(irqf);

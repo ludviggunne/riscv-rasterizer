@@ -1,9 +1,11 @@
 #include <button.h>
+#include <display.h>
 #include <perf.h>
 #include <perf_json.h>
 #include <qmath.h>
 #include <rast.h>
 #include <switch.h>
+#include <timer.h>
 #include <vga.h>
 
 #if defined(PROFILE_ENABLE) && !defined(PROFILE_FRAMES)
@@ -12,6 +14,7 @@
 
 static unsigned char	(*cb)[WIDTH * HEIGHT];
 static qval_t		zb[WIDTH * HEIGHT];
+static int		frame_count;
 
 static void display_func(void)
 {
@@ -145,6 +148,8 @@ static void display_func(void)
 
 	/* swap buffer */
 	cb = vga_swap();
+
+	frame_count++;
 }
 
 static void rast_main(int argc, char *argv[])
@@ -156,10 +161,6 @@ static void rast_main(int argc, char *argv[])
 		display_func();
 
 #ifdef PROFILE_ENABLE
-		static int frame_count;
-
-		frame_count++;
-
 		if (frame_count == PROFILE_FRAMES)
 		{
 			print_all_profile_windows_json();
@@ -170,7 +171,19 @@ static void rast_main(int argc, char *argv[])
 	}
 }
 
+static void timer_fn(void)
+{
+	static int v[5];
+	static int p;
+
+	v[p] = frame_count;
+	p = (p + 1) % 5;
+
+	display_qval(qdiv(QINT(frame_count - v[p]), QINT(5)));
+}
+
 int main(int argc, char *argv[])
 {
+	timer_start(1000, 1, timer_fn);
 	rast_main(argc, argv);
 }

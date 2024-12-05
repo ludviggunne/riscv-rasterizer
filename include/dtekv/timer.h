@@ -3,6 +3,6 @@
 
 /* Functions for dealing with timer */
 
-void timer_start(unsigned int ms, void (*fn)(void));
+void timer_start(unsigned int ms, int cont, void (*fn)(void));
 
 #endif
