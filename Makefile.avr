@@ -1,11 +1,11 @@
-MODEL		= atmega328p
+BOARD		= atmega328p
 FREQ		= 16000000UL
 PORT		= /dev/ttyACM0
 BAUD		= 9600
 PROGRAM_PREFIX	= avr-
 CC 		= $(PROGRAM_PREFIX)gcc
 OBJCOPY		= $(PROGRAM_PREFIX)objcopy
-MACHFLAGS	= -mmcu=$(MODEL)
+MACHFLAGS	= -mmcu=$(BOARD)
 CFLAGS		= $(MACHFLAGS) -DF_CPU=$(FREQ) -DBAUD=$(BAUD) -Os
 CPPFLAGS	= -Iinclude/avr
 BUILDDIR	= build/avr/
@@ -31,4 +31,4 @@ $(CTRL_BIN): $(CTRL_ELF) | $(BUILDDIR)
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
 
 flash:
-	avrdude -v -c arduino -p $(MODEL) -P $(PORT) -U flash:w:$(CTRL_BIN)
+	avrdude -v -c arduino -p $(BOARD) -P $(PORT) -U flash:w:$(CTRL_BIN)
