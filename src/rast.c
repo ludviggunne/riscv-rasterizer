@@ -29,6 +29,93 @@ typedef struct
 	qval_t	rdzdy;
 } span_t;
 
+typedef struct
+{
+	int	num;
+	vec_t *	dir;
+	vec_t *	col;
+} light_t;
+
+static vec_t		xfm_vert[10000];
+static unsigned char	norm_col[10000][2];
+static int		light_num;
+static light_t		lights[] =
+{
+	/* Natural-ish light */
+	{
+		2,
+		(vec_t [])
+		{
+			{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
+			{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
+		},
+		(vec_t [])
+		{
+			{ QVAL(0.80), QVAL(0.80), QVAL(0.60) },
+			{ QVAL(0.60), QVAL(0.60), QVAL(0.80) },
+		},
+	},
+	/* Bisexual light */
+	{
+		3,
+		(vec_t [])
+		{
+			{ QVAL( 0.0000), QVAL( 0.0000), QVAL( 1.0000) },
+			{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
+			{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
+		},
+		(vec_t [])
+		{
+			{ QVAL(0.10), QVAL(0.10), QVAL(0.10) },
+			{ QVAL(0.80), QVAL(0.00), QVAL(0.20) },
+			{ QVAL(0.20), QVAL(0.00), QVAL(1.00) },
+		},
+	},
+	/* RGB light */
+	{
+		3,
+		(vec_t [])
+		{
+			{ QVAL( 0.0000), QVAL(-0.5000), QVAL( 0.8660) },
+			{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
+			{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
+		},
+		(vec_t [])
+		{
+			{ QVAL(1.00), QVAL(0.00), QVAL(0.00) },
+			{ QVAL(0.00), QVAL(0.75), QVAL(0.00) },
+			{ QVAL(0.00), QVAL(0.00), QVAL(1.00) },
+		},
+	},
+	/* Spooky light */
+	{
+		1,
+		(vec_t [])
+		{
+			{ QVAL( 0.0000), QVAL( 0.7071), QVAL( 0.7071) },
+		},
+		(vec_t [])
+		{
+			{ QVAL(0.25), QVAL(0.10), QVAL(1.00) },
+		},
+	},
+};
+
+int light_count(void)
+{
+	return sizeof(lights) / sizeof*(lights);
+}
+
+int light_current(void)
+{
+	return light_num;
+}
+
+void light_select(int n)
+{
+	light_num = n;
+}
+
 static
 void draw_span(span_t *s, unsigned char c[], unsigned char *cb, qval_t *zb)
 {
@@ -251,93 +338,6 @@ void draw_tri(tri_t *t, unsigned char c[], unsigned char *cb, qval_t *zb)
 	}
 
 	PROFILE_WINDOW_END(triangle);
-}
-
-typedef struct
-{
-	int	num;
-	vec_t *	dir;
-	vec_t *	col;
-} light_t;
-
-static vec_t		xfm_vert[10000];
-static unsigned char	norm_col[10000][2];
-static int		light_num;
-static light_t		lights[] =
-{
-	/* Natural-ish light */
-	{
-		2,
-		(vec_t [])
-		{
-			{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
-			{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
-		},
-		(vec_t [])
-		{
-			{ QVAL(0.80), QVAL(0.80), QVAL(0.60) },
-			{ QVAL(0.60), QVAL(0.60), QVAL(0.80) },
-		},
-	},
-	/* Bisexual light */
-	{
-		3,
-		(vec_t [])
-		{
-			{ QVAL( 0.0000), QVAL( 0.0000), QVAL( 1.0000) },
-			{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
-			{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
-		},
-		(vec_t [])
-		{
-			{ QVAL(0.10), QVAL(0.10), QVAL(0.10) },
-			{ QVAL(0.80), QVAL(0.00), QVAL(0.20) },
-			{ QVAL(0.20), QVAL(0.00), QVAL(1.00) },
-		},
-	},
-	/* RGB light */
-	{
-		3,
-		(vec_t [])
-		{
-			{ QVAL( 0.0000), QVAL(-0.5000), QVAL( 0.8660) },
-			{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
-			{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
-		},
-		(vec_t [])
-		{
-			{ QVAL(1.00), QVAL(0.00), QVAL(0.00) },
-			{ QVAL(0.00), QVAL(0.75), QVAL(0.00) },
-			{ QVAL(0.00), QVAL(0.00), QVAL(1.00) },
-		},
-	},
-	/* Spooky light */
-	{
-		1,
-		(vec_t [])
-		{
-			{ QVAL( 0.0000), QVAL( 0.7071), QVAL( 0.7071) },
-		},
-		(vec_t [])
-		{
-			{ QVAL(0.25), QVAL(0.10), QVAL(1.00) },
-		},
-	},
-};
-
-int light_count(void)
-{
-	return sizeof(lights) / sizeof*(lights);
-}
-
-int light_current(void)
-{
-	return light_num;
-}
-
-void light_select(int n)
-{
-	light_num = n;
 }
 
 void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
