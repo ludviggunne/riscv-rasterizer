@@ -61,25 +61,33 @@ static void display_func(void)
 
 		for (int *p = s; p < e; p += 16)
 		{
-			/* this is written in assembly to prevent the compiler
+			/*
+			 * this is written in assembly to prevent the compiler
 			 * from emitting a call to memset, which we don't have
+			 *
+			 * the nops are there to work around an apparent bug
+			 * where writing too quickly to the vga memory causes
+			 * strange glitches and flickering
 			 */
-			__asm__ ("sw zero, %0;" : "=m"(p[ 0]));
-			__asm__ ("sw zero, %0;" : "=m"(p[ 1]));
-			__asm__ ("sw zero, %0;" : "=m"(p[ 2]));
-			__asm__ ("sw zero, %0;" : "=m"(p[ 3]));
-			__asm__ ("sw zero, %0;" : "=m"(p[ 4]));
-			__asm__ ("sw zero, %0;" : "=m"(p[ 5]));
-			__asm__ ("sw zero, %0;" : "=m"(p[ 6]));
-			__asm__ ("sw zero, %0;" : "=m"(p[ 7]));
-			__asm__ ("sw zero, %0;" : "=m"(p[ 8]));
-			__asm__ ("sw zero, %0;" : "=m"(p[ 9]));
-			__asm__ ("sw zero, %0;" : "=m"(p[10]));
-			__asm__ ("sw zero, %0;" : "=m"(p[11]));
-			__asm__ ("sw zero, %0;" : "=m"(p[12]));
-			__asm__ ("sw zero, %0;" : "=m"(p[13]));
-			__asm__ ("sw zero, %0;" : "=m"(p[14]));
-			__asm__ ("sw zero, %0;" : "=m"(p[15]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 0]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 1]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 2]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 3]));
+			__asm__ volatile ("nop");
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 4]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 5]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 6]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 7]));
+			__asm__ volatile ("nop");
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 8]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[ 9]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[10]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[11]));
+			__asm__ volatile ("nop");
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[12]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[13]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[14]));
+			__asm__ volatile ("sw zero, %0;" : "=m"(p[15]));
 		}
 	}
 

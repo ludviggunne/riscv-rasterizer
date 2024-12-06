@@ -6,7 +6,7 @@ OBJCOPY		= $(PROGRAM_PREFIX)objcopy
 MACHFLAGS	= -mabi=ilp32 -march=rv32imzicsr
 CPPFLAGS	= -Iinclude -Iinclude/dtekv -Ibuild
 ASFLAGS		= $(MACHFLAGS)
-CFLAGS		= $(MACHFLAGS) -fno-pic -g -Wall -O3 -fno-caller-saves -flto -fuse-linker-plugin
+CFLAGS		= $(MACHFLAGS) -fno-pic -g -Wall -O3 -flto -fuse-linker-plugin
 LDSCRIPT	= link.ld
 LDFLAGS		= -T $(LDSCRIPT) -Llib -Llib/dtekv -nostdlib -Wl,-no-pie,--build-id=none,--no-warn-rwx-segments
 LDLIBS		= -ldtekv
