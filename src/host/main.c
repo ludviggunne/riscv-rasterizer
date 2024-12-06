@@ -28,22 +28,39 @@ static void display_func(void)
 
 	/* handle input */
 	{
-		static int mdl_selected = 0;
+		static int model_selected = 0;
+		static int light_selected = 0;
 
 		if (keys['M'])
 		{
-			if (!mdl_selected)
+			if (!model_selected)
 			{
 				model_select
 				(
 					(model_current() + 1) % model_count()
 				);
 			}
-			mdl_selected = 1;
+			model_selected = 1;
 		}
 		else
 		{
-			mdl_selected = 0;
+			model_selected = 0;
+		}
+
+		if (keys['L'])
+		{
+			if (!light_selected)
+			{
+				light_select
+				(
+					(light_current() + 1) % light_count()
+				);
+			}
+			light_selected = 1;
+		}
+		else
+		{
+			light_selected = 0;
 		}
 	}
 

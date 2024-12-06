@@ -87,14 +87,19 @@ void display_char(int pos, int c)
 	DISPLAY_BASE[(5 - pos) * 4] = c;
 }
 
-void display_qval(qval_t v)
+void display_qval(int pos, qval_t v)
 {
 	char s[8];
 	int p = 0;
 
 	qsnprint(v, s, sizeof(s));
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < pos; i++)
+	{
+		display_char(i, ' ');
+	}
+
+	for (int i = pos; i < 6; i++)
 	{
 		if (s[p] == '\0')
 		{

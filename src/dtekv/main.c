@@ -55,7 +55,7 @@ static void display_func(void)
 	PROFILE_WINDOW_START(cbuf_clear);
 
 	/* clear color buffer */
-	for (int i = 0; i < sizeof(*cb) / sizeof(int); i += 16)
+	for (int i = 0; i < sizeof(*cb); i += 64)
 	{
 		/* this is written in assembly to prevent the compiler from
 		 * emitting a call to memset, which we don't have */
@@ -77,7 +77,7 @@ static void display_func(void)
 			"sw zero, 52(%0);"
 			"sw zero, 56(%0);"
 			"sw zero, 60(%0);"
-			:: "r"(&((int *) cb)[i])
+			:: "r"(&(*cb)[i])
 			: "memory"
 		);
 	}
@@ -144,6 +144,8 @@ static void display_func(void)
 		{
 			g_model_xfm->s = qadd(g_model_xfm->s, QVAL(-0.01));
 		}
+
+		light_select(sw >> 8);
 	}
 
 	/* swap buffer */
@@ -179,7 +181,18 @@ static void timer_fn(void)
 	v[p] = frame_count;
 	p = (p + 1) % 5;
 
-	display_qval(qdiv(QINT(frame_count - v[p]), QINT(5)));
+	{
+		qval_t r = qdiv(QINT(frame_count - v[p]), QINT(5));
+
+		if (r >= QINT(10))
+		{
+			display_qval(3, r);
+		}
+		else
+		{
+			display_qval(4, r);
+		}
+	}
 }
 
 int main(int argc, char *argv[])

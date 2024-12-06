@@ -3,7 +3,7 @@
 #include <qmath.h>
 #include <rast.h>
 
-#define Z_NEAR		QINT(1)
+#define Z_NEAR		QVAL(1)
 #define CLAMP(x)	((x) > 255 ? 255 : (x))
 
 typedef struct
@@ -253,36 +253,83 @@ void draw_tri(tri_t *t, unsigned char c[], unsigned char *cb, qval_t *zb)
 	PROFILE_WINDOW_END(triangle);
 }
 
+typedef struct
+{
+	int	num;
+	vec_t *	dir;
+	vec_t *	col;
+} light_t;
+
 static vec_t		xfm_vert[10000];
 static unsigned char	norm_col[10000][2];
-
-#if 0
-	/* Bisexual lighting */
-	static vec_t		light_ns[] =
-	{
-		{ QVAL( 0.0000), QVAL( 0.0000), QVAL( 1.0000) },
-		{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
-		{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
-	};
-	static vec_t		light_cs[] =
-	{
-		{ QVAL(0.50), QVAL(0.50), QVAL(0.50) },
-		{ QVAL(1.00), QVAL(0.00), QVAL(0.00) },
-		{ QVAL(0.00), QVAL(0.00), QVAL(1.00) },
-	};
-#else
+static int		light_num;
+static light_t		lights[] =
+{
 	/* Natural-ish light from front-left */
-	static vec_t		light_ns[] =
 	{
-		{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
-		{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
-	};
-	static vec_t		light_cs[] =
+		2,
+		(vec_t [])
+		{
+			{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
+			{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
+		},
+		(vec_t [])
+		{
+			{ QVAL(0.80), QVAL(0.80), QVAL(0.60) },
+			{ QVAL(0.60), QVAL(0.60), QVAL(0.80) },
+		},
+	},
+	/* Bisexual lighting */
 	{
-		{ QVAL(0.80), QVAL(0.80), QVAL(0.60) },
-		{ QVAL(0.60), QVAL(0.60), QVAL(0.80) },
-	};
-#endif
+		3,
+		(vec_t [])
+		{
+			{ QVAL( 0.0000), QVAL( 0.0000), QVAL( 1.0000) },
+			{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
+			{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
+		},
+		(vec_t [])
+		{
+			{ QVAL(0.10), QVAL(0.10), QVAL(0.10) },
+			{ QVAL(0.80), QVAL(0.00), QVAL(0.20) },
+			{ QVAL(0.20), QVAL(0.00), QVAL(1.00) },
+		},
+	},
+	/* RGB */
+	{
+		3,
+		(vec_t [])
+		{
+			{ QVAL( 0.0000), QVAL(-0.5000), QVAL( 0.8660) },
+			{ QVAL(-0.7071), QVAL( 0.0000), QVAL( 0.7070) },
+			{ QVAL( 0.7071), QVAL( 0.0000), QVAL( 0.7071) },
+		},
+		(vec_t [])
+		{
+			{ QVAL(1.00), QVAL(0.00), QVAL(0.00) },
+			{ QVAL(0.00), QVAL(0.75), QVAL(0.00) },
+			{ QVAL(0.00), QVAL(0.00), QVAL(1.00) },
+		},
+	},
+	{
+		0,
+	},
+};
+
+int light_count(void)
+{
+	return sizeof(lights) / sizeof*(lights);
+}
+
+int light_current(void)
+{
+	return light_num;
+}
+
+void light_select(int n)
+{
+	light_num = n;
+}
 
 void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 {
@@ -384,16 +431,16 @@ void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 			n.z = qadd(qmul( ys, x), qmul( yc, z));
 		}
 
-		for (int j = 0; j < sizeof(light_ns) / sizeof*(light_ns); j++)
+		for (int j = 0; j < lights[light_num].num; j++)
 		{
-			vec_t *l_n = &light_ns[j];
-			vec_t *l_c = &light_cs[j];
+			vec_t *d = &lights[light_num].dir[j];
+			vec_t *c = &lights[light_num].col[j];
 			qval_t m;
 
-			m = QINT(0);
-			m = qadd(m, qmul(n.x, l_n->x));
-			m = qadd(m, qmul(n.y, l_n->y));
-			m = qadd(m, qmul(n.z, l_n->z));
+			m = QZERO;
+			m = qadd(m, qmul(n.x, d->x));
+			m = qadd(m, qmul(n.y, d->y));
+			m = qadd(m, qmul(n.z, d->z));
 
 			if (m >= 0)
 			{
@@ -401,9 +448,9 @@ void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 			}
 
 			m = qmul(m, -QINT(255));
-			r += QTOI(qmul(l_c->x, m));
-			g += QTOI(qmul(l_c->y, m));
-			b += QTOI(qmul(l_c->z, m));
+			r += QTOI(qmul(c->x, m));
+			g += QTOI(qmul(c->y, m));
+			b += QTOI(qmul(c->z, m));
 		}
 
 		norm_col[i][0] = 0;

@@ -4,6 +4,6 @@
 #include <qmath.h>
 
 void display_char(int pos, int c);
-void display_qval(qval_t v);
+void display_qval(int pos, qval_t v);
 
 #endif
