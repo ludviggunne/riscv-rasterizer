@@ -4,7 +4,7 @@
 #define csrr(csr) \
 	({ \
 		unsigned v; \
-		asm volatile \
+		__asm__ volatile \
 		( \
 			"csrr %0, " #csr ";" \
 			: "=r" (v) \
@@ -17,7 +17,7 @@
 		unsigned hi; \
 		unsigned lo; \
 		unsigned ch; \
-		asm volatile \
+		__asm__ volatile \
 		( \
 			"0:" \
 			"csrr %0, " #csr "h;" \
@@ -31,7 +31,7 @@
 
 #define csrw(csr, v) \
 	({ \
-		asm volatile \
+		__asm__ volatile \
 		( \
 			"csrw " #csr ", %0;" \
 			:: "r" (v) \
@@ -41,7 +41,7 @@
 
 #define csrsi(csr, i) \
 	({ \
-		asm volatile \
+		__asm__ volatile \
 		( \
 			"csrsi " #csr ", %0;" \
 			:: "i" (i) \
@@ -51,7 +51,7 @@
 
 #define csrci(csr, i) \
 	({ \
-		asm volatile \
+		__asm__ volatile \
 		( \
 			"csrci " #csr ", %0;" \
 			:: "i" (i) \
