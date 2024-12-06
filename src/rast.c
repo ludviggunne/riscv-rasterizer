@@ -265,7 +265,7 @@ static unsigned char	norm_col[10000][2];
 static int		light_num;
 static light_t		lights[] =
 {
-	/* Natural-ish light from front-left */
+	/* Natural-ish light */
 	{
 		2,
 		(vec_t [])
@@ -279,7 +279,7 @@ static light_t		lights[] =
 			{ QVAL(0.60), QVAL(0.60), QVAL(0.80) },
 		},
 	},
-	/* Bisexual lighting */
+	/* Bisexual light */
 	{
 		3,
 		(vec_t [])
@@ -295,7 +295,7 @@ static light_t		lights[] =
 			{ QVAL(0.20), QVAL(0.00), QVAL(1.00) },
 		},
 	},
-	/* RGB */
+	/* RGB light */
 	{
 		3,
 		(vec_t [])
@@ -311,8 +311,17 @@ static light_t		lights[] =
 			{ QVAL(0.00), QVAL(0.00), QVAL(1.00) },
 		},
 	},
+	/* Spooky light */
 	{
-		0,
+		1,
+		(vec_t [])
+		{
+			{ QVAL( 0.0000), QVAL( 0.7071), QVAL( 0.7071) },
+		},
+		(vec_t [])
+		{
+			{ QVAL(0.25), QVAL(0.10), QVAL(1.00) },
+		},
 	},
 };
 
