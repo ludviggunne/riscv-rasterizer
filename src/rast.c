@@ -392,7 +392,7 @@ void draw_model(model_t *mdl, xfm_t *xfm, unsigned char *cb, qval_t *zb)
 
 		w->x = qadd(qmul(w->x, xfm->s), xfm->t.x);
 		w->y = qadd(qmul(w->y, xfm->s), xfm->t.y);
-		w->z = qadd(qmul(w->z, xfm->s), xfm->t.z);		
+		w->z = qadd(qmul(w->z, xfm->s), xfm->t.z);
 
 		if (w->z < Z_NEAR)
 		{
